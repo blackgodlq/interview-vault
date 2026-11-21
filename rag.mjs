@@ -121,3 +121,21 @@ export async function answerQuestion({query,scope='all',apiKey,engine,byId,cache
   // A model's rejection of existing candidates is not a durable "no knowledge" fact.
   return id===null?generalAnswer({query,apiKey,fetcher,endpoint,engine,started}):remember(result);
 }
+
+export async function streamInterviewAnswer({query,apiKey,signal}){
+  if(typeof query!=='string'||!query.trim()||query.length>1500)throw new RagError('请输入 1–1500 字的问题。',400);
+  if(typeof apiKey!=='string'||!apiKey.trim())throw new RagError('请先配置 DeepSeek API Key。',428);
+  const payload=payloadForGeneralAnswer(query.trim());
+  payload.stream=true;
+  payload.messages[0].content=[
+    '你是一名正在参加技术面试的候选人。请用中文生成一段可以直接照着说的答案。',
+    '直接给结论，再用自然、专业的口语说明关键原理、原因或做法。省略寒暄、答题建议和思考过程。',
+    '按题型灵活组织。原理题解释实现和关键细节，对比题说明差异与选型，排查题说明定位、处理和验证，方案题说明做法与权衡。',
+    '默认约一分钟、200 至 350 字，简单问题更短，复杂问题可适当展开。使用短段落，关键术语可加粗，默认少用标题、编号和表格。明确要求代码时给出代码和简短解释。',
+    '只根据用户给出的经历来描述个人项目、数据和成果。未给经历时，用“如果遇到这种情况，我会……”讲思路。问题有错误前提时简短纠正，信息不足时说明假设或不确定性。'
+  ].join('\n');
+  const timeout=AbortSignal.timeout(60000);
+  const response=await requestModel(apiKey,payload,fetch,ENDPOINT,signal?AbortSignal.any([signal,timeout]):timeout);
+  if(!response.body)throw new RagError('DeepSeek 未返回回答，请重试。');
+  return response.body;
+}

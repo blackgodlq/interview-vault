@@ -17,7 +17,7 @@ function mutateKnowledge(change){const operation=writeQueue.then(async()=>{const
 const MIME={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.json':'application/json; charset=utf-8','.txt':'text/plain; charset=utf-8','.svg':'image/svg+xml'};
 function json(res,status,body){res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(body));}
 function readBody(req,limit=12000){return new Promise((resolve,reject)=>{const chunks=[];let size=0,tooLarge=false;req.on('data',b=>{size+=b.length;if(size>limit){tooLarge=true;return;}chunks.push(b);});req.on('end',()=>{if(tooLarge){const e=new Error('请求内容过大。');e.status=413;return reject(e);}try{resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')));}catch{const e=new Error('请求格式错误。');e.status=400;reject(e);}});req.on('error',reject);});}
-async function start(){const {answerQuestion,MODEL}=await import('./rag.mjs');
+async function start(){const {answerQuestion,streamInterviewAnswer,MODEL}=await import('./rag.mjs');
  const server=http.createServer(async(req,res)=>{
   try{
    const requestHost=(req.headers.host||'').toLowerCase();
@@ -38,6 +38,19 @@ async function start(){const {answerQuestion,MODEL}=await import('./rag.mjs');
      const created=await knowledgeImport.createEntry(body,entries,req.method==='PUT'?id:undefined);if(created.duplicate)return created;
      return {...created,entries:req.method==='PUT'?entries.map(e=>e.id===id?created.entry:e):[...entries,created.entry]};
     });return json(res,200,{entry:result.entry,duplicate:!!result.duplicate,revision:shared.revision});
+   }
+   if(url.pathname==='/api/interview-answer'&&req.method==='POST'){
+    if(!req.headers['content-type']?.includes('application/json'))return json(res,415,{error:'只接受 JSON 请求。'});
+    const body=await readBody(req);
+    if(res.destroyed)return;
+    const controller=new AbortController();
+    res.once('close',()=>controller.abort());
+    const stream=await streamInterviewAnswer({query:body?.query,apiKey:body?.apiKey||process.env.DEEPSEEK_API_KEY,signal:controller.signal});
+    res.writeHead(200,{'Content-Type':'text/event-stream; charset=utf-8','Cache-Control':'no-store, no-transform','X-Accel-Buffering':'no','X-Content-Type-Options':'nosniff'});
+    const {Readable}=require('node:stream');
+    const {pipeline}=require('node:stream/promises');
+    await pipeline(Readable.fromWeb(stream),res);
+    return;
    }
    if(url.pathname==='/api/answer'&&req.method==='POST'){
     if(!req.headers['content-type']?.includes('application/json'))return json(res,415,{error:'只接受 JSON 请求。'});

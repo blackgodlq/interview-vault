@@ -41,6 +41,10 @@ export default {
       return {...created,entries:request.method==='PUT'?entries.map(e=>e.id===id?created.entry:e):[...entries,created.entry]};
      });return edgeJSON({entry:result.entry,duplicate:!!result.duplicate,revision:result.revision});
     }
+    if(url.pathname==='/api/interview-answer'&&request.method==='POST'){
+     const stream=await streamInterviewAnswer({query:body?.query,apiKey:body?.apiKey||env.DEEPSEEK_API_KEY,signal:request.signal});
+     return new Response(stream,{headers:{'Content-Type':'text/event-stream; charset=utf-8','Cache-Control':'no-store, no-transform','X-Content-Type-Options':'nosniff'}});
+    }
     if(url.pathname==='/api/answer'&&request.method==='POST'){const shared=await sharedKnowledge(env);syncEdge(shared);return edgeJSON(await answerQuestion({query:body.query,scope:body.scope,apiKey:body.apiKey||env.DEEPSEEK_API_KEY,engine:edgeEngine,byId:edgeById,cache:edgeCache}));}
    }
    if(request.method!=='GET'&&request.method!=='HEAD')return edgeJSON({error:'Method not allowed'},405);
