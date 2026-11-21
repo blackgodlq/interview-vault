@@ -203,6 +203,18 @@ async function run(query){
  $('answerMode').textContent='本地检索 · 完整原文';
  $('resultGrid').hidden=false;
 }
+const sidebarToggle=$('sidebarToggle');
+function setSidebarCollapsed(collapsed){
+ document.body.classList.toggle('sidebar-collapsed',collapsed);
+ sidebarToggle.setAttribute('aria-expanded',String(!collapsed));
+ sidebarToggle.textContent=collapsed?'展开侧栏':'收起侧栏';
+}
+try{setSidebarCollapsed(localStorage.getItem('interview-sidebar-collapsed')==='1');}catch{}
+sidebarToggle.onclick=()=>{
+ const collapsed=sidebarToggle.getAttribute('aria-expanded')==='true';
+ setSidebarCollapsed(collapsed);
+ try{localStorage.setItem('interview-sidebar-collapsed',collapsed?'1':'0');}catch{}
+};
 $('localTab').onclick=()=>setAnswerTab('local');
 $('aiTab').onclick=()=>setAnswerTab('ai');
 function renderCatalog(){const query=$('catalogFilter').value.toLowerCase(),s=$('catalogSource').value;let groups=new Map(),count=0;for(const c of data.chunks){if(s==='custom'?!c.entryId:s!=='all'&&c.source!==s)continue;if(query&&!(c.title+' '+c.chapter).toLowerCase().includes(query))continue;const key=c.sourceName+' / '+c.chapter;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(c);count++;}$('catalogMeta').textContent=count+' 个知识片段';$('catalogList').replaceChildren();for(const [name,chunks]of groups){const details=el('details',undefined,'catalog-group');details.open=!!query;const summary=el('summary',name);summary.append(el('small',chunks.length+' 题'));details.append(summary);for(const c of chunks){const b=el('button',c.title,'catalog-question');b.onclick=()=>{cancelModel();resetAI(false);$('localScroll').scrollTop=0;$('answerMode').textContent='目录原文';lastResponse={results:[{id:c.id,match:'目录原文'}],ms:0};setMode('search');$('resultTitle').textContent='目录原文';$('resultMeta').textContent=c.sourceName+' · '+c.text.length+' 字符';$('empty').hidden=true;$('resultGrid').hidden=false;candidates(lastResponse);showAnswer(c.id);$('readingPane').scrollTo({top:0,behavior:'smooth'});};details.append(b);}$('catalogList').append(details);}if(!count)$('catalogList').append(el('p','没有匹配的题目，请更换关键词。'));}
