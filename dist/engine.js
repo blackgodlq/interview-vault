@@ -18,13 +18,29 @@ function cleanQuery(q){
  .replace(/\s+/g,' ').trim();
  return s||canonical(q).trim();
 }
+function titleKey(text){
+ return norm(text).replace(/[，。？！、:：,?!]/g,'');
+}
+function causeTopic(text){
+ // Keep the subject on both sides of the question phrase.
+ const topic=text
+  .replace(/(?:为什么|为何)\s*(?:(?:会|容易)\s*)?(?:(?:出现|产生|发生)(?:了)?\s*)?/g,' ')
+  .replace(/(?:会|容易)\s*(?:出现|产生|发生)(?:了)?\s*/g, verb=>/^(?:为什么|为何)/.test(text)?' ':verb)
+  .replace(/(?:的)?(?:原因(?:是)?|成因)$/,'')
+  .replace(/\s+/g,' ').trim();
+ return titleKey(topic).length>=2?topic:text;
+}
 function makeTF(ts){let m=new Map();for(const t of ts)m.set(t,(m.get(t)||0)+1);return m;}
 class Engine{
-constructor(data){this.data=data;this.N=data.chunks.length;this.df=new Map();this.cache=new Map();this.docs=data.chunks.map(c=>{const ts=tokens(c.title+' '+c.title+' '+c.chapter+' '+c.text);const tf=makeTF(ts);for(const t of tf.keys())this.df.set(t,(this.df.get(t)||0)+1);return {c,tf,len:ts.length,title:norm(c.title),titleTokens:new Set(tokens(c.title))};});this.avg=this.docs.reduce((a,d)=>a+d.len,0)/this.N;this.idf=new Map([...this.df].map(([t,n])=>[t,Math.log(1+(this.N-n+.5)/(n+.5))]));for(const d of this.docs){d.norm=Math.sqrt([...d.tf].reduce((a,[t,f])=>a+((1+Math.log(f))*(this.idf.get(t)||0))**2,0));}}
-search(query,source='all',limit=8){const started=performance.now(),key=source+'|'+query;if(this.cache.has(key))return {...this.cache.get(key),cached:true,ms:performance.now()-started};const clean=cleanQuery(query);let expanded=clean;for(const group of aliases)if(group.some(t=>norm(clean).includes(norm(t))))expanded+=' '+group.join(' ');const qt=makeTF(tokens(expanded)),original=[...new Set(tokens(clean))];const qn=norm(clean).replace(/[，。？！、:：]/g,'');const explicitTech=[...new Set((clean.match(/[a-z_][a-z0-9_+.]{1,}/g)||[]))];const tech=explicitTech.filter(t=>this.df.has(t));const qnorm=Math.sqrt([...qt].reduce((a,[t,f])=>a+((1+Math.log(f))*(this.idf.get(t)||0))**2,0));let results=[];
+constructor(data){this.data=data;this.N=data.chunks.length;this.df=new Map();this.cache=new Map();this.docs=data.chunks.map(c=>{const ts=tokens(c.title+' '+c.title+' '+c.chapter+' '+c.text);const tf=makeTF(ts);for(const t of tf.keys())this.df.set(t,(this.df.get(t)||0)+1);return {c,tf,len:ts.length,title:norm(c.title),questionTitle:titleKey(cleanQuery(c.title)),titleTokens:new Set(tokens(c.title))};});this.avg=this.docs.reduce((a,d)=>a+d.len,0)/this.N;this.idf=new Map([...this.df].map(([t,n])=>[t,Math.log(1+(this.N-n+.5)/(n+.5))]));for(const d of this.docs){d.norm=Math.sqrt([...d.tf].reduce((a,[t,f])=>a+((1+Math.log(f))*(this.idf.get(t)||0))**2,0));}}
+search(query,source='all',limit=8){const started=performance.now(),key=source+'|'+query;if(this.cache.has(key))return {...this.cache.get(key),cached:true,ms:performance.now()-started};const phrasing=cleanQuery(query),fullTitle=titleKey(phrasing);
+const clean=causeTopic(phrasing);
+let expanded=clean;for(const group of aliases)if(group.some(t=>norm(clean).includes(norm(t))))expanded+=' '+group.join(' ');const qt=makeTF(tokens(expanded)),original=[...new Set(tokens(clean))];const qn=titleKey(clean);const explicitTech=[...new Set((clean.match(/[a-z_][a-z0-9_+.]{1,}/g)||[]))];const tech=explicitTech.filter(t=>this.df.has(t));const qnorm=Math.sqrt([...qt].reduce((a,[t,f])=>a+((1+Math.log(f))*(this.idf.get(t)||0))**2,0));let results=[];
 for(const d of this.docs){if(source==='custom'?!d.c.entryId:source!=='all'&&d.c.source!==source)continue;let bm=0,dot=0,covered=0,tc=0;for(const [t,f]of qt){let n=d.tf.get(t)||0,idf=this.idf.get(t)||0;if(n){bm+=idf*n*2.2/(n+1.2*(.25+.75*d.len/this.avg));dot+=(1+Math.log(n))*idf*(1+Math.log(f))*idf;}}for(const t of original){if(d.tf.has(t))covered++;if(d.titleTokens.has(t))tc++;}const coverage=original.length?covered/original.length:0,titleCoverage=original.length?tc/original.length:0,cosine=qnorm&&d.norm?dot/(qnorm*d.norm):0;const exact=qn.length>=2&&(d.title===qn||d.title.includes(qn));const titleInside=d.title.length>=2&&qn.includes(d.title);const score=(exact?60:0)+(titleInside?35:0)+titleCoverage*22+coverage*8+bm*1.1+cosine*14;
-const techTitle=tech.filter(t=>d.titleTokens.has(t)||norm(d.c.chapter).includes(t)).length;const techMatched=tech.filter(t=>d.tf.has(t)).length;const strongAnchor=techTitle>0;if(covered&&(coverage>=.2||strongAnchor)&&(!explicitTech.length||explicitTech.some(t=>d.tf.has(t))))results.push({id:d.c.id,score:score-8*(tech.length-techMatched)+(tech.length===1&&qn===tech[0]&&d.title===tech[0]+'原理'?50:0)+techTitle*60+(tech.includes('rag')&&d.titleTokens.has('rag')?35:0)+(tech.length&&!['java','python','redis','rag'].includes(tech[0])&&d.title.startsWith(tech[0])?15:0),techTitle,strongAnchor,bm,cosine,coverage,titleCoverage,exact,match:exact?'题目直接命中':titleInside?'题目包含匹配':titleCoverage>=.6?'题目相关匹配':'正文相关片段'});}
-results.sort((a,b)=>b.score-a.score);let top=results[0];const meaningful=top&&(top.exact||top.strongAnchor||top.titleCoverage>=.4||(top.coverage>=.65&&top.cosine>=.035));const response={query,results:meaningful?results.slice(0,limit):[],ms:performance.now()-started,cached:false};this.cache.set(key,response);return response;}
+const techTitle=tech.filter(t=>d.titleTokens.has(t)||norm(d.c.chapter).includes(t)).length;const techMatched=tech.filter(t=>d.tf.has(t)).length;const strongAnchor=techTitle>0;
+const titlePriority=qn.length<2?0:d.questionTitle===fullTitle?2:d.questionTitle===qn?1:0;
+if(titlePriority||covered&&(coverage>=.2||strongAnchor)&&(!explicitTech.length||explicitTech.some(t=>d.tf.has(t))))results.push({id:d.c.id,score:score-8*(tech.length-techMatched)+(tech.length===1&&qn===tech[0]&&d.title===tech[0]+'原理'?50:0)+techTitle*60+(tech.includes('rag')&&d.titleTokens.has('rag')?35:0)+(tech.length&&!['java','python','redis','rag'].includes(tech[0])&&d.title.startsWith(tech[0])?15:0),titlePriority,techTitle,strongAnchor,bm,cosine,coverage,titleCoverage,exact,match:titlePriority===1?'题目主题匹配':titlePriority===2||exact?'题目直接命中':titleInside?'题目包含匹配':titleCoverage>=.6?'题目相关匹配':'正文相关片段'});}
+results.sort((a,b)=>b.titlePriority-a.titlePriority||b.score-a.score);let top=results[0];const meaningful=top&&(top.titlePriority||top.exact||top.strongAnchor||top.titleCoverage>=.4||(top.coverage>=.65&&top.cosine>=.035));const response={query,results:meaningful?results.slice(0,limit):[],ms:performance.now()-started,cached:false};this.cache.set(key,response);return response;}
 }
 Engine.normalizeQuery=q=>norm(cleanQuery(q)).replace(/[，。？！、:：,?!]/g,'');
 root.InterviewEngine=Engine;if(typeof module!=='undefined')module.exports={Engine,tokens,cleanQuery,canonical};
