@@ -8,3 +8,6 @@ runtime.json
 *.log
 .private/
 .openai/
+outline-cache.json
+__pycache__/
+面试知识库智能体.html

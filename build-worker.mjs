@@ -10,5 +10,7 @@ const assets=Object.fromEntries(names.map(name=>[name,{type:mime[path.extname(na
 const code=read('dist/engine.js')+'\n'+read('dist/answers.js')+'\n'+read('dist/knowledge-import.js')+'\nconst KNOWLEDGE='+JSON.stringify(data)+';\nconst ASSETS='+JSON.stringify(assets)+';\n'+read('rag.mjs')+'\n'+read('worker-main.mjs');
 fs.mkdirSync(path.join(ROOT,'dist/server'),{recursive:true});
 fs.writeFileSync(path.join(ROOT,'dist/server/index.js'),code);
-const manifest=JSON.parse(read('.openai/hosting.json'));delete manifest.static;fs.writeFileSync(path.join(ROOT,'.openai/hosting.json'),JSON.stringify(manifest,null,2)+'\n');
+const manifestPath=path.join(ROOT,'.openai/hosting.json');
+fs.mkdirSync(path.dirname(manifestPath),{recursive:true});
+const manifest=fs.existsSync(manifestPath)?JSON.parse(read('.openai/hosting.json')):{r2:'BUCKET'};delete manifest.static;fs.writeFileSync(path.join(ROOT,'.openai/hosting.json'),JSON.stringify(manifest,null,2)+'\n');
 console.log('Worker built: '+Buffer.byteLength(code)+' bytes; '+names.length+' embedded assets.');
