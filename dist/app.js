@@ -70,6 +70,7 @@ function renderText(text,target){
  flush();
 }
 function showAnswer(id){
+ $('resultGrid').classList.remove('generated-answer');$('resultGrid').querySelector('.evidence').hidden=false;$('resultGrid').querySelector('.answer-footer').textContent='内容直接提取自你的资料，保留原文表述。原文中的错误也会保留。';
  const c=byId.get(id),complete=resolveInterviewAnswer(byId,id);selected=c;selectedAnswer=complete.text;
  const r=lastResponse?.results.find(x=>x.id===id);$('answerTitle').textContent=c.title;
  $('matchTag').textContent=complete.expanded?'已自动补齐 '+complete.expanded+' 处引用':r?.match||'完整原文';
@@ -91,7 +92,7 @@ async function run(query){
  $('empty').hidden=true;$('resultGrid').hidden=true;$('modelMessage').hidden=true;selected=null;selectedAnswer='';
  history=[query,...history.filter(q=>q!==query)].slice(0,7);try{localStorage.setItem('interview-history-v1',JSON.stringify(history));}catch{}historyUI();
  if(location.protocol==='file:'){if(response.results.length){candidates(response);showAnswer(response.results[0].id);$('resultGrid').hidden=false;$('answerMode').textContent='离线原文（未调用 DeepSeek）';}else $('empty').hidden=false;return;}
- $('searchPending').hidden=false;$('searchPending').textContent=response.results.length?'已检索到资料，正在确认答案…':'正在理解问题并重新检索资料…';$('resultMeta').textContent='正在检索并确认答案…';
+ $('searchPending').hidden=false;$('searchPending').textContent=response.results.length?'已检索到资料，正在确认答案…':'正在理解问题；知识库未命中时将由 DeepSeek 回答…';$('resultMeta').textContent='正在检索并确认答案…';
  modelController=new AbortController();const started=performance.now();
  try{
   const r=await fetch('/api/answer',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query,scope,...(apiKey?{apiKey}:{})}),signal:modelController.signal});
@@ -99,6 +100,19 @@ async function run(query){
   if(!r.ok)throw new Error(result.error||'DeepSeek 调用失败。');
   if(result.knowledgeVersion&&result.knowledgeVersion!==data.version){sessionStorage.setItem('resume-interview-query',query);location.reload();return;}
   if(result.knowledgeRevision&&result.knowledgeRevision!==data.knowledgeRevision&&window.syncSharedKnowledge){await window.syncSharedKnowledge();if(serial!==requestSerial)return;}
+  if(result.kind==='generated'){
+   if(typeof result.answer!=='string'||!result.answer.trim())throw new Error('模型未返回回答，请重试。');
+   selected=null;selectedAnswer=result.answer;lastResponse={...response,results:[]};
+   $('empty').hidden=true;$('resultGrid').hidden=false;$('resultGrid').classList.add('generated-answer');
+   $('answerMode').textContent='DeepSeek · 模型回答';$('matchTag').textContent='知识库未命中';
+   $('answerTitle').textContent=query;$('sourceLine').textContent='由 DeepSeek 生成，不属于知识库原文';
+   $('answerBody').replaceChildren();renderText(result.answer,$('answerBody'));
+   $('candidateList').replaceChildren();$('candidateCount').textContent='0 条';
+   $('rawText').textContent='';$('evidenceMeta').textContent='';$('resultGrid').querySelector('.evidence').hidden=true;
+   $('resultGrid').querySelector('.answer-footer').textContent='此回答由模型生成，请按需核实。';
+   $('modelMessage').hidden=!result.truncated;$('modelMessage').textContent=result.truncated?'回答达到长度上限，可以缩小问题范围后继续提问。':'';
+   $('resultMeta').textContent='DeepSeek 非思考 · 模型回答 · '+((performance.now()-started)/1000).toFixed(2)+' 秒';$('status').textContent='DeepSeek 已就绪';return;
+  }
   if(result.id===null){selected=null;selectedAnswer='';$('empty').hidden=false;$('resultGrid').hidden=true;$('resultMeta').textContent=result.rewritten?'已理解问题并重新检索，资料中没有足够依据':'DeepSeek 未找到能直接回答的原文';return;}
   if(!byId.has(result.id))throw new Error('模型返回的题目不在本地资料中。');
   const ids=[...new Set([...(result.candidateIds||[]),...response.results.map(x=>x.id),result.id])].filter(id=>byId.has(id));
@@ -113,7 +127,7 @@ async function run(query){
  }
 }
 function renderCatalog(){const query=$('catalogFilter').value.toLowerCase(),s=$('catalogSource').value;let groups=new Map(),count=0;for(const c of data.chunks){if(s==='custom'?!c.entryId:s!=='all'&&c.source!==s)continue;if(query&&!(c.title+' '+c.chapter).toLowerCase().includes(query))continue;const key=c.sourceName+' / '+c.chapter;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(c);count++;}$('catalogMeta').textContent=count+' 个知识片段';$('catalogList').replaceChildren();for(const [name,chunks]of groups){const details=el('details',undefined,'catalog-group');details.open=!!query;const summary=el('summary',name);summary.append(el('small',chunks.length+' 题'));details.append(summary);for(const c of chunks){const b=el('button',c.title,'catalog-question');b.onclick=()=>{cancelModel();$('answerMode').textContent='目录原文';$('modelMessage').hidden=true;lastResponse={results:[{id:c.id,match:'目录原文'}],ms:0};setMode('search');$('resultTitle').textContent='目录原文';$('resultMeta').textContent=c.sourceName+' · '+c.text.length+' 字符';$('empty').hidden=true;$('resultGrid').hidden=false;candidates(lastResponse);showAnswer(c.id);$('readingPane').scrollTo({top:0,behavior:'smooth'});};details.append(b);}$('catalogList').append(details);}if(!count)$('catalogList').append(el('p','没有匹配的题目，请更换关键词。'));}
-$('searchForm').onsubmit=e=>{e.preventDefault();run($('query').value);};$('query').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();run($('query').value);}});document.querySelectorAll('[data-scope]').forEach(b=>b.onclick=()=>setScope(b.dataset.scope));document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>run(b.dataset.q));document.querySelectorAll('[data-source]').forEach(b=>b.onclick=()=>{setScope(b.dataset.source);$('catalogSource').value=b.dataset.source;setMode('catalog');});$('searchNav').onclick=()=>setMode('search');$('browseNav').onclick=()=>setMode('catalog');$('catalogFilter').oninput=renderCatalog;$('catalogSource').onchange=renderCatalog;$('clearHistory').onclick=()=>{history=[];try{localStorage.removeItem('interview-history-v1');}catch{}historyUI();toast('检索历史已清空');};$('copy').onclick=async()=>{if(!selected)return;try{await navigator.clipboard.writeText(selectedAnswer);toast('完整答案已复制');}catch{const t=el('textarea',selectedAnswer);document.body.append(t);t.select();const ok=document.execCommand('copy');t.remove();toast(ok?'完整答案已复制':'复制失败，请在原始片段中手动选择复制');}};
+$('searchForm').onsubmit=e=>{e.preventDefault();run($('query').value);};$('query').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();run($('query').value);}});document.querySelectorAll('[data-scope]').forEach(b=>b.onclick=()=>setScope(b.dataset.scope));document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>run(b.dataset.q));document.querySelectorAll('[data-source]').forEach(b=>b.onclick=()=>{setScope(b.dataset.source);$('catalogSource').value=b.dataset.source;setMode('catalog');});$('searchNav').onclick=()=>setMode('search');$('browseNav').onclick=()=>setMode('catalog');$('catalogFilter').oninput=renderCatalog;$('catalogSource').onchange=renderCatalog;$('clearHistory').onclick=()=>{history=[];try{localStorage.removeItem('interview-history-v1');}catch{}historyUI();toast('检索历史已清空');};$('copy').onclick=async()=>{if(!selectedAnswer)return;try{await navigator.clipboard.writeText(selectedAnswer);toast('答案已复制');}catch{const t=el('textarea',selectedAnswer);document.body.append(t);t.select();const ok=document.execCommand('copy');t.remove();toast(ok?'答案已复制':'复制失败，请在原始片段中手动选择复制');}};
 $('about').onclick=()=>$('infoDialog').showModal();$('closeInfo').onclick=$('closeInfoBottom').onclick=()=>$('infoDialog').close();document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('query').focus();}});for(const s of data.sources)$(s.id+'Count').textContent=data.chunks.filter(c=>c.source===s.id).length+' 个片段 · '+(s.characters/10000).toFixed(1)+' 万字';$('chunkCount').textContent=data.chunks.length.toLocaleString();$('status').textContent='正在连接 DeepSeek';$('submit').disabled=false;historyUI();
 $('mobileCatalog').onclick=()=>{setMode(mode==='catalog'?'search':'catalog');$('mobileCatalog').textContent=mode==='catalog'?'面试问答':'知识目录';if(mode==='catalog')$('catalog').scrollIntoView({behavior:'smooth',block:'start'});};
 

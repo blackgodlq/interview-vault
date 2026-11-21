@@ -1,6 +1,6 @@
 # Interview Vault · 面试知识库智能体
 
-本地优先的面试资料检索工具：使用 BM25、TF-IDF 和题目匹配召回知识，再由 DeepSeek 非思考模式选择原文答案。使用 JavaScript / Node.js、HTML 和 CSS 实现。
+本地优先的面试资料检索工具：使用 BM25、TF-IDF 和题目匹配召回知识，再由 DeepSeek 非思考模式选择原文答案；知识库未命中时由模型直接回答。使用 JavaScript / Node.js、HTML 和 CSS 实现。
 
 ## 启动
 
@@ -42,3 +42,7 @@ Windows 无窗口启动器 `launcher.vbs` 需要在同目录 `runtime-node.txt` 
 ## 重建知识索引
 
 需要 Python 3。修改 `dist/` 中的 TXT 后，先运行 `node prepare-outline.mjs` 更新目录（需 DeepSeek Key 并消耗 tokens），再运行 `python build.py`。`outline.json` 保存题目边界和源文件摘要。
+
+## 知识库外回答
+
+检索和问题改写后仍未命中，使用 DeepSeek 非思考模式生成普通回答，并标明“模型回答”。生成最多 2000 tokens、超时 60 秒，不缓存；会消耗额外输出 tokens。知识库命中继续返回完整原文。

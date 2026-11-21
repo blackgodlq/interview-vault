@@ -42,7 +42,7 @@ export function payloadForRewrite(query,scope){
 async function requestModel(apiKey,payload,fetcher,endpoint,signal){
   let response;
   try{response=await fetcher(endpoint,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+apiKey.trim()},body:JSON.stringify(payload),signal});}
-  catch(e){if(e.name==='TimeoutError'||e.name==='AbortError')throw new RagError('DeepSeek 响应超时（20 秒），请重试。',504);throw new RagError('无法连接 DeepSeek，请检查网络。');}
+  catch(e){if(e.name==='TimeoutError'||e.name==='AbortError')throw new RagError('DeepSeek 响应超时，请重试。',504);throw new RagError('无法连接 DeepSeek，请检查网络。');}
   if(!response.ok){await response.body?.cancel();const errors={401:'DeepSeek API Key 无效，请重新配置。',402:'DeepSeek 余额不足，请充值后重试。',429:'DeepSeek 请求过多，请稍后重试。'};throw new RagError(errors[response.status]||'DeepSeek 服务暂时不可用（'+response.status+'）。',response.status===401?401:502);}
   return response;
 }
@@ -68,13 +68,27 @@ export async function readChoice(response,allowed){
     throw new RagError('DeepSeek 未返回有效选择结果，请重试。');
   }finally{reader.releaseLock();}
 }
+export function payloadForGeneralAnswer(query){
+  return {model:MODEL,thinking:{type:'disabled'},reasoning_effort:'none',stream:false,max_tokens:2000,temperature:0.3,messages:[
+    {role:'system',content:'你是中文问答助手。用户的问题未在已导入知识库中找到可直接回答的内容，请根据自身知识直接回答，不要声称答案来自知识库或已经联网查询。先给结论，再分点说明；关键概念使用 Markdown 加粗，比较内容可用 Markdown 表格，代码使用代码块。回答简洁、准确，不输出思考过程。不确定或需要实时信息时明确说明，不编造事实。'},
+    {role:'user',content:query}
+  ]};
+}
+async function generalAnswer({query,apiKey,fetcher,endpoint,engine,started}){
+  const response=await requestModel(apiKey,payloadForGeneralAnswer(query),fetcher,endpoint,AbortSignal.timeout(60000));
+  let body;
+  try{body=await response.json();}catch(e){if(e.name==='TimeoutError'||e.name==='AbortError')throw new RagError('DeepSeek 回答超时，请重试。',504);throw new RagError('DeepSeek 回答解析失败，请重试。');}
+  const choice=body.choices?.[0],answer=choice?.message?.content;
+  if(typeof answer!=='string'||!answer.trim())throw new RagError('DeepSeek 未返回回答，请重试。');
+  return {id:null,kind:'generated',answer:answer.trim(),truncated:choice.finish_reason==='length',knowledgeVersion:engine.data?.version,knowledgeRevision:engine.data?.knowledgeRevision,model:MODEL,ms:performance.now()-started,cached:false,candidateIds:[]};
+}
 export async function answerQuestion({query,scope='all',apiKey,engine,byId,cache,fetcher=fetch,endpoint=ENDPOINT}){
   if(typeof query!=='string'||!query.trim()||query.length>1500)throw new RagError('请输入 1–1500 字的问题。',400);
   if(!['all','java','python','custom'].includes(scope))throw new RagError('资料范围无效。',400);
   if(typeof apiKey!=='string'||!apiKey.trim())throw new RagError('请先配置 DeepSeek API Key。',428);
   const started=performance.now();query=query.trim();
   const keyHash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(apiKey)))).map(n=>n.toString(16).padStart(2,'0')).join('');
-  const cacheKey=(engine.data?.version||'test')+'|'+(engine.data?.knowledgeRevision||'')+'|'+keyHash+'|'+scope+'|'+query.trim();
+  const cacheKey='general-fallback-v1|'+(engine.data?.version||'test')+'|'+(engine.data?.knowledgeRevision||'')+'|'+keyHash+'|'+scope+'|'+query.trim();
   if(cache.has(cacheKey))return {...cache.get(cacheKey),ms:performance.now()-started,cached:true};
   const signal=AbortSignal.timeout(20000);let retrievalQuery=query,rewritten=false;
   let retrieval=engine.search(query,scope,3);
@@ -82,7 +96,7 @@ export async function answerQuestion({query,scope='all',apiKey,engine,byId,cache
     const rewriteResponse=await requestModel(apiKey,payloadForRewrite(query,scope),fetcher,endpoint,signal);
     let rewrite;
     try{const body=await rewriteResponse.json();rewrite=JSON.parse(body.choices[0].message.content).query;}
-    catch(e){if(e.name==='TimeoutError'||e.name==='AbortError')throw new RagError('DeepSeek 响应超时（20 秒），请重试。',504);throw new RagError('DeepSeek 未返回有效的检索问题，请重试。');}
+    catch(e){if(e.name==='TimeoutError'||e.name==='AbortError')throw new RagError('DeepSeek 响应超时，请重试。',504);throw new RagError('DeepSeek 未返回有效的检索问题，请重试。');}
     if(rewrite!==null&&(typeof rewrite!=='string'||!rewrite.trim()||rewrite.length>300))throw new RagError('DeepSeek 返回的检索问题格式无效。');
     rewritten=true;
     if(rewrite){retrievalQuery=rewrite.trim();retrieval=engine.search(retrievalQuery,scope,3);}
@@ -91,10 +105,10 @@ export async function answerQuestion({query,scope='all',apiKey,engine,byId,cache
   const remember=result=>{if(cache.size>=128)cache.delete(cache.keys().next().value);cache.set(cacheKey,result);return result;};
   const collect=()=>retrieval.results.slice(0,3).map(r=>{const c=byId.get(r.id);return {...c,text:globalThis.resolveInterviewAnswer?globalThis.resolveInterviewAnswer(byId,c.id).text:c.text};});
   let candidates=collect();
-  if(!candidates.length)return remember({id:null,knowledgeVersion:engine.data?.version,knowledgeRevision:engine.data?.knowledgeRevision,model:MODEL,ms:performance.now()-started,cached:false,noMatches:true,rewritten,retrievalQuery,candidateIds:[]});
+  if(!candidates.length)return generalAnswer({query,apiKey,fetcher,endpoint,engine,started});
   const select=async()=>{
     const response=await requestModel(apiKey,payloadFor(query,candidates),fetcher,endpoint,signal);
-    try{return await readChoice(response,new Set(candidates.map(c=>c.id)));}catch(e){if(e.name==='TimeoutError'||e.name==='AbortError')throw new RagError('DeepSeek 响应超时（20 秒），请重试。',504);throw e;}
+    try{return await readChoice(response,new Set(candidates.map(c=>c.id)));}catch(e){if(e.name==='TimeoutError'||e.name==='AbortError')throw new RagError('DeepSeek 响应超时，请重试。',504);throw e;}
   };
   let id=await select(),selection='model';
   if(id===null){const exact=trustedLocalChoice(query,retrieval,engine,byId);if(exact){id=exact;selection='exact-source';}}
@@ -105,5 +119,5 @@ export async function answerQuestion({query,scope='all',apiKey,engine,byId,cache
   }
   const result={id,knowledgeVersion:engine.data?.version,knowledgeRevision:engine.data?.knowledgeRevision,model:MODEL,ms:performance.now()-started,cached:false,rewritten,retrievalQuery,selection,candidateIds:candidates.map(c=>c.id)};
   // A model's rejection of existing candidates is not a durable "no knowledge" fact.
-  return id===null?result:remember(result);
+  return id===null?generalAnswer({query,apiKey,fetcher,endpoint,engine,started}):remember(result);
 }

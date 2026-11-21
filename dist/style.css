@@ -36,3 +36,5 @@ html,body{height:100%;overflow:hidden}
 .composer #submit kbd{font-size:11px}
 @media(max-width:900px){#readingPane{padding:20px 22px}.workspace>.composer{padding-left:22px;padding-right:22px}}
 @media(max-width:650px){.workspace>header{height:58px;padding:0 12px}.breadcrumb{display:none}.header-right{width:100%;justify-content:flex-end}#readingPane{padding:18px 12px}.workspace>.composer{padding:8px 12px calc(8px + env(safe-area-inset-bottom))}.composer #query{height:54px;min-height:54px;max-height:54px;font-size:16px}.composer .search-toolbar{gap:6px}.composer .filter{font-size:12px;padding:6px 8px}.composer #submit{font-size:13px;padding:8px 12px}.composer #submit kbd,.composer .search-symbol{display:none}.intro h1{font-size:25px}.results-heading{align-items:flex-start;gap:8px}#resultMeta{font-size:11px;text-align:right}}
+
+.results-grid.generated-answer{grid-template-columns:minmax(0,1fr)}.generated-answer>.candidates{display:none}
