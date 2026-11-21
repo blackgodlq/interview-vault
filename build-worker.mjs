@@ -1,0 +1,14 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const ROOT=path.dirname(fileURLToPath(import.meta.url));
+const read=p=>fs.readFileSync(path.join(ROOT,p),'utf8');
+const data=JSON.parse(read('dist/knowledge.json'));
+const names=['index.html','style.css','app.js','engine.js','answers.js','knowledge-import.js','knowledge-ui.js','import-parsers.mjs','pdf.worker.min.mjs','knowledge.js',...data.sources.map(s=>s.filename)];
+const mime={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.txt':'text/plain; charset=utf-8'};
+const assets=Object.fromEntries(names.map(name=>[name,{type:mime[path.extname(name)],text:read('dist/'+name)}]));
+const code=read('dist/engine.js')+'\n'+read('dist/answers.js')+'\n'+read('dist/knowledge-import.js')+'\nconst KNOWLEDGE='+JSON.stringify(data)+';\nconst ASSETS='+JSON.stringify(assets)+';\n'+read('rag.mjs')+'\n'+read('worker-main.mjs');
+fs.mkdirSync(path.join(ROOT,'dist/server'),{recursive:true});
+fs.writeFileSync(path.join(ROOT,'dist/server/index.js'),code);
+const manifest=JSON.parse(read('.openai/hosting.json'));delete manifest.static;fs.writeFileSync(path.join(ROOT,'.openai/hosting.json'),JSON.stringify(manifest,null,2)+'\n');
+console.log('Worker built: '+Buffer.byteLength(code)+' bytes; '+names.length+' embedded assets.');

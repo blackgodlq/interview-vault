@@ -1,0 +1,4225 @@
+一、Python
+1. 编译型与解释型语言区别
+编译型语言
+采用提前编译。在执行前，通过编译器将整个源代码一次性静态翻译成目标平台的原生机器码，并链接成一个独立的可执行文件。运行时，操作系统直接加载并执行该二进制文件，不再需要源代码和编译器参与。
+
+解释型语言
+采用运行时解释模型。在执行时，由解释器逐行或逐段读取源代码，动态翻译成中间代码或机器指令并立即执行。整个过程不生成独立的可执行文件，程序的运行始终依赖于解释器环境。
+2. 什么是魔术/魔法方法
+“魔术方法”（Magic Methods）或“魔法方法”是 Python 中一类特殊的方法，它们的名字以双下划线（__）开头和结尾，例如 init、str、add 等。由 Python 解释器自动调用。
+
+3. 装饰器
+Python 装饰器的本质是语法糖（syntactic sugar），其核心思想是高阶函数 + 闭包。装饰器通常是一个高阶函数——它接收一个函数，并返回一个新的函数。
+
+Python中的装饰器它允许在不修改原函数代码的前提下，动态地给函数或类增加额外的功能。你可以把它想象成一个“包装器”或“增强器”。类似Spring的aop+自定义注解
+
+装饰器应用场景，例如：
+- 日志记录 (Logging)：记录函数的调用信息。
+- 性能测试 (Timing)：测量函数执行时间。
+- 权限检查 (Authorization)：检查用户是否有权限执行某个操作。
+- 缓存 (Caching)：缓存函数的返回结果，避免重复计算（如 functools.lru_cache）。
+- 输入验证 (Validation)：验证函数参数的有效性。
+- 重试机制 (Retry)：在函数执行失败时自动重试。
+- FastAPI、Flask/Django 路由：在 Web 框架中，@app.route('/path') 就是典型的装饰器用法，将 URL 路径映射到处理函数。
+4. 迭代器
+同时实现了 iter() 和 next() 方法的对象；都可以被称为迭代器；像list, str, dict, set, range, 文件对象等都属于可被迭代对象。
+- 调用 __next__() 返回下一个元素；
+- 没有更多元素时抛出 StopIteration 异常；
+- 只能向前遍历一次（不可逆、不可重复）；
+- 惰性计算（不一次性加载所有数据到内存）。
+示例代码：
+```Python
+it = iter([1, 2, 3])  # 获取迭代器
+print(next(it))  # 1
+print(next(it))  # 2
+print(next(it))  # 3
+print(next(it))  # StopIteration```
+
+5. 高阶函数
+在 Python 中，高阶函数是指满足以下任一条件的函数：
+  1. 接受一个或多个函数作为参数；
+  2. 返回一个函数作为结果。
+装饰器的定义就符合：例如：
+```Python
+def greet_decorator(func):
+    def wrapper():
+        print("开始执行")
+        func()
+        print("执行结束")
+    return wrapper
+
+# greet_decorator 就是一个高阶函数
+
+@greet_decorator
+def greet2():
+    print("你好，传智播客")```
+6. 闭包
+闭包是指一个内部函数“记住”并可以访问其外部作用域中的变量，即使外部函数已经执行完毕。
+换句话说，闭包 = 内部函数 + 外部作用域的自由变量（free variables）。
+
+7. 数据结构或集合类型
+列表 (List)、元组 (Tuple)、集合 (Set) 和 字典 (Dictionary)。此外，字符串 (String) 也可以被视为一种特殊的容器（字符序列）
+1. 列表 (List) - list
+  - 有序 (Ordered): 元素在列表中有确定的位置（索引），可以通过索引访问（list[0]）。
+  - 可变 (Mutable): 可以修改列表本身的内容，例如添加（append, insert）、删除（remove, pop）、修改（list[0] = new_value）元素。
+  - 允许重复元素: 同一个值可以出现多次。
+  - 允许不同数据类型: 列表中的元素可以是任意类型（整数、字符串、其他列表、字典等）。
+  - 适用场景: 存储需要频繁修改、保持顺序、可能包含重复项的元素序列。例如：购物车商品列表、任务列表、一系列计算结果。
+2. 元组 (Tuple) - tuple
+  - 有序 (Ordered): 元素有索引，可以通过索引访问（tuple[0]）。
+  - 不可变 (Immutable): 一旦创建，其内容（元素的值和顺序）不能被修改。不能添加、删除或更改元素。
+  - 允许重复元素: 同一个值可以出现多次。
+  - 允许不同数据类型: 元素可以是任意类型。
+  - 适用场景: 存储不应被修改的数据，例如：坐标点 (x, y)、日期 (year, month, day)、函数的多个返回值、作为字典的键（因为不可变）。由于不可变性，元组通常比列表更轻量，性能稍好。
+3. 集合 (Set) - set
+  - 无序 (Unordered): 元素没有固定的顺序，不能通过索引访问（set[0] 会报错）。
+  - 可变 (set) / 不可变 (frozenset): set 类型可以添加（add）、删除（remove, discard）元素。frozenset 创建后不可变。
+  - 不允许重复元素: 集合会自动去重。{1, 2, 2, 3} 实际存储为 {1, 2, 3}。
+  - 元素必须是可哈希的 (Hashable): 通常意味着元素必须是不可变的（如 int, float, str, tuple）。列表、字典、其他集合不能作为集合的元素。
+  - 适用场景: 需要去重、进行集合运算（交集、并集、差集）、或需要快速检查成员是否存在的场景。例如：找出两个列表的共同元素、去除列表中的重复项、记录用户ID（确保唯一性）。
+4. 字典 (Dictionary) - dict
+  - 有序 (Ordered): 从 Python 3.7+ 开始，字典保证了插入顺序（之前版本是无序的）。
+  - 可变 (Mutable): 可以添加新的键值对、修改现有键的值、删除键值对。
+  - 键 (Key) 唯一: 每个键在字典中必须是唯一的。如果重复赋值同一个键，后面的值会覆盖前面的值。
+  - 键必须是可哈希的 (Hashable): 键必须是不可变类型（如 int, str, tuple）。值 (Value) 可以是任意类型，包括其他容器（如列表、字典）。
+  - 适用场景: 存储键值对 (Key-Value Pairs) 数据，通过键来快速查找、存储和组织相关数据。这是最常用的数据结构
+5. 字符串 (String) - str (作为字符容器)
+  - 有序 (Ordered): 字符有索引，可以通过索引访问（s[0]）。
+  - 不可变 (Immutable): 不能修改字符串本身的内容。任何“修改”操作（如拼接）都会创建一个新的字符串对象。
+  - 允许重复字符: 字符可以重复。
+8. dict的底层结构
+Python 的 dict（字典）底层是基于哈希表（Hash Table）实现的。它将数据拆分为两个独立的数组：
+1. Indices 数组（索引表）：
+  - 这是一个稀疏数组，存储的是索引值（int）。
+  - 它的作用是根据 hash(key) 快速定位到数据在 Entries 数组中的位置。
+2. Entries 数组（数据表）：
+  - 这是一个稠密数组，按插入顺序存储 <hash, key, value> 三元组。
+  - 优势：
+    - 省内存：消除了大量空槽位，内存占用减少约 20%-25%。
+    - 有序性：因为 Entries 是按插入顺序追加的，所以遍历时自然就是有序的（Python 3.7+ 正式保证这一特性）。
+冲突解决：开放寻址法
+当两个不同的键（Key）计算出相同的哈希值（或映射到相同的索引）时，Python 不会像 Java 的 HashMap 那样使用“链表法”（挂一个链表），而是使用开放寻址法。
+- 探测机制：如果当前位置被占用了，Python 会按照特定的算法（伪随机探测）去寻找下一个空闲位置，直到找到空位为止。
+- 查找流程：
+  1. 计算 Key 的 Hash 值。
+  2. 通过 Hash 值在 Indices 数组中找到对应的索引。
+  3. 根据索引去 Entries 数组中取出数据。
+  4. 比对 Key 是否相等（先比 Hash，再比 Key 对象）。
+动态扩容：负载因子
+字典的大小不是固定的，它会根据元素数量动态调整。
+- 负载因子：当字典中元素个数 / 数组容量超过 2/3 时，就会触发扩容。
+- 扩容过程：
+  1. 分配一个更大的新数组（通常是原来的 2 倍或 4 倍）。
+  2. Rehash：将旧数组中的所有元素重新计算位置，迁移到新数组中。
+  3. 这是一个耗时操作，但因为不常发生，所以平均时间复杂度仍然是 O(1)。
+
+9. 不可变数据类型
+不可变数据类型指的是创建后其内容不能被修改的对象。一旦尝试修改，实际上会创建一个新的对象。
+int（整数）、float（浮点数）、complex（复数）、bool（布尔值）、str（字符串）
+tuple（元组）、frozenset（不可变集合）、bytes（字节序列）
+数字、字符串、元组、冻结集、字节 —— 创建即定型，修改必新建。
+10. *args与 **kwArgs区别
+*args 用于接收任意数量的位置参数，并将它们打包成一个元组 (tuple)。
+**kwargs 用于接收任意数量的关键字参数，并将它们打包成一个字典 (dict)。
+
+11. list中extend与append的区别
+append(x)  将 x 作为一个整体元素 添加到列表末尾； 不管x是什么类型；都只是加 1 个元素
+extend(arr)   将 arr 中的每个元素逐个展开 添加到列表末尾；将arr里面的每个元素都添加到list，会加 N 个元素
+
+12. 深浅拷贝
+- 浅拷贝: 创建新容器，但容器内的元素（特别是嵌套的可变对象）是原对象的引用。修改嵌套对象会影响原对象。使用 copy.copy实现浅拷贝
+
+- 深拷贝: 创建一个全新的、独立的对象树。原对象和副本完全分离。修改任何一方都不会影响另一方。使用 copy.deepcopy 实现深拷贝
+13. Python 里面 == 和 is 区别
+== 比较的是 对象的值（内容）是否相等；调用对象的 __eq__() 方法
+is 比较的是 对象的内存地址（身份）是否相同；直接比较 id()
+
+14. 使用过哪些Python包
+常见的有scikit-learn (sklearn)、pandas、numpy、matplotlib、transformers 、torch 或 tensorflow、seaborn、jupyter、rapidocr-Paddle、LangChain、LangGraph、FastAPI、FastMCP、random、os
+暂时无法在飞书文档外展示此内容
+15. lambda表达式
+lambda 表达式（又称匿名函数）是 Python 中一种创建小型、简单、一次性函数的简洁方式。允许在需要函数对象的地方快速定义一个函数，而无需使用 def 语句进行命名。
+特点
+1. 匿名性: lambda 函数没有名字。它通常被赋值给一个变量，或者直接作为参数传递给其他函数。
+2. 单一表达式: 只能包含一个表达式，不能有多条语句。
+3. 自动返回: 表达式的结果会自动作为函数的返回值，不需要也不能写 return 语句。
+4. 作用域: lambda 函数可以访问其定义所在作用域的变量（类似于闭包）。
+
+16. Python的类型说明
+Python 的类型说明（Type Hints）是自 Python 3.5（通过 PEP 484）引入的，允许在代码中为变量、函数参数和返回值 显式地声明预期的数据类型。类型说明是可选的，Python 解释器在运行时会忽略它们（它们属于“注解”）
+```Python
+# 变量
+age: int = 25
+name: str = "Alice"
+is_student: bool = False
+price: float = 19.99
+
+# 函数参数和返回值
+def greet(name: str, age: int) -> str:
+    return f"Hello, {name}! You are {age} years old."
+
+def calculate_total(items: list[float]) -> float:
+    return sum(items)```
+为了更精确地说明容器（如 list, dict, tuple, set）内部元素的类型，需要使用 typing 模块中的泛型类型。这四种类型都可以内嵌其它类型，也就是list可以包含set， set可以包含list类型的元素
+```Python
+from typing import List, Dict, Tuple, Set, Optional, Union
+
+# 列表 (List) - Python 3.9+ 推荐直接使用 list[type]
+numbers: List[int] = [1, 2, 3]
+# Python 3.9+ 写法: numbers: list[int] = [1, 2, 3]```
+扩充类型说明的包
+除了标准库的 typing 模块，还有一些第三方包可以提供更丰富、更强大的类型系统支持：
+- 常用类型:
+  - Protocol (结构子类型/鸭子类型): 允许你定义一个“协议”，只要对象实现了协议中定义的方法，就可以被视为该类型，而不需要显式继承。from typing_extensions import Protocol
+  - TypedDict: 允许你为字典定义更精确的结构，指定每个键的名称和类型。from typing_extensions import TypedDict (在 typing 中也有，但 typing_extensions 可能包含更新版本或特性)。
+  - LiteralString, Self (Python 3.11+), Required, NotRequired (Python 3.11+ 的 TypedDict 增强) 等。
+17.  Python 实现字符串的倒转
+  - 使用切片 [::-1]  :: 并不是一个独立的运算符，而是切片操作符 : 在特定语境下的连用。它通常出现在方括号 [] 中，用于对序列（如列表、字符串、元组）进行切片。
+    切片语法格式为 sequence[start:end:step]：
+    - start: 切片的起始索引（包含）。
+    - end: 切片的结束索引（不包含）。
+    - step: 步长，表示每隔多少个元素取一个。
+    当 start 或 end 被省略时，它们之间的冒号 : 仍然需要保留，这就形成了 :: 的写法。
+  - 使用 reversed() 和 join()
+  - 使用 for 循环
+18. with 语句
+with 语句是 Python 中一个语法结构，它用于简化资源的管理和异常处理，确保在代码块执行完毕后（无论是否发生异常），某些“清理”操作（如关闭文件、释放锁、断开网络连接等）能够自动、可靠地执行。它通过上下文管理器协议，确保了资源的正确获取和释放。
+应用场景：
+- 文件操作：自动打开和关闭文件。
+- 线程锁：自动获取和释放锁。
+- 数据库连接：自动连接、提交/回滚事务和关闭连接。
+- 网络连接：自动建立和断开网络连接。
+- 管理上下文：临时修改设置（如日志级别、标准流）并自动恢复。
+
+19. Python怎么实现异步、线程
+实现异步编程主要依靠 async/await 语法和 asyncio 库。
+- asyncio 是Python标准库中的异步编程模块。
+- async def 用来定义异步函数。
+- await 用来挂起协程，等待异步操作完成。
+- asyncio.run() 用来启动异步事件循环。
+例如：
+```Python
+import asyncio
+
+# 定义异步函数
+async def say_hello():
+    print("Hello")
+    await asyncio.sleep(2)  # 异步等待2秒
+    print("World")
+
+async def main():
+    # 创建多个异步任务并等待它们完成
+    await asyncio.gather(say_hello(), say_hello())
+
+# 执行事件循环
+asyncio.run(main())
+```
+20. Python实现多线程
+导入 ThreadPoolExecutor 模块实现；具体代码参考：
+```Python
+from concurrent.futures import ThreadPoolExecutor
+import time
+
+def fetch_url(url):
+    print(f"正在请求 {url}")
+    time.sleep(1)  # 模拟网络延迟
+    return f"{url} 返回 200"
+
+urls = ["http://a.com", "http://b.com", "http://c.com"]
+
+# 使用线程池
+with ThreadPoolExecutor(max_workers=3) as executor:
+    results = list(executor.map(fetch_url, urls))
+
+print(results)```
+21. 协程
+Python中通过使用 async 和 await 的异步代码的函数被概括为"协程"（coroutine function）
+- async def 定义的是 协程函数，
+- 调用后得到的是 协程对象，
+- 两者常被统称为“协程”。
+22. 进程、线程与协程的区别
+
+进程 (Process)
+进程是操作系统进行资源分配和隔离的基本单位。每个进程都拥有自己独立的内存空间、文件描述符等资源。
+- 优点：稳定性强，隔离性好，可以充分利用多核CPU实现真正的并行计算。
+- 缺点：创建和销毁的开销大，进程间通信（IPC）相对复杂。
+- Python中的GIL：由于全局解释器锁（GIL）的存在，Python的多线程无法实现多核并行。因此，对于CPU密集型任务（如图像处理、复杂计算），多进程是首选方案，因为它能为每个进程分配独立的解释器和GIL，从而突破限制。
+线程 (Thread)
+线程是进程内的执行单元，也被称为“轻量级进程”。同一进程内的多个线程共享进程的内存和资源。
+- 优点：创建和切换的开销比进程小，线程间通信方便（通过共享变量）。
+- 缺点：在Python中受GIL限制，同一时刻只有一个线程在执行字节码，无法利用多核优势。同时，共享资源也带来了竞态条件、死锁等风险，需要使用锁来同步。
+- 适用场景：由于线程在遇到I/O操作（如网络请求、文件读写）时会释放GIL，因此它非常适合处理I/O密集型任务。
+协程 (Coroutine)
+协程是运行在单线程中的用户态轻量级“线程”。它通过 async/await 语法实现协作式多任务，由程序自身（事件循环）控制调度，而非操作系统。
+- 优点：切换开销极小，可以在单线程内轻松实现数万级别的并发，没有锁和同步的烦恼。
+- 缺点：编程模型与传统的同步代码不同，需要整个技术栈（库、框架）都支持异步。它本质上是并发而非并行，无法利用多核CPU。
+- 适用场景：高并发的I/O密集型任务是其绝对主场，例如网络爬虫、Web服务器、异步API等。
+
+
+协程没有创建新线程，所有任务在一个线程的事件循环中交替执行。
+协程示例如下：
+```Python
+import asyncio
+
+async def task(n):
+    await asyncio.sleep(1)  # 异步非阻塞
+    print(f"Task {n} done")
+
+async def main():
+    # 并发运行 3 个协程
+    await asyncio.gather(task(0), task(1), task(2))
+
+asyncio.run(main())
+# 总耗时 ≈ 1 秒（单线程内并发）```
+23. async 和 await 原理
+Python 的 async 和 await 原理，是基于事件循环（Event Loop）的用户态协程（Coroutine）机制。
+1. 启动：当使用 asyncio.run(main()) 时，事件循环被启动，并将 main() 协程对象包装成一个任务（Task），放入就绪队列。
+2. 执行与挂起：事件循环从就绪队列取出任务开始执行。当遇到 await 表达式（例如 await asyncio.sleep(1)）时：
+  - 挂起：当前协程的执行被暂停，它的执行状态（局部变量、指令指针等）被完整地保存在协程对象内部。
+  - 让权：协程将控制权交还给事件循环。
+  - 注册：事件循环将这个协程任务从就绪队列移到等待队列，并注册一个回调：1秒后唤醒这个任务。
+3. 调度与恢复：事件循环不会闲着，它会立刻从就绪队列中取出下一个任务来执行。当1秒后，等待队列中的那个任务被唤醒，它就会被移回就绪队列，等待下一次被调度，并从上次暂停的地方继续执行。
+
+事件循环 (Event Loop)：
+负责注册、调度和执行所有的协程任务。它维护着两个核心队列：就绪队列（可以立即执行的任务）和等待队列（正在等待 I/O 完成的任务）。
+
+24. Python 单例
+在 Python 中实现单例模式（Singleton Pattern），核心目标是：确保一个类只有一个实例，并提供一个全局访问点。
+方式一：使用 __new__ 重写
+```Python
+class Singleton:
+    _instance = None
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+# 测试  注意 Singleton 是类名；随便起名字
+s1 = Singleton()
+s2 = Singleton()
+print(s1 is s2)  # True   
+
+# __new__方法中的 cls 表示当前这个类； __new__方法比 __init__方法早执行，所以不能使用self ， self是当前实例对象```
+方式二：使用装饰器
+```Python
+def singleton(cls):
+    instances = {}
+    def get_instance(*args, **kwargs):
+        if cls not in instances:
+            instances[cls] = cls(*args, **kwargs)
+        return instances[cls]
+    return get_instance
+
+@singleton
+class MyClass:
+    def __init__(self, value):
+        self.value = value
+
+a = MyClass(10)
+b = MyClass(20)
+print(a is b)        # True
+print(a.value)       # 10（第二次调用不会重新初始化）```
+25. 单例存在的问题
+在多线程环境下可能出问题（多个线程同时检查 _instance is None）。
+解决方法：可以加锁；在判断单例是否为None之前；使用 类名._lock 进行加锁
+```Python
+import threading
+
+class ThreadSafeSingleton:
+    _instance = None
+    _lock = threading.Lock()
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            with cls._lock:
+                # 双重检查（Double-checked locking）
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
+        return cls._instance```
+26. Python的GIL机制
+Python 的 GIL（Global Interpreter Lock，全局解释器锁） 是 CPython 解释器（官方默认实现，Python的一种默认解释器，核心使用C语言编写所以叫CPython）中的一个关键机制。
+GIL 是一个互斥锁（mutex），它确保在任意时刻，只有一个线程能执行 Python 字节码。GIL 确保同一时刻只有一个线程执行 Python 字节码，这使得多线程无法利用多核 CPU 进行并行计算
+也就是说在 Python 中，即使创建了多个线程，它们也无法真正并行执行 Python 代码。
+
+原理：
+- I/O 阻塞时释放：当线程遇到 I/O 操作（如文件读写、网络请求、time.sleep()）时，会主动释放 GIL，让其他线程有机会执行。
+- 定期时间片轮转：为了防止某个线程长期霸占 CPU，CPython 会强制线程在执行一定时间（默认约 5ms）后释放 GIL，让其他线程竞争。
+原理流程：GIL 的核心是一个被 互斥锁（Mutex）保护的布尔标识符。
+  1. 线程 A 想运行代码，先去拿  互斥锁（Mutex）。
+  2. 拿到 互斥锁 后，检查 gil_locked 是不是 0。
+  3. 如果是 0，就把 gil_locked 设为 1（拿到 GIL），然后释放 Mutex。
+  4. 如果是 1，就释放 Mutex，然后去睡觉（等待条件变量通知）。
+
+追问问题：在多核 CPU 上；CPython的多线程或者线程会使用并发执行或者比单线程快吗？
+不一定
+CPU 密集型任务无法并行；I/O 密集型可以
+
+从 Python 3.13（2024年10月发布）开始，官方引入了实验性的 Free-threading 模式；到了 Python 3.14（2025年10月发布），这一模式已推进至“可用于生产”阶段。
+ 在 Free-threading 模式下，GIL 被移除，多个线程可以真正在多核 CPU 上并行执行。
+需要显式安装 Free-threaded 版本（例如 python3.14）或在编译时添加 --disable-gil 参数
+
+
+27. 怎么实现真并发线程
+方案 1：使用 多进程（multiprocessing）
+  - 每个进程有独立的 Python 解释器和内存空间，各自拥有自己的 GIL；
+  - 适合 CPU 密集型任务。
+ 方案 2：使用 异步 I/O（async/await）
+  - 单线程事件循环，通过协程实现高并发；
+  - 适合 I/O 密集型任务（如 Web 服务、爬虫）。
+
+28. Python日志处理
+使用python内置的logging包就可以了；获取对应的logger，然后设置日志记录级别（debug,info,warnning,error,critical）；设置日志的输出格式、输出日志的位置即可。
+暂时无法在飞书文档外展示此内容
+29. Python 单元测试
+使用的是pytest； 使用方式：先pip安装 pytest。
+测试代码中主要函数名是test_*.py 或 *_test.py 中的 test_* 函数都能自动识别到是测试函数。直接执行测试、调试。
+在测试的方法中，可以直接使用 assert 断言。
+如果要在每个函数之前执行某个函数；那么在函数上面添加 @pytest.fixture 
+30. Python 反射
+Python 的反射 = 动态获取/调用/设置对象的属性和方法
+
+核心工具：hasattr / getattr / setattr / callable / dir
+暂时无法在飞书文档外展示此内容
+示例：
+```Python
+class Person:
+    def __init__(self, name):
+        self.name = name
+
+    def greet(self):
+        return f"Hello, I'm {self.name}"
+
+p = Person("Alice")
+
+
+# 使用反射
+method_name = "greet"
+if hasattr(p, method_name):
+    func = getattr(p, method_name)
+    #if callable(func):
+    print(func())  # Hello, I'm Alice
+        
+```
+31. new 与 init 的区别
+在 Python 中，__new__ 和 __init__ 都是对象创建过程中的特殊方法（魔术方法）
+- __new__ 负责 创建 对象（分配内存），__init__ 负责 初始化 对象（设置属性）。
+- __new__ 是 类方法（返回一个实例）；
+- __init__ 是 实例方法（无返回值）；
+- 先调用 __new__，再调用 __init__。
+暂时无法在飞书文档外展示此内容
+32. 生成器yield
+yield 是 Python 中用于定义 生成器（Generator） 的关键字，它让函数变成一个可迭代的、惰性求值的对象。
+带有 yield 的函数不再是一个普通函数，而是一个“生成器函数”；调用它不会立即执行函数体，而是返回一个“生成器对象”。
+需要“按需生成数据”而不是“一次性返回所有数据”时，就该用 yield。
+```Python
+def my_generator():
+    yield 1
+    yield 2
+    yield 3
+
+# 使用
+for value in my_generator():
+    print(value)  # 1, 2, 3```
+33. Python 的垃圾回收、内存管理
+垃圾回收以 引用计数为主，标记-清除与分代回收组合策略实现的回收。
+- 引用计数：负责 99% 的日常内存回收，保证实时性。
+- 原理：每个对象内部都维护一个引用计数器。当有新的引用指向该对象时，计数器 +1；当引用被删除或超出作用域时，计数器 -1。一旦计数归零，对象占用的内存会被立即释放。
+- 优点：实现简单，回收实时，无延迟，内存释放时机确定。
+- 缺陷：无法处理循环引用。当两个或多个对象相互引用，且不再被外部引用时，它们的引用计数永远不会归零，导致内存泄漏
+- 标记-清除：作为兜底方案，专门解决引用计数无法处理的循环引用问题。
+- 原理：从根对象（如全局变量、栈帧中的局部变量）出发，遍历所有可达对象并打上“存活”标记。随后，扫描所有容器对象（如 list, dict, set 等），回收未被标记的对象。
+- 关键点：该算法只针对容器对象，因为非容器对象（如 int, str）不可能形成循环引用。触发时会产生短暂的程序暂停（STW）
+- 分代回收：作为性能优化器，基于“对象越老越不可能死”的假设，降低标记-清除的扫描开销。
+三代模型：Python 将对象分为三代。
+- Gen 0 (年轻代)：新创建的对象，回收频率最高。
+- Gen 1 (中年代)：在 Gen 0 回收中存活下来的对象。
+- Gen 2 (老年代)：在 Gen 1 回收中存活下来的对象，回收频率最低
+触发阈值：默认阈值为 (700, 10, 10)。当 Gen 0 中新增对象数与释放对象数的差值超过 700 时，触发 Gen 0 回收；每触发 10 次 Gen 0 回收，才触发 1 次 Gen 1 回收，以此类推
+34. Python爬虫实现
+1. 基础静态页面爬取（requests + BeautifulSoup）；适用于：HTML 结构简单、无 JavaScript 渲染的网站。
+```Python
+import requests
+from bs4 import BeautifulSoup
+
+url = "https://example.com"
+headers = {"User-Agent": "Mozilla/5.0"}
+resp = requests.get(url, headers=headers)
+soup = BeautifulSoup(resp.text, "html.parser")
+title = soup.find("h1").text```
+2. 动态页面爬取（ Playwright）适用于：内容由 JavaScript 渲染（如 React/Vue 单页应用）。
+
+我们的RAG系统中的信息大多爬取的都是xxx（保险、法律、你写的项目）对应的一些静态页面、资讯等内容；所以采用是 requests + BeautifulSoup 就可以抓取了。
+
+35. 爬虫遇到问题
+暂时无法在飞书文档外展示此内容
+主要遇到一些网站，访问的次数多了之后，他们会要输入验证码的那种情况；这时我们就从这类网站少爬一点；也有些网站前面爬取的时候解析他们的页面代码是好的； 再过一段时间网页结构发生了变化；解析也会失败。
+这些是当时爬虫遇到的问题吧；其它没有。
+
+36. ASGI
+ASGI 全称 Asynchronous Server Gateway Interface 异步服务器网关接口。定义了一套标准接口规范，用于连接 Web 服务器和应用程序框架，实现异步处理请求和响应。ASGI 的目标是提供高性能、可伸缩和灵活的 Web 应用程序开发体验。
+
+为什么需要 ASGI？
+传统的 Python Web 服务器（如 WSGI）在处理请求时通常采用同步的方式，即每个请求都会阻塞服务器线程，导致服务器无法同时处理大量并发请求。而 ASGI 规范引入了异步编程模型，使得服务器能够以非阻塞的方式处理请求，实现更好的并发性能和扩展性。
+ASGI 还允许使用异步的应用程序框架，例如使用异步函数 async、协程或异步 IO asyncio 操作来处理请求。这种异步编程模型可以提供更高的性能，并允许处理复杂的并发操作，如长轮询、WebSocket 等。
+
+37. Python 中 Http
+在python中我如果是简单的http请求；我使用的 requests 模块处理；
+```Python
+import requests
+try:
+    # 设置连接超时2秒，读取超时5秒
+    response = requests.get(url, timeout=(2, 5))
+    # 主动抛出非200状态码的异常
+    response.raise_for_status()
+except requests.exceptions.Timeout:
+    print("请求超时")
+except requests.exceptions.HTTPError as e:
+    print(f"HTTP错误: {e.response.status_code}")```
+
+如果是我的项目中对于http的接口编写，请求处理我使用的是fastAPI
+
+38. FastAPI 核心功能/组件
+暂时无法在飞书文档外展示此内容
+39. FastAPI性能提升
+- 使用异步 I/O 库（httpx, asyncpg 等） I/O 密集型操作必须用异步（如 HTTP 请求、DB 查询、文件读写）      
+- 避免在 async 中调用同步阻塞函数        
+- 部署时使用多 worker（Gunicorn + Uvicorn）；worker 数量建议：CPU 核心数 × (1~2)（I/O 密集型可略高）
+- 启用 GZip 压缩 ；减少网络传输体积（尤其对 JSON 大数据）
+- 数据库使用连接池 + 异步驱动
+- 热点数据加 Redis 缓存；缓存热点数据（如用户信息、配置）；
+- 接口添加限流保护
+- 静态资源由 Nginx/CDN 处理
+- 关闭 debug 模式
+```Python
+app = FastAPI(debug=False)  # 生产环境必须关闭！```
+40. FastAPI实现异步处理
+FastAPI 原生支持异步编程，其底层基于 Starlette（ASGI 框架），能高效处理高并发 I/O 密集型任务。可以 使用 async/await 实现异步处理；方式参考如下：
+```Python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/async-demo")
+async def async_demo():
+    # 这里必须 await 异步操作
+    result = await some_async_function()
+    return {"result": result}```
+ 
+41. FastAPI的路由
+在 FastAPI 中，Route（路由） 是指将一个 HTTP 请求方法 + URL 路径 映射到一个 处理函数（也叫路径操作函数） 的机制。它是 Web 应用接收用户请求并返回响应的核心方式。
+暂时无法在飞书文档外展示此内容
+42. FastAPI的Depends
+Depends 是 FastAPI 提供的一个类（来自 fastapi 模块），用于在路径操作函数（即路由处理函数）中声明依赖项。FastAPI 会在调用主函数前，自动解析并注入这些依赖。也就是说，在执行某个函数之前，调用Depends指定的函数。
+暂时无法在飞书文档外展示此内容
+示例：
+```Python
+from fastapi import Depends, HTTPException, Header
+
+def verify_token(authorization: str = Header(...)):
+    if authorization != "Bearer secret123":
+        raise HTTPException(status_code=401, detail="Invalid token")
+    return {"user_id": 123}
+
+@app.get("/profile")
+def get_profile(user=Depends(verify_token)):
+    return {"hello": f"user {user['user_id']}"}```
+
+
+二、LangChain与LangGraph
+1. LangChain的组成
+- Model（模型）       
+- Messages（消息）
+- Tools（工具）
+- Memory（记忆）    
+- Agents（智能体） 
+
+2. LangChain版本
+2022 年 10 月 24 日 ——》v0.0.1 初始版本发布
+2024年1月 ——》v0.1.0
+2024年2月——》发布LangGraph
+2025 年 10 月 22 日——》LangChain 1.0 & LangGraph 1.0 正式发布 
+暂时无法在飞书文档外展示此内容
+3. LangChain工具实现
+Tools 是普通 Python 函数，通过 @tool 装饰器注册，使 LLM 能调用外部能力。
+```Python
+from langchain.tools import tool
+
+@tool
+def 函数名(参数1: 类型, ... ) -> str:
+    """工具的描述，应该要与工具的功能说明相符，这样大模型才了解工具的作用，会影响调用.
+
+    Args（非必须）:
+        参数1: 参数1描述
+        ...
+    """
+    return f"返回结果"```
+- 一般函数名就是工具名，也可以在@tool 中指定具体的函数名
+- 所有参数必须是 JSON 可序列化类型（str/int/float/bool/dict/list）
+- 返回值必须是 str（即使计算结果是数字）
+4. LangChain怎么操作大模型
+1、通过 pip 安装 LangChain 相关的包；比如：langchain、langchain-openai、langchain-ollama、langchain-modelscope等
+2、初始化大模型，比如使用 LangChain里面的ChatOllama类初始化；可以设置一些模型参数，例如 temperature（控制输出随机性）和 model_name（指定具体模型版本）
+3、构建提示词或者提示词模板；PromptTemplate
+4、对模型发起请求；也就是调用模型的invoke方法，传递提示词或者历史聊天记录
+5、解析响应结果
+```Python
+from langchain_core.messages import HumanMessage,SystemMessage,AIMessage
+
+from langchain_ollama import ChatOllama
+
+model = ChatOllama(model="qwen2.5:14b")
+
+messages = [
+    SystemMessage(content="现在你是一个著名诗人"),
+    HumanMessage(content="给我写一首关于学习的诗"),
+]
+
+result = model.invoke(messages)
+
+print(result)
+print("-" * 20)
+print(result.content)```
+
+5. LangChain 代码创建模型、智能体
+```Python
+# 创建模型方式一：使用init_chat_model创建模型； 因为使用的是代理；所以设置base_url（不然可以不设置的）
+model = init_chat_model(model="gpt-3.5-turbo", base_url=  "https://api.chatanywhere.tech/v1")
+
+# 创建模型方式二：使用ChatOpenAI创建模型
+from langchain_openai import ChatOpenAI
+model = ChatOpenAI(model="gpt-3.5-turbo", base_url="https://api.chatanywhere.tech/v1")
+
+
+
+# langchain创建智能体，利用它提供的函数create_agent；指定模型， 指定工具列表就可以了
+from langchain.agents import create_agent
+
+agent = create_agent(model, tools = [get_weather, get_news])
+```
+
+6. LangChain与LangGraph区别
+LangChain 可以快速搭出智能体；  它底层的执行引擎是 LangGraph。
+LangGraph 可以构建图； 负责这些智能体底层调度和执行——比如；图怎么走、状态怎么存、什么时候暂停等人机协同，可以实现循环、分支、可恢复执行的复杂工作流。
+
+具体区别主要体现在三个点：
+1. 比如在 流程控制：【线性链路 vs. 循环架构】
+  - LangChain 擅长处理单向、线性的任务。比如标准的 RAG 流程，数据从检索到生成类似这样的流程。
+  - LangGraph 允许流程在执行完一步后，根据结果判断是结束，还是回到上一步重新思考。
+2. 而在 状态管理 上：【隐式传递 vs. 全局共享】
+  - LangChain 的状态通常是随着链条临时传递的，或者依赖外部的记忆模块，数据比较分散。
+  - LangGraph 维护了一个全局共享的状态中心。所有的节点都读写同一份数据，这让它在处理多智能体协作时，上下文非常清晰，不会乱。
+3. 适用场景：【简单问答 vs. 复杂决策】
+  - 如果只是做一个简单的模型调用、问答、数据提取等场景，那使用LangChain 更合适。
+  - 但如果需要构建一个能自主规划、处理复杂分支、甚至需要人工介入审核的系统，LangGraph 更合适。
+7. 对 LangGraph 的理解
+LangGraph 是由 LangChain 团队开发的一个基于有向图（Directed Graphs）的编程框架，特别适合那些需要复杂、状态化、多步骤、循环或条件分支逻辑的应用。
+LangGraph 基于有向图（Graph）模型。我们可以定义循环边（Cyclic Edges），让智能体在任务未完成时自动‘回滚’重试，或者在不同 Agent 之间反复跳转。
+
+8. LangGraph的组成
+- State（状态）：这是 LangGraph 的灵魂。它是一个全局共享的‘内存对象’（类似 Python Dict 或 Pydantic 模型），所有节点都能读写。在我们的系统中，它存储了用户指令、历史对话、中间推理结果以及 Artifact（工件）。这解决了多智能体间‘信息传递’的难题。
+- Node（节点）：每个节点是一个具体的函数或 Agent（如‘搜索专家’、‘代码生成器’）。它们接收 State，执行逻辑，然后更新 State。
+- Edge（边）：定义流转逻辑。分为普通边（固定跳转）和条件边（根据 LLM 的判断决定下一步去哪）。
+- Graph（图）：将上述元素组装成的完整工作流容器。
+
+9. LangGraph原理
+LangGraph 的执行引擎通过一个清晰的循环来驱动整个图的运转的：
+1. 规划：根据当前的全局状态和图中“边”的定义（特别是条件边），计算出本轮需要执行的一个或多个节点。
+2. 执行：并行或串行地执行规划好的节点。每个节点函数被调用，接收当前状态，并产生一个状态更新。
+3. 更新：将所有已执行节点返回的更新，通过预定义的规则（称为 Reducer解决冲突的函数）合并到全局状态中。Reducer 机制是 LangGraph 状态管理的解决状态更新冲突的函数，它能智能地处理并发更新，例如将新消息“追加”到消息列表，而不是简单地“覆盖”。
+这个 规划-执行-更新 的循环会不断重复，直到没有更多节点需要执行，或者达到了预设的终止条件。
+
+10. LangGraph的状态怎么传递、流转的
+当调用langgraph的图的 invoke 方法时，框架会先初始化一个全局的 State 对象，然后进入一个循环：
+1. 根据图的定义找到下一个要执行的节点
+2. 把当前的 State 作为参数传进这个节点函数
+3. 节点执行完返回一个更新字典
+4. 框架用 定义State时我们自定义的冲突解决函数把这个更新合并回 State
+5. 再根据边的路由逻辑决定下一个节点是谁
+这样循环往复，直到没有下一个节点为止。
+所以状态不是节点之间"互相传"的，而是有一个全局的 State 对象在循环里被不断读取、更新、再传递给下一个节点。每个节点拿到的其实是同一个对象的引用。
+
+```Python
+# 1. 初始化状态
+# 将你传入的 inputs (如 {"question": "..."}) 包装成 State 对象
+current_state = State(**inputs) 
+
+# 2. 确定入口节点
+next_node_id = graph.entry_point
+
+# 3. 开始执行循环
+while next_node_id is not None:
+    # A. 获取节点对象
+    node = graph.get_node(next_node_id)
+    
+    # B. 执行节点：这是关键！将当前的 state 对象作为参数传入
+    # 在 Python 中，字典和对象是引用传递，所以节点内拿到的就是同一个“包裹”
+    node_output = node.func(state=current_state)
+    
+    # C. 更新状态：将节点的返回值合并回 state
+    # 这里会触发 Reducer 逻辑（覆盖、追加等）
+    current_state = graph._apply_updates(current_state, node_output)
+    
+    # D. 路由：根据边（Edge）的逻辑决定下一个节点是谁
+    next_node_id = graph._get_next_node(current_state)```
+
+11. LangGraph 中断实现原理
+LangGraph 中断：抛出异常（Break）、存档现场（Checkpoint）、读取存档并续跑（Resume）
+在 LangGraph的底层源码中，interrupt() 函数实际上是抛出了一个特殊的异常（GraphInterrupt）；
+1）当一个 Agent 的工作流运行到需要人工介入的节点时，代码会调用 interrupt() 函数。主动抛出一个特殊的异常；
+2）在工作流执行过程中，Checkpointer 会持续地将当前的全量状态（State）序列化，并保存到持久化存储中。当中断异常被抛出时，中断发生前的状态也会被保存下来
+3）恢复的时候，系统会根据唯一的 thread_id 从存储中找到上次中断时保存的 State。LangGraph 会从中断的那个节点开始重新执行。当代码再次运行到 interrupt() 函数时，它本次不会抛出异常，而是直接返回恢复时候给定的反馈数据。
+
+12. LangGraph的钩子
+钩子是 LangGraph 为图级别设计的扩展点，用于在节点执行的生命周期中插入自定义逻辑。
+场景：
+- 敏感词过滤：在节点执行前后检查或修改状态中的内容。
+- 合规审查：在节点输出后自动验证结果是否符合规范。
+- 自定义监控：记录特定节点的执行元数据。
+实现方式：定义一个类并实现 on_node_start 和 on_node_end 等方法，然后在编译图时通过 hooks 参数传入
+```Python
+from langgraph.graph import Event
+
+class SensitiveWordFilterHook:
+    def on_node_start(self, event: Event):
+        """节点执行前触发"""
+        pass
+
+    def on_node_end(self, event: Event):
+        """节点执行后触发"""
+        # 检查并过滤节点输出
+        pass
+
+# 编译图时添加钩子
+graph = graph_builder.compile(hooks=[SensitiveWordFilterHook()])```
+
+13. LangGraph的回调
+回调是 LangGraph 与 LangChain 共享的执行级别可观测性系统，基于 BaseCallbackHandler 类。它提供了更细粒度的生命周期钩子，用于监控、调试和追踪 AI 应用的执行过程
+实现方式：继承 BaseCallbackHandler 并重写特定方法，然后在调用图时通过 config 传入
+典型场景：
+- 日志记录：记录 LLM 调用、工具调用的输入输出和耗时。
+- 性能追踪：统计每个节点的执行时间。
+- 平台集成：无缝对接 LangSmith 等可观测性平台。
+```Python
+from langchain_core.callbacks import BaseCallbackHandler
+
+class AgentCallback(BaseCallbackHandler):
+    def on_llm_start(self, serialized, prompts, **kwargs):
+        logger.info(f"[LLM调用] 开始 | prompt长度: {len(str(prompts))}")
+
+    def on_tool_end(self, output, **kwargs):
+        logger.info(f"[工具调用] 完成 | 输出: {str(output)[:100]}")
+
+# 调用图时传入回调
+result = graph.invoke(inputs, config={"callbacks": [AgentCallback()]})```
+14. LangGraph与Workflow的区别
+Workflow一般都是一条流水线上处理任务。它是线性的，数据从输入端流向输出端，中间经过几个处理步骤。这种模式非常适合处理确定性的任务，比如‘读取文档 -> 切分 -> 向量化’，效率高且逻辑清晰。类似LangChain。 
+
+而多智能体编排上；构建复杂的智能体（Agent）时，线性的 Workflow 就不够用，因为 Agent 需要思考和自我修正，可能更多使用LangGraph。LangGraph对比WorkFlow有如下优势：
+
+支持循环（Cycles）：LangGraph 允许流程在节点之间跳转或者循环。比如，如果代码执行报错，Agent 可以沿着边回到‘代码生成’节点进行修复，这是传统线性 Workflow 做不到的。
+持久化状态（Statefulness）：LangGraph 维护一个共享的 State。无论流程怎么走，所有节点都能看到最新的上下文和历史记录，这对于多轮对话和复杂推理很重要。
+动态控制流：它可以根据大模型的输出，动态决定下一步是调用工具、结束任务，还是请求人工介入（Human-in-the-loop）。
+
+典型的WorkFlow，可能面试官说的； 如：coze, dify等工作流平台；区别：
+暂时无法在飞书文档外展示此内容
+
+15. LangGraph与Dify区别
+- LangGraph: 它的定位是可编程的图状工作流框架。它将 AI 应用（尤其是 Agent）建模为一个有向图，通过代码精确控制状态流转、循环和条件分支。它强调绝对的代码掌控力和处理复杂逻辑的能力，适合构建需要深度定制、多步推理和长期记忆的 Agent 系统。
+
+- Dify: 它的定位是低代码/无代码的 AI 应用平台。它通过可视化的拖拽界面，将大模型调用、知识库检索、工具集成等能力封装成模块。它强调开箱即用和快速交付，旨在让产品经理、业务人员等非技术角色也能参与 AI 应用的构建，快速上线生产级应用。
+
+优先选择 Dify 的场景
+- 快速验证与上线：需要在几天内搭建一个知识库问答机器人或智能客服原型，并快速上线验证想法。
+- 标准化应用：业务逻辑相对固定，如文档问答、内容生成、简单的工单分类等。
+- 非技术团队主导：项目主要由产品、运营或业务部门推动，希望减少开发资源的投入。
+- 开箱即用的运维：需要内置的权限管理、使用量监控和日志审计等企业级功能。
+优先选择 LangGraph 的场景
+- 复杂 Agent 系统：需要构建多角色协作、能自我反思和纠错、或包含人工审批环节的复杂 Agent。
+- 深度定制与集成：需要与企业内部的 CRM、ERP 等系统进行深度、复杂的逻辑集成，对每一步调用都有精确控制需求。
+- 追求极致可控性：需要对状态流转、错误处理、执行路径有完全的掌控，方便进行单元测试和调试。
+- 研究型或创新型应用：探索实验性的多模态 Agent 或自定义记忆机制，需要灵活调整框架底层。
+
+16. LangGraph 怎么实现对话记忆
+- 用户每次发起请求时，都会携带一个唯一的 session_id（在 LangGraph 中映射为 thread_id）。
+- 这个 ID 是记忆的主键。系统利用它将在 PostgreSQL中创建一个独立的状态线程，确保不同用户的对话数据严格隔离，互不干扰。
+- LangGraph 的 Checkpointer 会在每个节点执行完毕后，自动将整个 State 对象 进行序列化并保存。
+  - 对话历史：完整的 messages 列表。
+  - 中间推理：Agent 的思考过程、工具调用参数。
+  - 业务数据：我们自定义 State 中的 artifacts（如生成的代码、查询到的结构化数据）和 metadata（如 request_id、当前任务阶段）。
+- 当同一 session_id 再次发起请求时，LangGraph 会自动从 PostgreSQL 中拉取该线程的最新状态快照，反序列化后恢复内存。
+
+17. LangChain和Dify优缺点
+- LangChain 是一个代码优先的开发框架，灵活、强大，适合开发者构建复杂、定制化的 LLM 应用；
+- Dify 是一个低代码应用平台，通过可视化界面快速搭建应用，适合产品经理或小团队快速验证想法。
+
+18. 使用LangChain有没有遇到一些问题
+1. 调试困难：
+  - Chain 是多个组件串联，出错时难以定位是哪一步出了问题
+  - 中间变量（如检索结果、Prompt 渲染后的内容）不易查看
+2. 版本迭代快，API 变更频繁
+  - LangChain 0.x → 1.0 → 新版本，API 大量变更
+  - 很多教程、博客基于旧版，照着写会报错
+  - 包拆分混乱：langchain → langchain-community、langchain-openai 等
+  - 解决方案：
+    - 使用 官方最新文档：https://python.langchain.com
+    - 锁定版本：
+3. 性能问题：慢、内存高、token 浪费
+  - Chain 嵌套多层后，延迟明显
+  - 向量检索 + Rerank + LLM 调用，端到端可能 >5s
+  - 默认不优化 prompt，容易浪费 token
+  - 解决方案：
+    - 使用 异步调用
+    - 优化检索：控制 top_k（如只取 3 个相关片段）
+    - 精简 Prompt：避免冗余指令
+    - 启用流式输出（Streaming）提升用户体验
+4. 错误信息不友好：报错经常是深层堆栈，看不出根本原因
+5. Agent 行为不可控
+  - Agent 可能陷入循环调用工具
+  - 或者选择错误的 Tool
+  - 或者生成无效的 Action
+  -  解决方案：
+    - 设置最大迭代次数：
+    - 设计清晰的 Tool 描述（description），帮助 LLM 理解用途
+    - 使用 Structured Tools 提供参数类型
+    - 监控 Agent 决策过程（通过 Callbacks）
+6. 部署和维护复杂
+  - LangChain 脚本不适合直接部署为服务
+  - 需要自己封装成 FastAPI/Flask
+  - 状态管理、并发、缓存、限流都要自行实现
+-  解决方案：
+  - 用 FastAPI 封装 LangChain 链：
+  - 使用 Dify / LangServe 作为中间层：
+
+19. Guardrails 模型护栏
+哦；这块我虽然项目中没有使用，但是我有简单的了解；
+Guardrails（护栏） 是确保大模型（LLM）行为安全的一种机制是吗？
+它就是在大模型和用户之间建立的一层过滤或者控制机制，用于约束模型的输入和输出。
+
+Guardrails 通常分为输入护栏（Input Guardrails）和输出护栏（Output Guardrails）。
+
+下面的不要说太多；挑1-2个说一下就行：
+
+输入护栏：保护模型，规范用户
+在用户的问题到达大模型之前进行拦截和检查：
+- 防注入攻击： 识别并拦截提示词注入，防止恶意用户通过“套话”绕过系统限制。
+- 内容过滤： 屏蔽敏感词、仇恨言论、色情暴力内容。
+- 隐私保护： 自动识别并掩盖用户输入中的个人身份信息，如手机号、身份证号。
+- 意图识别： 判断用户意图是否在系统允许范围内，如果用户问“怎么做炸弹”，直接拒绝。
+输出护栏：保护用户，约束模型
+在大模型生成回答后，展示给用户之前进行检查：
+- 防幻觉： 检查模型生成的事实是否与检索到的上下文（RAG）一致，防止模型编造事实。
+- 合规性检查： 确保模型没有输出偏见、歧视或有害建议。
+- 格式验证： 确保输出符合特定格式（如 JSON、SQL），如果不符合，自动触发重试。
+- 语言质量： 检查回答是否流畅、是否包含乱码或重复内容。
+
+我们项目中的话； 一般都是通过：
+- 系统提示词： 在 System Prompt 中明确写入规则，例如“你是一个有帮助的助手，绝对不能回答关于涉黄，违法的实施等”。
+- 而像我们项目中使用的是 LangChain ； LangChain 自己有中间件；可以在模型被调用之前，之后进行对输入和输出数据进行校验，审核。设置 middleware 中间件进行拦截、处理。
+  - @wrap_model_call 模型调用包装器，可以在模型执行之前进行拦截
+  - @wrap_tool_call 工具调用包装器，可以在工具调用之前进行拦截
+  - @dynamic_prompt 动态提示词包装器，可以对模型执行前动态修改提示词
+  - LangChain也提供了很多自带的中间件包装器，比如：ToolCallLimitMiddleware 可以限制工具的调用次数
+20. 大模型结构化输出
+在 LangChain 中，让大模型进行结构化输出主要有两大类方式。其中，with_structured_output 是官方首推的现代标准方案，而 PydanticOutputParser 则是适用于特定场景的传统备选方案。
+
+- with_structured_output 结构化输出方法
+这是 LangChain 0.2+ 版本官方推荐的主流方法。它通过与模型供应商的原生 API（如 Function Calling 或 JSON Mode）直接集成，在底层强制模型按预定义的 Schema 输出。
+实现方式：定义一个 Pydantic BaseModel 类，模型会直接返回这个类的实例。
+```Python
+from pydantic import BaseModel, Field
+from langchain_openai import ChatOpenAI
+
+class MovieInfo(BaseModel):
+    title: str = Field(description="电影名称")
+    year: int = Field(description="上映年份")
+    rating: float = Field(description="评分")
+
+llm = ChatOpenAI(model="gpt-4o-mini")
+structured_llm = llm.with_structured_output(MovieInfo)
+result = structured_llm.invoke("介绍一下《星际穿越》")
+# result 是 MovieInfo 对象，可直接用 result.title 访问
+
+
+或者 直接定义 json 结构，也可以。
+
+json_schema = {
+    "title": "MovieInfo",
+    "type": "object",
+    "properties": {
+        "title": {"type": "string", "description": "电影名称"},
+        "year": {"type": "integer", "description": "上映年份"}
+    },
+    "required": ["title", "year"]
+}
+structured_llm = llm.with_structured_output(json_schema)
+result = structured_llm.invoke("介绍一下《星际穿越》")
+# result 是 dict```
+
+- PydanticOutputParser 输出类型解析器
+ LangChain 早期的方法。不依赖模型的原生 API，而是通过提示词工程（Prompt Engineering） 来实现。解析器会自动生成一段格式指令并注入到 Prompt 中，引导模型输出 JSON，然后再进行解析和校验。
+优点：通用性极强，适用于任何能理解指令的 LLM，即使该模型不支持 Function Calling 或 JSON Mode
+缺点：稳定性不如原生 API，模型仍可能输出多余的解释性文字或格式错误的 JSON，需要额外的容错处理
+```Python
+from langchain_core.output_parsers import PydanticOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from pydantic import BaseModel, Field
+
+class MovieInfo(BaseModel):
+    title: str = Field(description="电影名称")
+    year: int = Field(description="上映年份")
+
+parser = PydanticOutputParser(pydantic_object=MovieInfo)
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "你是一个电影信息提取助手。\n{format_instructions}"),
+    ("human", "{question}")
+]).partial(format_instructions=parser.get_format_instructions())
+
+chain = prompt | llm | parser
+result = chain.invoke({"question": "介绍一下《星际穿越》"})```
+
+另外；直接使用模型底层的 response_format={"type": "json_object"} 参数虽然能强制输出 JSON，但无法约束 JSON 内部的字段结构，不是首选方案
+
+
+21. 除了Langchain还有哪些方法可以调用模型
+- 直接调 API（最灵活）
+- 使用 SDK / Client（推荐）
+- 使用框架（如 LangChain）
+- 可视化平台（如 Dify）
+- Spring AI
+
+22. Harness Engineering（驾驭工程）
+Harness  是在AI工程里，套在 大模型 外面的运行时框架； 它主要负责：
+- 构造 提示词 （拼接 系统提示词， 注入上下文）
+- 调用大模型
+- 解析大模型输出
+- 执行工具并把结果给回大模型
+- 安全检查（校验，拦截等）
+
+核心是为不可预测的 AI 模型构建一个确定性的、可治理的执行环境。
+主要做四件事：
+1. 约束 (Constrain)：规定智能体能做什么、不能做什么。
+  - 权限控制：AI 尝试执行 rm -rf / 时，Harness 会在沙盒层直接拦截。
+  - 输出校验：确保生成的内容符合 JSON 格式，不包含敏感信息。
+2. 告知 (Inform)：确保智能体在正确的时间获得正确的信息。
+  - 记忆管理：管理长期记忆，根据任务从向量库中动态检索历史背景，解决长任务“做着做着就忘了”的问题。
+3. 验证 (Verify)：检查智能体是否正确完成了任务。
+  - 自评估系统：在输出给用户前，用一个轻量级模型对结果进行打分，不合格则要求重做。
+4. 纠正 (Correct)：智能体出错时自动修复，形成闭环。
+  - 错误自动恢复：当 AI 运行代码报错时，Harness 会自动捕获错误堆栈，并将其作为反馈输入给模型，提示其自我修复。
+
+一个完整的 Harness 系统通常包含以下几个关键部分：
+暂时无法在飞书文档外展示此内容
+23. Harness 与 提示词、上下文工程的区别
+- Prompt Engineering (提示词工程)：关注单次交互。主要让模型在这一轮对话中准确理解任务。
+- Context Engineering (上下文工程)：关注单次推理的输入。研究给模型喂什么信息（如 RAG），能让它做出更准确的判断。
+- Harness Engineering (驾驭工程)：关注连续、长期的执行。设计整个系统，让模型在多轮、多工具、长时间的复杂任务中都能稳定、安全地完成工作。
+一句话总结：Prompt 和 Context 决定了模型能力的上限，而 Harness 决定了整个 AI 应用的下限和稳定性。
+
+24. LangSmith 智能体监控
+LangSmith（史密斯）可以查看、观测指标包括请求量、延迟分布（如 P50/P99）、错误率、Token 消耗分布及工具调用成功率等。它还支持通过标签和元数据进行精细化的用户行为分析和错误追踪。
+具体使用：
+1. 在 smith.langchain.com 注册或登录。然后在设置页面（Settings Page）创建一个 API 密钥
+2. 安装 smith ; 使用  pip install -U langsmith   
+3. 具体在运行项目的时候；设置如下：
+```Python
+import os
+
+# 1. 开启追踪功能
+os.environ["LANGSMITH_TRACING"] = "true"
+
+# 2. 设置你的 API 密钥
+os.environ["LANGSMITH_API_KEY"] = "api-密钥"
+
+# 3. （可选）指定一个项目名，方便管理。默认是 'default'
+os.environ["LANGSMITH_PROJECT"] = "项目名"
+
+# 4. （重要！）如果账号在非美国区域，需要设置对应的端点
+# 例如，欧盟区域:
+# os.environ["LANGSMITH_ENDPOINT"] = "https://eu.api.smith.langchain.com"```
+4. 配置完成后，所有基于 LangChain 构建的工作流、智能体（Agent）和 LLM 调用的执行过程，都会被自动记录并发送到 LangSmith官网上；
+5. 如果想更精确地控制哪些函数被追踪，或者想追踪非 LangChain 的代码，可以使用 @traceable 装饰器，可以让一个函数的所有输入、输出和内部调用在 LangSmith 中形成一条完整的追踪链路；具体如下：
+```Python
+from langsmith import traceable
+
+# run_type 可以标记这个 run 是工具、链还是 LLM 调用
+@traceable(run_type="tool")
+def get_context(question: str) -> str:
+    # 业务逻辑，比如查询向量数据库
+    return "相关上下文信息"```
+这样配置后， 可以在 smith.langchain.com 官网，从左侧菜单进入到要追踪项目，点击任意一条 Trace 记录，就能看到这个由节点构成的、可逐层展开的调用树了。对于整个项目，会自动生成展示 Trace 数量、错误率、Token 用量和成本的总体仪表盘。
+  - 输入与输出：发送给 LLM 的最终 Prompt 长什么样？模型返回了什么？
+  - 耗时与 Token：这一步花了多长时间？消耗了多少输入/输出 Token？成本是多少？
+  - 异常与错误：如果某一步出错了，节点上会有醒目的红色标记，能帮你快速定位故障点。
+
+三、MCP、Agent与A2A
+1. MCP协议
+MCP（Model Context Protocol ）叫作模型上下文协议，是一种标准化协议，它能够使大模型与外部工具和资源进行交互。
+MCP 协议支持三种通信机制：基于标准输入输出STDIO的本地通信、基于SSE（Server-Sent Events）和 Streamable HTTP（流式 HTTP）的远程通信方式。
+- 本地通信：通过 stdio 传输数据，适用于在同一台机器上运行的客户端和服务器之间的通信。
+- 远程通信：利用 SSE 与 HTTP 结合，实现跨网络的实时数据传输，适用于需要访问远程资源或分布式部署的场景。Web 环境、需要单向流式推送（服务器 → 客户端）。
+- Streamable HTTP（流式 HTTP）：双向流式通信；
+  - 工作方式：
+    - 客户端 POST 一个 MCP 请求到 HTTP 接口
+    - 服务器不立即关闭连接，而是以 chunked transfer encoding 方式分块返回多个 JSON 消息
+    - 每个 chunk 是一个完整的 MCP 消息（通常用 \n\n 分隔）
+  - 优点：
+    - 比 SSE 更灵活（支持请求体）
+    - 比 WebSocket 更简单（基于 HTTP）
+    - 适合大模型流式生成 + 工具调用混合场景
+2. SSE协议
+SSE 全称是 Server-Sent Events，顾名思义，它是一种允许服务器向客户端单向推送消息的技术。
+- 基于 HTTP：它基于标准的 HTTP 协议，客户端发送一个普通的 GET 请求，服务器保持这个连接不关闭（长连接），并源源不断地发送数据流。
+- 文本流：传输的数据格式通常是简单的文本流（data: ...），浏览器原生支持（通过 EventSource API）。
+3. SSE原理
+1. 建立连接（GET /sse）：
+  - 客户端（如 AI 助手）向服务器发起一个 GET /sse 请求。
+  - 服务器接受请求，建立长连接，服务器会生成一个唯一的 Session ID，并通过这条 SSE 连接推送给客户端；并返回一个 Content-Type: text/event-stream 的响应头。此时，通道打开，服务器可以随时往客户端发送数据。
+2. 发送指令（POST /message）：
+  - 当客户端需要调用工具时，携带 Session ID发起一个 新的 HTTP POST 请求发送 JSON-RPC 消息给服务器（通常是 /message 接口）。
+3. 接收结果（SSE 推送）：
+  - 服务器接收POST请求立刻返回一个 202 Accepted 状态码，表示指令接收到了。服务器端再通过 Session ID 查到对应的 SSE 长连接；将处理结果（如工具执行日志、最终结果）以事件流的形式实时推送到客户端。
+
+如果问SSE的问题，缺陷的话：
+SSE 也有局限，比如连接断开后的恢复机制比较弱，且不支持客户端主动发消息。所以我也关注到 MCP 官方正在推出 Streamable HTTP 协议，解决这些问题，提供更灵活的流式传输能力。
+4. JSON-RPC
+JSON-RPC 2.0 是MCP 协议中客户端和服务器之间传递的数据格式。主要分为三种类型：请求（Request）、响应（Response）和通知（Notification）。
+1. 请求（Request）：客户端发给服务器的指令
+当客户端想要调用工具或查询信息时，会发送一个请求。它必须包含一个唯一的 id，以便后续匹配结果18。
+核心字段：
+  - jsonrpc: 固定为 "2.0"。
+  - id: 请求的唯一标识（数字或字符串），响应时会原样带回。
+  - method: 要执行的操作方法名（如 tools/call）。
+  - params: 调用该方法需要的参数
+2. 响应（Response）：服务器返回的结果
+服务器处理完请求后，会返回一个响应。响应的 id 必须与请求的 id 一致。
+3. 通知（Notification）：特殊的单向广播
+通知通常用于推送日志、状态更新等不需要对方回复的消息。
+核心特征： 它没有 id 字段。因为没有 ID，接收方不需要、也无法返回对应的响应。场景：比如服务端推送处理进度，发送日志等
+5. Streamable HTTP
+Streamable HTTP 是 MCP 协议在 2025-03-26 版本中引入的全新传输机制，解决传统 SSE 模式双通道、长连接维护成本高的问题。
+
+Streamable HTTP 的原理：
+1. 发送指令（统一 POST /message）：
+- 客户端需要调用工具或发送指令时，直接向服务器的 /message 端点发起标准的 HTTP POST 请求，携带 JSON-RPC 消息。
+2. 服务器按需选择响应模式：
+- 服务器接收到 POST 请求后，会根据请求的内容和自身的状态，动态决定如何返回数据。它有两种选择：
+  - 普通 HTTP 响应：如果请求是简单的查询或不需要流式输出，服务器直接返回标准的 JSON 响应（如 200 OK + JSON 结果），然后连接结束。
+  - 升级为 SSE 流：如果请求需要流式输出、长耗时处理，或者服务器需要主动推送通知，服务器会将当前的 POST 请求升级为 SSE 长连接，也就是设置响应 Content-Type: text/event-stream，开始向客户端推送数据。（服务器不会关闭这个连接，而是保持打开状态，通过这条连接源源不断地推送数据，直到发送完毕数据主动关闭，或者客户端收完数据之后主动断开）
+3. 接收结果与后续通信：
+- 如果是普通响应：客户端直接读取 HTTP 响应体中的 JSON-RPC 结果，流程结束。
+- 如果是 SSE 流：客户端开始监听 POST 请求返回的 SSE 事件流，接收带有相同 id 的响应或通知。
+- 关于会话（Session）：如果服务器是有状态的，它会在首次响应时通过 Mcp-Session-Id 响应头生成并下发 Session ID。客户端在后续的 POST 请求中必须带上这个 Header，以便服务器识别上下文。
+
+
+6. MCP与普通HTTP接口的区别
+具体的区别：
+暂时无法在飞书文档外展示此内容
+
+虽然 MCP 通常运行在 HTTP 之上，但它们属于不同层级的协议，解决的问题也完全不同。
+HTTP 是通用的传输协议。它是无状态的、基于请求-响应模式的。如果要用 HTTP 构建 AI 工具，我们需要自己处理会话状态、自己写文档让 AI 理解接口，还要处理复杂的流式输出。
+MCP 则重于与AI的交互与上下文。
+  1. 标准化：它把‘工具调用’标准化了，AI 可以通过 tools/list 自动发现能力，不需要读外部文档。
+  2. 有状态：它基于 SSE 长连接，天然支持流式推送和上下文保持，AI 不需要每次都重复发送历史对话，大大节省了 Token。
+  3. 资源抽象：它提供了统一的资源管理（如文件、数据库），让 AI 能像操作本地文件一样操作远程资源。
+
+7. MCP调用超时
+1、可以配置更长的超时时间，在配置文件中配置就可以了
+2、可以重试
+8. MCP工具过多上下文过大
+在智能体调用的时候，如果将所有工具都列出来在提示词中，就导致上下文过大；怎么解决：
+当工具数量过多导致上下文爆炸时，核心解决思路是从 全量加载 转向 按需加载 ，并配合上下文生命周期管理。
+
+我会考虑：
+1）动态工具选择： 引入一个轻量级的路由层（Router）或利用 RAG 技术。在模型推理前，先分析用户意图，通过向量检索（Embedding）从工具库中筛选出最相关的 Top-K 个工具（例如 5-7 个）注入上下文。
+2）子智能体模式： 将大任务拆解，分发给拥有独立上下文窗口和专用工具集的子智能体；这样就不用在一个智能体中列出所有工具了。
+
+9. 工具调用不准确怎么办
+原因：
+- 注意力分散： 当工具列表过长时，LLM 的注意力会被大量无关的工具描述分散，导致调用不准确。
+- 语义混淆： 很多工具功能相似，过多的选项会让模型陷入选择困难，甚至强行调用无关工具。
+- 资源挤占： 冗长的工具定义消耗了大量 Token，压缩了模型思考任务本身的上下文空间。
+
+解决方案：动态工具检索与按需加载
+不要把所有工具一股脑塞给模型，而是采用“渐进式披露”。
+- 工具路由/检索： 引入一个轻量级的路由层。先分析用户意图，利用向量检索从工具库中筛选出最相关的 Top-K 个工具（比如只给 5-10 个），再注入到上下文中。
+- 分层加载： 初始只加载工具的简略元数据（名称、一句话描述），当模型决定调用某工具时，再通过“懒加载”获取详细的参数定义。
+
+10. MCP服务端（工具）实现
+我们使用的fastmcp来实现mcp服务端的； 具体的做法的话：
+1. 安装FastMCP的包
+2. 创建fastMCP服务实例
+3. 使用@mcp.tool() 装饰器标注函数，也就是具体的工具
+4. 启动fastMCP  就可以了； 这样客户端就可以访问mcp服务端暴露的这些工具
+
+示例代码如下：
+```Python
+# 1. 导入 FastMCP 类
+from fastmcp import FastMCP
+from typing import Optional
+
+# 2. 创建 MCP 服务实例
+mcp = FastMCP(
+    title="我的智能助手服务",
+    description="一个提供多种实用工具的 MCP 服务",
+    version="1.0.0"
+)
+
+# 3. 定义工具 (Tools) - 供 AI 调用的核心功能
+# 使用 @mcp.tool() 装饰器将函数注册为工具
+@mcp.tool()
+def hello_world(name: str = "朋友") -> str:
+    """向用户发送友好的问候。
+    Args:
+        name: 用户的名字。
+    Returns:
+        问候语字符串。
+    """
+    return f"你好，{name}！很高兴为你服务。"
+
+# 4. 启动服务
+if __name__ == "__main__":
+    # 启动服务，默认监听在 http://127.0.0.1:8000
+    # 通信协议默认为 SSE (Server-Sent Events)
+    mcp.run(host="127.0.0.1", port=8000, reload=True)```
+
+具体的MCP工具实现（查询课程，保单，产品等都可以是工具），例如：
+```Python
+import random
+from mcp.server.fastmcp import FastMCP
+
+from tools.result import CourseInfo
+from common import *
+from config import nacos_config, logger
+from util import HttpClientUtil, JsonUtil
+
+"""
+流程：
+    1. 从 params 中获取用户 token 和 request_id
+    2. 通过 Nacos 获取业务网关实例列表
+    3. 随机选择一个实例发起 HTTP 请求，获取课程信息
+    4. 将返回的数据转换为 CourseInfo 对象
+    5. 序列化json返回
+"""
+
+
+async def query_course_by_id(course_id, params: dict = None):
+    """
+    根据课程 ID 查询课程数据
+
+    Args:
+        course_id : 课程 ID
+        params : 自定义的一些参数
+    """
+    # 获取必要的配置数据
+    if params is None:
+        params = {}
+    token = params.get("user_token", "")
+    request_id = params.get("request_id", "")
+
+    # 从 Nacos 获取业务系统网关实例列表
+    instances = nacos_config.get_discovery_client().list_naming_instance(GATEWAY_SERVICE_NAME).get("hosts", [])
+    if not instances:
+        logger.error("No gateway-service instances found")
+        return None
+
+    # 随机选择一个网关实例发起请求，分散负载
+    instance = random.choice(instances)
+    url = f"http://{instance['ip']}:{instance['port']}/cs/courses/baseInfo/{course_id}"
+
+    # 发起 HTTP GET 请求获取课程数据
+    response_data = HttpClientUtil.get(url, token) or {}
+    data = response_data.get("data")
+    if not data:
+        logger.error(f"Failed to fetch course data from {url}")
+        return None
+
+    logger.debug("【Tool】 query_course_by_id url=%s, data=%s, request_id=%s", url, data, request_id)
+    # 转换为 CourseInfo 对象
+    course_info = CourseInfo.of(data)
+
+    # 将结果序列化json，返回给大模型
+    return JsonUtil.to_str(course_info)
+
+
+def register(mcp: FastMCP):
+    mcp.tool()(query_course_by_id)```
+
+11. A2A与MCP的区别
+暂时无法在飞书文档外展示此内容
+
+与 MCP（面向 LLM 调用外部工具）不同，A2A 关注的是 智能体之间的横向协作，常用于复杂自动化场景，如多角色规划、分步推理或企业级工作流。
+主流框架如 LangGraph、AutoGen 都提供了 A2A 的实现机制，通常基于结构化消息和状态机来保证协作可靠性。
+12. A2A协议
+A2A (Agent-to-Agent) 协议是一套开放的、标准化的通信规范，专门用于让不同的 AI 智能体（AI Agents）之间能够互相协同工作。
+基于 HTTP/HTTPS 传输，使用 JSON-RPC 2.0 进行结构化调用，利用 SSE (Server-Sent Events) 实现流式状态更新异步回调，允许智能体在长时间运行的任务中流式传输部分结果或状态更新。
+
+它包括有：
+客户端智能体 (Client Agent)：任务的发起者/调度者。
+服务端智能体 (Server Agent)：任务的执行者/提供者。
+
+13. A2A智能卡片
+一个标准的 JSON 文件，通常托管在智能体的固定路径下（ /.well-known/agent.json）。
+- 包含什么信息：
+  - 身份信息：名称、版本、开发者。
+  - 能力描述：它能做什么（Skills），支持什么输入/输出格式。
+  - 连接方式：通信的端点 URL。
+  - 安全认证：支持 OAuth2 等鉴权方式。
+- 有什么用：
+  - 自动发现：客户端智能体不需要硬编码对方的地址，只需读取“卡片”，就能知道对方能不能干活、怎么干活。
+  - 动态匹配：系统可以根据任务需求，自动筛选出拥有对应“卡片”技能的智能体组成团队。
+一个标准的 AgentCard 通常包含以下关键信息：
+暂时无法在飞书文档外展示此内容
+14. 智能卡片过多，选择模糊问题
+问题：如果给模型提示词中有1000个智能卡片，模型可能出现不知怎么选择，模糊不精准的情况怎么办
+
+我可能会采用；
+方式一：利用相似度先检索相关卡片再模型识别（极端多和要考虑同类的智能体中的选择，质量最好的才如下）：
+- 1）召回
+利用轻量级的检索（如 BM25 或 轻量级向量模型），快速从海量卡片中捞出 Top-50 个候选者。
+- 2）重排序
+使用更强的模型（如 BGE-Reranker 或 LLM 本身）对这 50 个卡片进行精细化打分。
+  - Prompt 示例：“用户意图是 X，请评估以下 5 个 Agent 的能力描述，哪一个最匹配？请给出 0-1 的分数。”
+- 3）LLM 决策
+将 Top-3 的卡片摘要传给主智能体，让它做最终选择或参数填充。
+方式二：动态路由
+当卡片多到一定程度，静态的查找表可能不够，那也可以采用动态路由的方式。
+- 1）意图识别层：
+在调用 A2A 之前，先让一个小型的“路由智能体”分析用户指令，提取关键意图（Intent）和槽位（Slots）。
+- 2）动态分组：
+根据意图，动态地将卡片分组。识别到对应的意图之后，根据意图只加载某个分类的卡片子集，再动态设置到提示词中给大模型决策判断。如果每个分类下的智能体还是比较多，那么可以采用负载均衡选择其中一个。
+
+15. A2A流程中上下文与工具调用是怎么关联和协同的
+我们的A2A项目使用到的是LangGraph开发，所以所有的对话或者工具、智能体的调用结果都是通过共享State紧密协同的。 
+所有的用户输入、历史消息和工具调用都存放在LangGraph的State中；
+而如果是在A2A调用客户端，如果需要 A2A服务端 调用工具或其它的过程数据； 那么可以从A2A服务端在调用工具的时候， 将工具的调用信息存放到消息的metadata中； 然后再返回给客户端； 这样客户端也可以从返回的消息的metadata中获取过程工具的调用结果。
+
+16. A2A（原理）智能体之间（客户端与服务端）怎么通信，消息传递机制
+在我们的设计中，智能体间的通信严格遵循 A2A 协议标准，主要包含三个关键阶段：
+第一阶段：能力发现与语义对齐（Service Discovery）
+客户端智能体首先通过 HTTP GET 请求服务端智能体的 /.well-known/agent.json 接口，获取 Agent Card。
+- 这不仅仅是读取文档，而是让客户端的 LLM 动态解析 对方的 capabilities（能力列表）和 input_schema（输入参数规范）。这使得客户端能自主判断‘是否需要调用’以及‘如何构造合法的请求’，实现了零硬编码的动态路由。
+第二阶段：任务委托与流式交互（Task Execution & Streaming）
+客户端构造标准的 A2A Task Request（包含 message, context 及唯一的 task_id），通过 HTTP POST 发起调用。
+- 进阶机制：对于耗时较长的复杂任务，我们强制启用 SSE (Server-Sent Events) 长连接。服务端会实时推送 TaskStatusUpdate 事件（如 working, requires_input, completed）。
+- 这让客户端智能体能实时感知进度，甚至在任务执行中途进行干预（例如：服务端请求确认某个参数），而不仅仅是阻塞等待最终结果。
+第三阶段：结构化结果回流与状态更新（Artifact & State Integration）
+任务完成后，服务端返回的不是自然语言文本，而是一个标准化的 Artifact 对象。
+-  Artifact 数据结构：这是一个强类型的 JSON 对象，包含 type（类型）、data（结构化数据）和 metadata（元数据）。例如：{ "type": "flight_booking", "data": { "flight_no": "CA123", "price": 500 }, ... }。
+- LangGraph 集成：客户端智能体接收到 Artifact 后，会将返回信息序列化为一条标准的 AIMessage 或自定义事件，追加到当前的 LangGraph State 中。
+- 之后，LangGraph 的状态机根据更新后的 State，自动触发下一个节点（可能是继续推理，也可能是调用下一个智能体），从而形成完整的协作链条。
+
+17. A2A多智能体与单智能体优势、劣势
+1. 扩展性不同：
+  - 单智能体：所有工具、提示词都塞在一个大脑里。功能一多，模型就‘顾此失彼’，容易选错工具或产生幻觉。想加新功能，得重新调整整个巨大的 Prompt，风险很高。
+  - 多智能体 (A2A)：每个 Agent 只专注一个领域（如专门查天气、专门写代码）。新增功能时，我只需开发一个新的 Agent 并上线，主流程完全不用改代码，系统就能自动通过 A2A 协议发现并使用它，扩展性极强。
+2. 维护与稳定性不同：
+  - 单智能体：是‘牵一发而动全身’。改一个模块的逻辑，可能导致其他原本正常的功能出错，调试非常困难。
+  - 多智能体 (A2A)：是‘故障隔离’的。某个 Agent 出问题（比如搜索服务挂了），只会影响那个环节，不会搞崩整个系统。我们可以单独优化、升级任何一个 Agent，而不用担心影响全局。
+18. 多智能体会不会增加延迟和成本
+一般来说会的； 多一次网络调用就会多一次延迟。但在复杂任务中，单智能体因为‘试错’和‘幻觉’导致的重复生成所消耗的时间和 Token，往往远多于多智能体之间一次精准的结构化通信。
+此外，我们通过 并行执行（LangGraph 的并行节点）和 流式传输（SSE） 来抵消网络延迟。用少量的通信开销，换取极高的一次性成功率（First-Time-Right Rate）这个性价比还是比较高的
+
+19. 多智能体上下文最大支持token
+在多智能体架构下，不存在一个全局的、包含所有对话历史的超大上下文 或者 提示词。
+- 每个子智能体（Server Agent）只维护自己任务范围内的上下文（通常是该任务的完整对话 + 必要的元数据）。
+- 主智能体（Client Agent）维护的是任务流的状态（State），而不是所有子智能体的原始对话日志。
+
+而实际容量； 单个智能体的上下文上限取决于我们选用的模型（如 Qwen3 max ，通常为 256k Token）。不过我们做了上下文隔离，系统整体能处理的任务复杂度远超单智能体，因为我们不需要把所有历史都塞进一个 Prompt 里。
+
+20. 多智能体支持几轮对话， 是否有对话边界判断
+对于单个子任务，我们通常限制在 3-5 轮 内部交互。如果超过这个轮数还没解决，智能体会触发自动熔断机制， 执行降级策略，返回预设的响应（空或者具体的默认值）；又因为我们使用了LangGraph，在必要情况下可以使用中断机制，请求人类介入或切换策略，防止陷入死循环。
+
+至于， 对话边界判断：
+- 第一重：Token 预算控制
+每个任务启动时都会分配一个 Token 预算（例如 5k Token）。一旦子智能体的上下文接近这个阈值，系统会强制触发 摘要节点，将历史对话压缩成结构化摘要，丢弃原始细节，确保核心信息不丢失。
+- 第二重：最大迭代次数
+在 LangGraph 的每个循环边（Cyclic Edge）上，我们都设置了 循环上限 （例如 5 次）。如果同一个智能体反复调用失败或重复输出，达到阈值直接切断，返回错误信息。
+
+21. Agent 范式
+ReAct 循环模式：采用 “思考→行动→观察” 的循环模式。
+Plan-and-Solve 计划模式：先进行全局规划，再按步骤执行。
+Reflection 迭代模式：采用 “生成→审查→优化” 的评估反馈迭代模式。
+
+22. Agent和大模型的区别
+我的理解是，大模型和Agent是不同层级的概念。
+大模型（如 GPT、Qwen、Llama）是基础的语言生成和理解引擎，而 Agent 是以大模型为核心、具备自主决策与行动能力的智能系统。
+具体来说：
+- 大模型本身是 被动的 ：它只能根据输入生成文本，无法主动调用工具、记忆历史或执行任务；
+- Agent 是‘主动的’：它把大模型作为调度中心，但额外集成了 规划（Planning）、记忆（Memory）、工具使用（Tool Use）和反思（Reflection） 等能力，能自主分解任务、调用 API、迭代修正结果。
+大模型是 Agent 的核心组件之一，但 Agent 是更完整的智能体架构。
+
+23. 单智能体与多智能体的区别
+单智能体架构由一个自主实体独立完成感知、决策和行动。
+- 优点：
+  - 简单高效：设计、开发和调试都更简单。对于简单或流程固定的任务，响应速度更快。
+  - 成本可控：没有智能体间的通信开销，资源消耗更少。
+  - 上下文一致：所有信息都在一个上下文中处理，避免了多智能体间信息同步的麻烦。
+- 缺点：
+  - 处理跨领域或超长链条的复杂任务时，能力受限。
+  - 难以适应动态变化的环境或处理需要多种专业技能的挑战。
+- 适用场景：
+  - 简单的聊天机器人、个性化推荐系统。
+  - 步骤清晰、顺序执行的任务，例如从单一来源检索信息。
+
+多智能体系统由多个具备不同专长的智能体组成，它们通过通信和协作来共同解决复杂问题。
+- 优点：
+  - 专业分工：可以将复杂任务拆解，由最合适的智能体处理业务。
+  - 并行处理：多个子任务可以同时进行，极大提升了处理大规模或可并行任务的效率和吞吐量。
+  - 高可靠性：系统没有单点故障风险，容错能力强。
+- 缺点：
+  - 复杂度高：需要设计智能体间的通信、协调和决策机制，开发和调试难度大。
+  - 成本高昂：多个智能体同时运行和频繁通信，会消耗大量的计算资源和令牌（Token），成本可能远高于单智能体。
+  - 协调挑战：智能体之间可能出现冲突、误解或效率低下的沟通，需要精巧的设计来避免。
+- 适用场景：
+  - 复杂的跨领域任务，如“研究一个主题，撰写报告，并生成可视化图表”。
+  - 需要并行处理的任务，如同时分析数百份财务报告。
+  - 对容错性要求高的企业级应用。
+
+24. Agent工具调用
+ LLM 根据任务需求，自主决定调用哪个工具、传入什么参数，并解析工具返回结果以继续推理或作答。
+暂时无法在飞书文档外展示此内容
+
+25. Agent怎么调用工具的
+Agent 调用工具的核心机制是Function Calling（函数调用），本质上是利用大模型的意图识别能力生成结构化指令，再由外部代码执行。
+具体流程分为三步：
+1. 工具注册：
+我们将工具的元数据（名称、描述、参数 JSON Schema）通过 API 的 tools 参数发送给模型。
+2. 意图识别与结构化输出：
+当用户提问时，模型分析意图。如果需要工具，它会停止生成文本，转而输出一个JSON 对象（tool_calls），里面包含要调用的函数名和参数。
+3. 执行与闭环：
+Agent 框架解析这个 JSON，通过函数映射表（很少使用 exec）调用本地代码或 API。执行完毕后，将结果再次回传给大模型。大模型结合这个结果，最终生成自然语言回答。
+26. Agent定义的工具过多问题
+问题：如果 agent 定义的那个工具太多了，比如说几十个工具或者上百个工具，然后这个时候大模型调用的就比较混乱了，你觉得这个应该怎么优化？
+
+方案一：实施动态工具路由
+我不会让模型直接面对所有工具。我会先引入一个轻量级的意图识别层（可以是小模型或向量检索）。根据用户的 Query，先判断意图，然后从工具库中动态筛选出最相关的 3-5 个工具注入给大模型。
+
+方案二：应用A2A协议实现多智能体协调工作
+也可以采用多智能体分层架构。引入 A2A 协议降低这些 Agent 之间的集成成本。
+通过 A2A，可以把每个 Agent 封装成标准的服务节点，主 Agent 通过读取 Agent Card 来动态发现和路由任务。这样解决上下文限制，工具过多的问题。
+
+27. Multi-Agent多智能体中，历史对话怎么对接
+在我的项目中，我使用 LangGraph 的状态对象作为多 Agent 协作的组件：
+- LangGraph 的 Reducer 机制（如 add_messages，共享状态模式）来处理多 Agent 并发写入时的状态合并，避免了手动管理消息列表的问题。每个 Agent 只需返回增量更新，框架会自动合并。
+- 通过 Checkpointer 和 Thread ID 实现了状态的持久化与隔离。不同用户的会话拥有独立的状态空间，即使服务重启，Agent 也能从断点继续执行。
+- 在复杂任务中，我也引入了阶段性摘要和Agent 专属上下文策略，在 Agent 中可以接收到不同会话的id，前面每个agent处理的中间状态，然后再按需获取就可以了。
+
+28. Agent记忆-短期记忆
+短期记忆本质上是 LLM 的上下文窗口；
+- 作用：它包含了系统提示词、最近的对话历史、以及工具调用的中间结果。
+- 特点：一旦会话结束或超出 Token 限制，这部分信息就会丢失（除非被压缩或存储）。
+- 技术实现：在代码层面，通常就是一个会话下的消息列表（List of Messages）。在 LangGraph 中，它对应着 State 中的 messages 字段，随着每一步的推理动态增删。
+
+Agent记忆-中期记忆（如果有人问才需要答）
+中期记忆的核心目标是解决任务能否跨轮次连续推进的问题。它主要记录当前任务的阶段性状态、已完成与未完成的关键步骤、约束条件以及中间结果。
+
+29. Agent记忆-长期记忆
+长期记忆在工程上主要解决两个问题：跨会话连续性和状态持久化。
+- 作用：让 Agent 在任务中断后能读历史状态继续，或者记住用户的偏好。
+- 技术实现：
+  - 状态快照（State Checkpointing）：利用 LangGraph Checkpointer 将每一步的 State 序列化并写入 PostgreSQL。这使得 Agent 可以暂停、恢复，甚至进行查看历史状态。
+  - 知识检索（RAG）：除了状态，长期记忆还包括外部知识库。我们将历史经验向量化存入向量数据库，需要时通过语义检索召回。
+30. 会话记忆-滑动窗口
+在 Agent 开发中，滑动窗口最基础的应用就是管理对话历史。
+因为 LLM 的上下文窗口是有限的，当对话的轮次增多 ，历史消息数组的总 Token 数接近上限时，需要剔除最早的对话，只保留最近的 N 轮对话。
+就像滑动窗口一样，随着对话的进行，新消息加入的历史消息数组中，窗口向右滑动，保留最新的N轮对话。
+
+滑动窗口的缺陷
+如果我们只是简单地保留最近 N 轮，很容易把关键信息丢失。
+比如用户在第 1 轮说‘我叫xxx，对花生过敏’，聊了 50 轮后，第 51 轮问  我有什么禁忌？。如果用简单的滑动窗口，第 1 轮的信息早就被踢出窗口了，Agent 就会失忆，甚至给出错误建议
+
+会采用下一题的 混合记忆架构 方案
+
+31. 会话/记忆管理
+用户发送消息或系统生成回复，开启一轮对话。系统会立即将当前的对话内容记录下来，并更新消息列表的索引，确保对话能实时衔接得上。
+上下文动态管理（长短判断）
+- 判断：系统会检查当前的对话内容是否太长（超过了预设的长度限制，比如：1万个字符，不同大模型上下文长度不一样； 比如千问3.5的，可以256k，大概30万字符的上下文长度）。
+  - 情况一：对话太长（超限）
+    - 智能压缩：调用压缩工具（context_compressor）对旧内容进行精简，去除冗余信息。
+    - 会话分裂：如果内容实在太多，系统会将长对话切分成多个部分，并建立父子关联（parent_session_id），形成对话链。
+    - 生成摘要：系统会在后台自动为这段对话生成一个摘要，并将其向量化存储，方便日后快速检索和回顾。
+  - 情况二：对话长度正常（未超限）
+    - 保持现状：保留当前的对话消息，不做任何压缩或修改，继续正常对话。
+长期记忆存储（持久化）
+- 判断：系统检查是否达到了“存档”的条件（例如对话达到一定轮数，或者刚刚进行了压缩）。
+  - 情况一：满足存档条件
+    - 写入文件：将关键信息写入长期记忆文件（如 MEMORY.md 或 USER.md）。
+    - 容量检查：检查这些记忆文件是否太满了。
+      - 若太满：系统会智能提示进行清理，比如替换旧信息或删除无用信息。
+      - 若未满：直接保存。
+    - 生效：保存成功后，这些长期记忆将在下一次对话中生效，让系统更“懂”用户。
+  - 情况二：不满足存档条件
+    - 跳过：暂时不进行长期记忆的写入操作。
+
+会话信息存入到ES, 而长期记忆存入到用户Id对应的文件内（会做缓存）
+
+32. 混合记忆架构
+混合记忆架构的设计（结合 LangGraph/Memory 组件）； 也就是 滑动窗口 + 摘要/状态提取：
+1. 滑动窗口（高频区）： 保留最近 5-10 轮的完整原始对话，保证当下的上下文连贯。
+2. 记忆摘要/状态提取（长期区）： 对于滑出窗口的重要信息，我们不能直接丢弃。我会利用 LangGraph 的 State 或独立的 Memory 组件，在后台异步提取关键实体（如用户偏好、待办事项），将其结构化存储或生成摘要。
+3. 动态注入： 每次构建 Prompt 时，除了放入滑动窗口内的近期对话，还会把这些结构化记忆塞进 System Prompt 里。
+这样既利用了滑动窗口节省 Token，又避免了关键信息丢失。
+
+33. Agent是怎么调用skill的
+我们的项目中使用的是langchain来创建的智能体， langchain本身并没有直接支持skill； 但是可以通过两种方式来实现：
+方式一：工具， 将所有我们的比较固定流程的业务封装成一个个的skill（Md； 比如我们系统中的下单，我们就封装了skill（获取收货地址，师傅情况， 师傅高空必备装备检查，下单））；然后在提示词中列出这些skill处理的场景，也就是一个工具； 模型会在遇到对应场景的时候，调用这个工具（skill)；在这个工具中，会加载skill.md； 然后返回。模型会基于这个工具的结果，就知道了，处理这个场景的步骤，就会按照步骤执行。
+
+方式二：子图；  利用langgraph的子图概念； 将原来skill中固定的哪些业务步骤，设置成一个个的子图实现（子图因为是要写清楚具体的流程和节点）
+
+获取收货地址——》师傅情况——》师傅高空必备装备检查——》下单
+
+34. A2A与LangGraph区别
+LangGraph 和 A2A 在架构上是互补的，分别解决了 Agent 系统的内部状态编排和外部服务互操作问题。
+- LangGraph 是一个有状态的工作流编排引擎。它通过定义节点（Nodes）和边（Edges）来构建一个状态机，精确控制单个复杂 Agent 的执行流程、循环和分支。
+- A2A 是一个去中心化的通信协议。它定义了异构 Agent 之间如何进行服务发现（通过 Agent Card）和标准化的任务交互（通过 JSON-RPC）。
+35. A2A的客户端怎么实现
+安装python的 a2a-sdk (版本0.3.25）；
+使用 A2A的智能体卡片解析器， 从a2a服务端获得智能卡片； 然后利用智能体卡片和 ClientFactory 创建得到 a2aClient 客户端； 利用客户端往服务端发送设置了用户问题的信息就可以了。
+
+问代码实现细节参考如下：
+```Python
+async with AsyncClient(timeout= timeout) as httpx_client:
+
+    config = ClientConfig(httpx_client = httpx_client, supported_transports = [TransportProtocol.jsonrpc])
+
+    # 创建客户端工程对象
+    factory = ClientFactory(config = config)
+
+    # 获取a2a服务端的卡片
+    resovler = A2ACardResolver(httpx_client = httpx_client, base_url= base_url)
+    agent_card = await resovler.get_agent_card()
+
+    # 创建得到a2a_client ---- 本质：http代理对象
+    a2a_client = factory.create(card = agent_card)
+
+    message_object = new_agent_text_message(query)
+    result = a2a_client.send_message(message_object)```
+
+36. A2A的服务端怎么实现
+安装python的 a2a-sdk (版本0.3.25）；
+1、实现智能体卡片； 实例化 AgentCard 指定名称、描述、地址、版本、技能列表也就是skills；每个技能可以指定id，名称，描述，标签和示例
+
+2、再编写执行器执行a2a客户端过来的调用请求； 使用 DefaultRequestHandler 类，构造的时候指定请求执行器、任务持久化对象； 
+在执行器（AgentExecutor）中会自动调用它的execute方法，里面再利用 agent 执行具体的用户问题； 将执行结果封装为 Artifact消息类型返回就完成了
+
+```Python
+
+class FlightBookingAgent:
+
+    def __init__(self):
+        """实例化llm agent"""
+        llm = init_chat_model(
+            model="qwen3-max",
+            model_provider="openai",
+            api_key=os.getenv("ALIYUN_API_KEY"),
+            base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+            temperature=0.8,
+            timeout=30
+        )
+        self.agent = create_agent(model=llm)
+
+    async def stream(self, query: str):
+        """流式输出"""
+        messages = [
+            SystemMessage(content="""
+            你是一个机票预订助手，请模拟机器人，请按照以下格式输出：
+            机票预订成功：xxxx，上午 xxx 出发，机票价格：xxx 元，座位类别：xxx
+            规则如下：
+            1.出发时间可以随机，只要合理即可
+            2.价格也是随机
+            3.座位类别也是随机
+            4.输出内容要有礼貌
+            """),
+            HumanMessage(content=query)
+        ]
+
+        response = self.agent.astream(input = {"messages": messages}, stream_mode = "messages")
+
+        # 处理流式输出结果；将结果转换为 {"content": "xxx", "done":True | False}
+        async for chunk, metadata in response:
+            yield {"content": chunk.content, "done": False}
+
+        yield {"content": "", "done": True}
+
+
+class FlightBookingExecutor(AgentExecutor):
+    """机票预订执行器"""
+
+    def __init__(self):
+        self.agent = FlightBookingAgent()
+
+    async def execute(self, context: RequestContext, event_queue: EventQueue):
+        """处理用户问题"""
+
+        # 获取用户问题
+        msg = get_message_text(context.message)
+
+        #result = await self.agent.invoke(msg)
+
+        result = self.agent.stream(msg)
+
+        async for event in result:
+            if event["done"]:
+                break
+            message_object = TaskArtifactUpdateEvent(
+                task_id = context.task_id,
+                context_id = context.context_id,
+                artifact= new_text_artifact(
+                    name="current_result",
+                    text= event["content"]
+                )
+            )
+            await event_queue.enqueue_event(message_object)
+
+        # 发送最后一个消息；表示完成
+        status = TaskStatusUpdateEvent(
+            task_id = context.task_id,
+            context_id = context.context_id,
+            status=TaskStatus(state=TaskState.completed),  # 标记任务已经完成
+            final=True  # 表示最后一个事件
+        )
+        await event_queue.enqueue_event(status)
+
+    async def cancel(self, context: RequestContext, event_queue: EventQueue):
+        """取消任务"""
+        raise Exception("暂不支持取消")
+
+class FlightBookingApp:
+
+    def agent_card(self) -> AgentCard:
+        """构建并返回 AgentCard（智能体卡片）。"""
+
+        # 技能
+        skill = AgentSkill(
+            id = "flight_booking",
+            name="机票预订",
+            description="机票预订的技能，帮助用户预订机票。",
+            tags= ["机票预订", "机票"],
+            examples= ["帮我预定机票", "机票预定"]
+        )
+
+        return AgentCard(
+            name="机票预订智能体",
+            description="预定机票的智能体，帮助用户预订机票。",
+            url="http://127.0.0.1:28011/", # 服务器地址；智能卡片暴露的地址
+            version="1.0.0",
+            default_input_modes = ["text"], # 输入模式；文本
+            default_output_modes = ["text"], # 输出模式；文本
+            capabilities= AgentCapabilities(streaming =  True), # 流式输出
+            skills = [skill]
+        )
+
+    def server(self) -> A2AStarletteApplication:
+        """构建 A2AStarletteApplication 服务实例。"""
+
+        request_handler = DefaultRequestHandler(
+            agent_executor= FlightBookingExecutor(),
+            task_store= InMemoryTaskStore()
+        )
+
+        return A2AStarletteApplication(
+            agent_card= self.agent_card(),
+            http_handler= request_handler
+        )
+
+flight_booking_app = FlightBookingApp()```
+
+37. A2A安全问题
+A2A服务端暴露了智能体卡片之后； 那么其它的智能体就能读取到卡片信息，然后使用A2A客户端调用服务端获得服务； 这样服务端就可能被任意调用了，不安全， 被人攻击怎么办？
+我们能够去调用A2A服务端，首先是A2A服务端这边会根据我们的系统生成一个token， 然后我们在调用的时候会在A2A客户端委派任务的时候，消息中设置元信息metadata； 里面包含了这个token；  服务端接收到请求处理的时候会先校验这个token； 没有携带或者错误的话都不会继续执行任务。
+
+38. Coze或Dify遇到的难点
+coze开源版插件数量极少（仅18个），知识库仅支持本地文档，缺乏云端同步、长期记忆
+dify工作流缺乏内置的定时调度与监控报警功能，需借助第三方工具实现，增加了复杂度。 
+
+实际使用dify的时候；我们将大模型输出的统计数据，使用了echarts生成统计图表； 但是dify上不支持将echarts的统计图表转换为图片；导致图片发送邮件无法进行。所以得特殊处理； 在我们项目中编写一个接口，给dify调用；然后接收dify的数据，渲染为echarts的图表，然后再利用代码转换为图片， 我们将图片存储到OSS， 再将图片的地址发回给dify； dify再将图片地址结合html代码作为邮件内容发送出去。
+
+39. Dify实现了什么业务
+- 智能客服与问答机器人
+这是最典型的应用之一。企业可以上传产品文档、客服手册等资料构建知识库，Dify 能快速生成一个能回答准确、上下文相关问题的客服机器人，从而降低人工客服工作量，提升用户满意度。
+- 数据分析与报告生成
+Dify 可以自动化数据处理流程，例如从各类文档中提取信息、进行比对分析并生成固定格式的报告。这在金融分析、合规审计、智能批改作业等场景
+
+我的话；使用过dify清洗模型的训练数据。
+40. Dify如何清洗数据
+第一步：准备原始数据
+- 数据形式：CSV / Excel / TXT / JSON，包含杂乱字段（如：
+  - 多余 HTML 标签
+  - 乱码、特殊符号
+  - 非目标语言内容
+  - 问答对混杂在段落中
+  - 缺失 input/output 区分）
+第二步：在 Dify 中创建工作流（Workflow）
+  1. 创建新 Workflow
+    - 进入 Dify 控制台 → Workflow → 新建工作流
+    - 选择 “Blank Workflow”
+  2. 设置输入变量
+  - 添加输入变量，例如：
+    - raw_text（string）：原始杂乱文本
+    - 或 dataset（array of string）：批量数据
+第三步：设计清洗节点（核心）
+  节点 1️⃣：文本预处理（LLM + 规则）
+  - 节点类型：LLM（大模型节点）
+  - 提示词（Prompt）
+```Java
+你是一个数据清洗专家。请对以下原始文本进行清洗：
+- 去除 HTML 标签、多余空格、换行符
+- 删除乱码、无意义符号（如 ""、"###"）
+- 保留中文、英文、数字、标点
+- 如果内容不是中文或英文，请返回空字符串
+
+原始文本：{{#raw_text#}}
+
+请只输出清洗后的纯净文本，不要任何解释。```
+  - 输出：cleaned_text
+节点 2️⃣：结构化提取（关键！）
+  - 节点类型：LLM（启用 JSON 模式）
+  - 提示词
+```Python
+你是一个数据标注员。请从以下文本中提取一个指令-输入-输出三元组。
+要求：
+- 如果文本是问答形式（如“Q:... A:...”），则：
+    instruction = "回答以下问题"
+    input = 问题部分
+    output = 答案部分
+- 如果是命令式（如“总结：...”），则：
+    instruction = "总结以下内容"
+    input = 内容
+    output = （留空，后续由人工或模型生成）
+- 如果无法提取有效信息，所有字段设为空字符串
+
+文本：{{#cleaned_text#}}
+
+请严格按以下 JSON 格式输出，不要任何额外内容：
+{
+  "instruction": "...",
+  "input": "...",
+  "output": "..."
+}```
+  - 启用 JSON Schema（Dify 支持）
+  - 输出：structured_data（JSON 对象）
+节点 3️⃣：质量过滤（可选但推荐）
+  - 节点类型：Code（Python 脚本节点）或 Condition
+  - 逻辑：
+    - 过滤掉 instruction 或 output 为空的样本；
+    - 过滤过短（<10 字）或过长（>512 字）的样本；
+    - 去重（基于 input 字段）。
+节点 4️⃣：格式标准化 & 输出
+  - 节点类型：Variable Assigner 或 Code
+  - 操作：
+    - 将合格的 structured_data 转为标准训练格式；
+    - 拼接成 JSONL 字符串（每行一个 JSON）。
+第四步：批量处理整个数据集
+  - 使用 “Loop” 节点（循环）：
+    - 输入：原始数据列表 raw_dataset
+    - 对每条 item 执行上述清洗流程
+    - 收集所有 final_sample 到列表
+  - 最后用 “Join” 节点 合并为完整 JSONL
+第五步：导出清洗后数据
+  - 在 Workflow 末尾添加 “End” 节点，输出 final_dataset_jsonl
+  - 运行工作流：
+    - 手动上传测试数据 → 查看输出
+    - 或通过 API 调用 批量处理
+  - 导出方式：
+    - 复制输出内容 → 保存为 .jsonl 文件
+    - 或通过 Dify API 自动写入云存储（需自建后端）
+
+41. Chatflow 与 Workflow 区别
+Chatflow 是为 对话  设计的，而 Workflow 是为 任务 设计的
+暂时无法在飞书文档外展示此内容
+- 当业务需要用户参与决策，需要多轮沟通时，选择 Chatflow。
+- 当想让系统自动执行一个复杂流程时，选择 Workflow。
+42. OpenClaw 架构
+OpenClaw 的架构设计非常清晰，主要由三个核心层级组成：
+- 连接层（The Mouth - 适配器模式）：
+  - 这是 OpenClaw 最强大的地方。它内置了 20+ 种即时通讯协议适配器（如微信、QQ、飞书、钉钉、Telegram、WhatsApp 等）。
+  - 它充当网关，将不同平台的消息统一标准化为内部事件流，让用户可以在任何熟悉的聊天窗口中指挥 AI。
+- 核心引擎层（The Brain & Nervous System）：
+  - LLM 路由：支持动态切换后端模型（本地 Ollama、云端 API 等）。
+  - 记忆系统：内置基于向量数据库的长短期记忆模块，解决传统聊天机器人的“失忆”问题。
+  - 调度器：负责心跳检测、定时任务（Cron）和事件分发。
+- 能力执行层（The Hands - Tool & Skill）：
+  - 这里有一个非常关键的概念区分：Tool（工具） vs Skill（技能）。
+  - Tool 是底层原子能力（如：读写文件 read/write、执行 shell 命令 exec、截图），相当于“器官”。
+  - Skill 是基于 Tools 封装的业务逻辑剧本（如：“自动整理周报”、“监控股价并报警”），相当于“教科书”。
+  - OpenClaw 拥有一个名为 ClawHub 的插件市场，用户可以像安装 App 一样加载第三方 Skill。
+43. OpenClaw 优缺点
+优点：
+- 极低的落地门槛：相比 LangChain 需要写代码，OpenClaw 通过配置文件（YAML/JSON）和可视化界面即可编排复杂工作流，非程序员也能用。
+- 隐私与自托管：所有数据跑在用户自己的机器（笔记本/VPS）上，模型可以是本地的，聊天记录存在本地，非常适合对数据敏感的企业或个人。
+- 生态活跃（ClawHub）：拥有庞大的社区技能库（虽然曾发生过 ClawHavoc 安全事件，但官方已建立严格的审核机制），能快速复用他人成果。
+- 全天候主动服务：不同于被动问答，它支持定时任务和事件触发（如：监控文件夹变化、监控网页更新），能主动发起任务。
+缺点：
+- 安全风险（最大痛点）：由于赋予 AI 执行系统命令（exec）和读写文件的权限，一旦加载恶意 Skill 或 Prompt 被注入，可能导致本地数据泄露或系统被破坏。（注：2026 年初的 ClawHavoc 事件就是教训）。
+- 资源依赖：如果要运行本地大模型（如 7B/14B），对本地显存和算力有较高要求；若使用云端 API，则受限于网络延迟和成本。
+- 复杂场景的稳定性：在处理超长链路的多步任务时，偶尔会出现“死循环”或上下文丢失，不如专业代码编写的 Agent 稳定
+44. OpenClaw 应用场景
+- 个人效能助理：
+  - 自动日报/周报：每天定时读取 Git 提交记录、Jira 任务状态，自动生成日报发送到飞书/钉钉群。
+  - 信息聚合：监控特定的 RSS、新闻网站或 Twitter 关键词，摘要后推送到微信。
+- 运维与开发辅助：
+  - 服务器看门狗：监控服务器负载，异常时自动重启服务并通知管理员。
+  - 自动化测试：接收指令后，自动拉取代码、运行测试脚本、上传日志。
+- 私域流量运营：
+  - 在微信群/QQ 群中自动回答常见问题、管理入群审核、定时发送活动通知。
+45. 多智能体与OpenClaw的区别
+多智能体是一种架构思想，核心是让多个 AI 角色通过协作来解决复杂问题，就像组建一个项目团队。
+而 OpenClaw 则是这种思想在当前最前沿的工程化实践之一。它已经超越了简单的多智能体协作，像是一个智能体操作系统。区别的话：
+1. 元智能体能力：OpenClaw 不仅能调用工具，还能通过对话创建和修改自己的技能，实现自我进化，这是普通多智能体系统不具备的。
+2. 动态组织架构：它支持主智能体动态创建和管理子智能体，为它们分配独立的记忆和权限，实现了更复杂的任务编排和生命周期管理。
+3. 生产级平台：它提供了网关、技能市场、多渠道通信等一整套基础设施，目标是成为一个可自托管、模型无关的‘数字员工’平台，而不仅仅是一个解决特定任务的脚本。
+46. Skill
+Skill 是一个模块化的指令集与工具包，允许开发者将复杂的工作流、特定的代码规范或外部工具调用逻辑封装成独立的单元，供 AI 按需加载和执行。
+
+标准的 Skill 通常包含以下部分：
+- 元数据（Frontmatter）：定义 Skill 的名称、描述以及触发条件。这使得 AI 能够在不加载具体内容的情况下，通过语义检索快速判断是否需要调用该技能。
+- 指令集（SKILL.md）：核心的 Markdown 文件，包含详细的思维链（CoT）引导、操作步骤（SOP）和约束条件。
+- 辅助资源（可选）：
+  - scripts/：存放 Python 或 Shell 脚本，赋予 AI 执行系统级操作的能力。
+  - references/：存放 API 文档或规范文档，供 AI 在需要时查阅（RAG 模式）。
+  - assets/：存放模板文件或静态资源。
+
+https://mp.weixin.qq.com/s/KGfCkdheANbmP8c1Hwx7Dg  
+47. Skill 原理
+Skill 采用了“渐进式披露”策略：
+1. 发现阶段：AI 仅加载所有可用 Skill 的元数据（极小的 Token 开销），构建“能力清单”。
+2. 激活阶段：当用户指令或当前任务命中某个 Skill 的描述时，AI 才会加载该 Skill 的完整 SKILL.md 内容。
+3. 执行阶段：在任务执行过程中，按需读取 scripts 或 references 中的具体细节。
+这种机制极大地节省了上下文窗口，使得在同一个项目中集成数十个专业技能成为可能，而不会导致上下文爆炸。
+
+[图片]
+大概步骤如下：
+第1步：用户输入后到Agent智能体
+第2步：Agent的提示词：只加载系统基本提示词和拥有的技能，再加用户输入
+第3步：LLM判断当前用户输入需要使用的技能（结构化返回）
+第4步：Agent找对应的技能文件夹中对应的 SKILL.md 文档（技能使用指南）作为新提示词
+第5步：指南 + 用户的输入给LLM；决策、判断是否要调用、执行工具、脚本等并返回工具调用信息
+第6步：Agent发现工具调用或本地脚本执行等，则调用api或者本地运行或者MCP等更种协议获取调用结果。（注意是Agent在执行，不是LLM，不耗费token）
+第7、8步：Agent根据最新执行结果 + 指南 + 问题等再给LLM 分析决策，以此类推直到最后步骤
+关键机制：每次与 LLM 交互时，提示词都动态加载当前任务所需的信息。在 Agent Skills 中，这被称为 渐进式披露。
+
+48. Skill 使用与分发流程
+第一阶段：启动与索引构建（初始化）
+  - 预安装：在服务或应用发布时，将一批经过验证的“官方”或“精选”Skill（通常以压缩包形式）预先放置在指定的内置目录中。
+  - 遍历与注册：服务启动后，系统会自动扫描该内置目录下的所有 Skill 文件。
+  - 建立索引：解析每个 Skill 文件的元数据（如 name、description 等 frontMatter），在内存中构建一个轻量级的 Skill 索引（Skill Index），用于快速匹配。
+第二阶段：触发与检索（按需加载）
+  - 意图匹配：当收到用户请求后，AI Agent 判断当前任务是否需要借助特定 Skill 来完成。
+  - 本地检索：如果需要，Agent 会调用检索工具（如 skill_view），首先在本地内存的 Skill 索引中进行查找。
+  - 命中加载：如果本地索引命中，系统会遵循渐进式披露原则，仅将命中的 SKILL.md 核心指令加载到上下文窗口中，避免资源浪费。
+第三阶段：远程分发与安全落地（扩展）
+  - 远程查询：如果本地索引未命中，Agent 会调用远程查询工具（如 find_skill），向中央知识库（Skill-Hub）发起检索请求。
+  - 隔离下载：从远程下载的原始 Skill 压缩包，不会直接放入主目录，而是先存入一个中间隔离目录（Quarantine Bundle）。
+  - 安全检查：系统执行内置的安全策略，对隔离目录中的 Skill 进行扫描（如检查恶意代码、权限越界等）。
+  - 正式安装：安全检查通过后，该 Skill 才会被复制到正式的内置目录中，并触发索引重建，使其在后续请求中生效。
+49. 常用skill
+
+如下是 claude code 的常用skill：
+superpowers 
+TDD 测试驱动开发
+结构化调试方法论
+自动代码审查（问题按 Minor/Normal/Critical 分类）
+编写实施计划、完成前验证
+
+claude-mem
+跨会话记忆项目上下文、业务规则、历史修改
+智能渐进式披露，按需检索相关记忆
+自动压缩记忆内容，节省 Token
+
+skill-creator
+根据需求自动生成自定义 Skill
+
+code-review
+代码审查，提供规范检查和改进建议
+
+everything-claude-code
+50+ Skills 覆盖全开发流程
+热门命令：/tdd、/plan、/go-review、/security-review
+框架全覆盖：Spring Boot、Django、Go、Python、Swift、React/Next.js
+工程化：部署、数据库迁移、安全扫描、Docker、E2E 测试
+
+
+frontend-design
+前端设计辅助，生成 UI 组件
+50. CLI 
+CLI 本质上就是一套让 AI 可以直接操作电脑、执行任务的 标准指令集。
+智能体可以直接调用CLI命令执行任务，而调用执行CLI更加简洁、高效、省token
+常用的场景，比如：
+- 软件开发：自动拉取代码 (git clone)、运行测试 (pytest)、打包程序 (npm build)。
+- 系统管理：批量修改文件、查看系统日志、监控服务器状态。
+- 日常办公：自动发送通知、创建日程、整理文档。
+
+而MCP可以在遇到复杂的业务逻辑，流程的时候还是一样不可或缺，而且尤其是跨系统操作的时候，另外不是每个系统都愿意开放权限让智能体执行 CLI 指令的。
+
+CLI优势：
+1. 极低 Token 成本：相比于 MCP 复杂的 JSON Schema 定义，CLI 命令非常短小，能大幅降低上下文开销。
+2. 高确定性与可组合性：CLI 命令（如 git, grep）经过几十年验证，非常稳定；且可以通过管道符 | 灵活组合，解决复杂问题。
+3. 调试友好：AI 执行出错时，开发者可以直接在终端复现命令，排查问题非常直观。
+
+51.  CLI 与 MCP的区别
+CLI 是一套让 AI 可以直接操作电脑、执行任务的 标准指令集。
+MCP 是一个旨在连接 AI 模型与外部工具的开放协议。
+
+MCP 提供了结构化的工具描述（Schema），让大模型能以极低的认知成本知道有哪些能力可用，解决的是可发现性、意图匹配’的问题。
+而 CLI 则是原子能力的执行载体。一旦模型选定了工具，通过 CLI 执行可以利用操作系统几十年来积累的高效工具链（如 grep, awk, git），解决的是 执行效率 和 资源成本 的问题。
+
+让 AI 进行推理和判断的步骤交给 MCP，而将逻辑确定、无需思考的执行步骤交给 CLI。
+
+52. SDD 与 TDD
+SDD（规范驱动开发）和 TDD（测试驱动开发）是 AI 编程时代互补的两种开发方法论：SDD 先定义 做什么 ，TDD 验证 做对了 ，AI 负责中间实现，人把控需求与质量。
+
+    SDD（Spec-Driven Development）‌：以规范为唯一真实来源，先写清业务规则、输入输出、边界和异常，再让 AI 生成代码。解决“需求理解偏差”和“AI 编码跑偏”问题。
+    TDD（Test-Driven Development）‌：遵循“红-绿-重构”循环，先写失败测试，再写最简代码通关，最后优化结构。解决 代码看似没问题、暗藏隐患 的问题。
+
+
+    SDD 管业务层：定义功能标准、边界规则、异常处理，解决 业务是否做对 。
+    TDD 管代码层：基于 SDD 验收标准写测试用例，校验代码落地是否匹配规约，解决“代码有没做好”。
+
+    落地流程：人工梳理并审核 SDD 规格 → AI 基于规格生成全量测试用例（均为未通过状态）→ AI 迭代编写代码直至全部测试通过 → 再经静态检查、全量自动化校验和人工复核三层把关。
+
+1. SDD 规范编写：人主导梳理业务规则、边界、异常；AI 辅助拆解成可验证条目。
+2. 测试设计（TDD）：人决定"测什么、风险优先级"；AI 基于规范生成全量测试用例，初始全红。
+3. AI 编码实现：AI 迭代编码至全部测试通过，人抽查关键路径并 Review。
+4. 验收与盲区复查：QA 全量自动化校验；业务方复查规范本身有无遗漏（AI 特有盲区：规范漏了，AI 会忠实实现"符合规范但不符合业务"的系统）
+5. 上线前终审：高危操作（数据删除、资金操作、线上配置变更）逐项人工签字。
+
+四、大模型RAG
+1. 如何提高RAG系统的效果
+提高RAG系统的整体效果，我会从检索、生成和系统架构三个层面进行系统性的优化。
+1. 首先，核心是优化检索器，确保给LLM的资料是精准的。 我会：
+  - 优化文本切分，使用语义切分保证块的信息完整性；大概会先从文本块大小、重叠数值、分割符调整。
+  - 升级嵌入模型，选用像BGE-M3这样的模型，并在可能的情况下进行领域微调。
+  - 采用混合检索 + 重排序 策略，先用向量和关键词检索广撒网，再用重排序模型精挑细选。
+2. 其次，优化生成器，确保大模型能更好的检索到资料。 我会：
+  - 设计强硬的系统提示词，命令大模型严格依据上下文作答，并对无法回答的问题明确提示拒绝回答。
+  - 要求大模型引用来源，从而约束其行为，也方便追溯。
+3. 最后，在架构层面，也可能会考虑更高级的模式。 比如：
+  - 迭代检索，通过多轮问答逐步细化搜索，精准定位答案。
+  - 智能路由，让系统能判断什么问题该走RAG，什么问题不该走，避免不必要的干扰。
+总之，这是一个需要持续迭代的过程，我会使用像RAGAS这样的评估框架来量化每一步优化的效果。
+
+2. 为什么不是使用现成的RAG框架而要自己搭建
+- 现成的RAG产品（具体产品（云产品，低代码平台）或者 RAGFlow等产品）；比较标准化，不能适应复杂多变的业务场景，比较固化
+- 我们基于LangChain等框架自行搭建RAG系统比较灵活，自主可控；过程中的任何组件都可以改动
+- 一般这些RAG系统不是独立的，要对接业务系统，登录，其它子系统；如果不是自行搭建的则改动比较大，复杂
+- 对于使用RAG系统，也是因为私域知识不希望外泄，放置到一些公共平台导致存在泄露的风险
+- 如果使用已经成熟，存在的RAG产品那么存在团队学习成本
+
+3. 提升 RAG 精确度或怎么Index解决语义缺失
+一般情况下，先回答上面那个问题的答案，那个是传统方案， 也是课上方案。然后问你还有没有其它的，或者他认为方案不OK的情况下；可以讲解如下方式。。下面的方案比较 SOTA（前沿）
+
+传统的‘切片 + 向量化’（Chunking + Embedding）方案； 可能导致知识内容结构破坏。硬性切分很容易把表格的‘表头’和‘数据’分开，或者把‘前提条件’和‘结论’切断，导致 LLM 拿到的是碎片信息，产生幻觉。
+
+我最近研究了一个开源方案叫 PageIndex；具体的思路：
+1. 构建层级树索引：它利用 LLM 自动解析文档，生成一个包含章节、子章节甚至表格引用的‘智能目录树’，而不是把文档切成一个个孤立的 Chunk。
+2. 推理式检索：当用户提问时，LLM 不是去向量库里搜相似句，而是像人一样‘浏览’这个目录树。它会思考：‘这个问题应该在第三章还是附录里？’然后主动导航过去。
+3. 处理引用跳转：如果文档里说‘数据见下表’，PageIndex 能理解这个引用关系，自动跳转到对应位置获取完整上下文。
+
+传统的 RAG 是：用户提问 -> 向量检索 -> 返回片段 -> 生成答案（一步到位，不可控）。
+而 PageIndex 类的方案是：用户提问 -> 思考/规划 -> 调用工具(查目录) -> 思考 -> 调用工具(读页) -> 生成答案（多步迭代，可控）。
+
+4. 大模型幻觉
+大模型幻觉（Large Model Hallucination）指的是在使用大型语言模型（如GPT等）时，模型生成的内容并不真实或者不准确，即模型会“编造”不真实的信息。这种现象是因为大模型基于大量的文本数据训练，可能会生成听起来有逻辑但并不完全准确的内容，尤其是在缺乏明确训练数据或者无法理解背景的情况下。
+
+解决方法：
+1. 在应用的时候增加事实性约束 Prompt提示词
+  - 明确指令：“请基于以下事实回答”
+  - 加入约束：“不要编造，不知道就说‘我不清楚’”
+  - 提供示例（few-shot）：“像这样回答才是正确的”
+2. 也可以 引入 RAG ；从知识库找相关事实（如数据库、文档）；将事实 + 问题 一起输入大模型；模型基于真实数据生成回答
+5. 准确率
+总体预测中，不管是正例还是反例，预测对了多少；关注整体的预测正确性
+
+6. 精准率
+在预测为正例的里面，有多少实际是正的；关注预测的准确性
+
+7. 召回率
+在所有实际为正的样本中有多少被预测出来了；关注的是覆盖完整性
+
+召回率衡量的是模型在所有真实正例中，成功找出的比例。公式是 TP / (TP + FN)。它关注的是‘有没有漏掉’，常用于信息检索、医疗诊断等不能容忍漏检的场景。
+在 RAG 中，召回率更重要。因为如果相关文档没有被检索到，大模型就无法获取该知识，可能导致错误回答。而多召回几个无关文档，大模型通常可以忽略，影响较小。
+
+8. 优化召回率的核心参数与策略
+1. top_k（或 k）从向量数据库中检索前 k 个最相似的文档。
+  - 影响：k 越大，召回率越高（但也可能引入噪声）。
+  - 建议：
+    - 初始值：k=5~10
+    - 若召回不足 → 增大到 k=20~50，再配合重排（re-ranker）过滤
+2. 相似度阈值（score_threshold）；只返回相似度高于某阈值的结果。
+  - 对召回率的影响：阈值越低，召回率越高（但精度下降）。
+  - 适用场景：当向量相似度普遍偏低时，适当降低阈值可避免漏检。
+```Java
+# FAISS + LangChain
+retriever = vectorstore.as_retriever(
+    search_kwargs={"k": 10, "score_threshold": 0.3}  # 默认可能 0.5
+)```
+3. 调整检索算法与索引类型；
+  - 开启 exact search（暴力搜索）：100% 召回，但慢（仅用于小数据集调试）
+
+4. 采用多路召回（Multi-stage Retrieval）
+  - 同时用多种方式检索，合并结果：
+    - 向量检索（dense）
+    - 关键词检索（BM25 / sparse）
+    - 规则匹配（如按标签、时间）
+  - 显著提升召回率，尤其对长尾查询。
+5. 调整分块策略
+  - 如果文档切分太粗 → 相关信息被截断 → 召回失败
+  - 优化方向：
+    - 减小分开大小 chunk size（如 512 → 256）
+    - 使用 overlap（重叠切分）
+    - 语义分块（按句子/段落边界）
+分块不合理是 RAG 召回率低的最常见原因！
+
+优化策略：
+1. 先评估当前召回率：人工标注 100 个 query 的相关文档，看系统能召回多少。
+2. 优先调 top_k 和分块策略：成本最低，效果最明显。
+3. 再考虑混合检索 + 重排：平衡 Recall 和 Precision。
+
+9. TF-IDF
+词频（TF）：词在文档中出现的频率 $$TF(t,d) = \frac{词 t 在文档 d 中出现的次数}{文档d的总词数} $$
+
+逆文档频率（IDF）：衡量词的普遍重要性   $$IDF(t,D)=\log(\frac{语料库中文档总数}{包含词t的文档数})$$
+
+TF-IDF = $$TF(t,d)×IDF(t,D)$$
+
+10. F1-Score 分值
+F1-score 是精确率（Precision）和召回率（Recall）的调和平均数，用于衡量分类模型的性能，尤其适用于类别不平衡的数据集。
+精确率（Precision）：预测为正类中真正为正的比例
+精确率 = $$\frac{TP}{TP+FP} $$
+
+召回率（Recall）：实际为正类中被正确预测的比例
+召回率 = $$\frac{TP}{TP+FN} $$
+- TP：真阳性（True Positive）
+- FP：假阳性（False Positive）
+- FN：假阴性（False Negative）
+
+- TF-IDF 是“输入”：解决“如何表示文本”的问题；
+- F1-score 是“输出评估”：解决“模型表现好不好”的问题。
+11. F1、召回率、精确率关系
+暂时无法在飞书文档外展示此内容
+- 正例：通常指我们重点关注、想要识别的那个类别。它就是“信号”。
+- 负例：指我们不关注的、其他所有的类别。它就是“噪声”。
+
+---
+例如：任务目标：识别出“垃圾邮件”。
+正例：垃圾邮件（因为我们重点关注它）。
+负例：正常邮件（其他所有我们不关注的类别）。
+暂时无法在飞书文档外展示此内容
+这个表格就是著名的混淆矩阵，是所有评估指标的基础。
+
+12. RAG有几种召回方式
+常见的召回方式有以下几种，它们各有优势，通常组合使用：
+1. 向量召回 / 语义召回（Vector/Embedding Retrieval）
+  - 原理：将文档和用户查询都编码为高维向量（通过 mxbai-embed-large、bge 等嵌入模型），在向量空间中计算相似度（如余弦相似度），召回最相近的文档。
+  - 优势：能实现“语义匹配”，理解同义词和上下文，适合语义搜索。
+  - 劣势：可能忽略关键词匹配，对嵌入模型质量依赖高。
+  - 技术栈：FAISS, Milvus, Pinecone, Weaviate。
+2. 关键词召回 / 稀疏检索（Keyword/Sparse Retrieval）
+  - 原理：基于传统的信息检索技术，如 BM25 或 TF-IDF，通过匹配查询和文档中的关键词进行召回。
+  - 优势：对精确的术语、实体、专有名词匹配效果好，可解释性强。
+  - 劣势：无法理解语义，遇到同义词或 paraphrase 时效果下降。
+  - 技术栈：Elasticsearch, Apache Solr。
+3. 图召回（Graph Retrieval）
+  - 原理：如果知识库构建了知识图谱（Knowledge Graph），可以通过图遍历（如邻居节点、路径查询）进行召回。
+  - 优势：能利用实体间的关系和结构信息，发现间接相关的内容。
+  - 适用场景：问答系统、推荐系统，需要推理实体关系的场景。
+  - 技术栈：Neo4j, JanusGraph。
+4. 混合召回（Hybrid Retrieval）
+  - 原理：将向量召回和关键词召回的结果进行融合排序（Fusion），如 Reciprocal Rank Fusion (RRF)、加权求和等。
+  - 优势：结合语义和关键词的优势，效果通常优于单一方法。
+  - 注意：这通常被视为一种“融合策略”，而非独立的召回路。
+5. 其他召回方式
+  - 规则召回：基于业务规则（如时间、热度、标签）进行召回。
+  - 协同过滤召回：在推荐场景中，基于用户行为相似性召回。
+  - 多模态召回：对于图文、音视频等多模态数据，使用对应的多模态嵌入模型进行召回。
+
+在实际工程中，最常见的多路召回策略是 2 到 3 路。
+最典型的配置：2 路召回
+1. 一路：向量召回（语义召回）
+2. 二路：关键词召回（BM25）
+这是当前 RAG 系统的“黄金组合”。它能有效平衡语义理解与精确匹配，覆盖大多数场景，实现简单，效果稳定。
+进阶配置：3 路召回
+在 2 路基础上，根据业务需求增加：
+- 第三路：图召回（如果存在知识图谱）
+- 或 第三路：规则/热度召回（如召回最新文档、高评分文档）
+13. RAG中用户输入的问题特别长
+1. 查询重写（Query Rewriting）
+  - 原理：使用一个轻量级模型（如小模型或规则）对原始长问题进行摘要、简化或重述。
+  - 方法：
+    - 摘要式重写：让模型生成原问题的简洁摘要作为检索查询。
+      - Prompt: “请用一句话概括以下问题的核心意图：{{long_question}}”
+    - 关键词提取：提取问题中的关键实体、动词和主题词，拼接成短查询。
+    - 意图识别 + 模板填充：先识别用户意图（如“对比”、“查找定义”），再用模板生成标准查询。
+2. 查询分解（Query Decomposition）
+  - 原理：将一个复杂的长问题拆解为多个独立的子问题，分别进行检索，最后合并结果。
+  - 适用场景：问题包含多个独立的疑问或需要多步推理。
+  - 示例：
+    - 原问题：“请分析我提供的这份 50 页项目报告，总结其主要创新点、潜在风险，并对比去年的方案，最后给出改进建议。”
+    - 分解为：
+      1. “总结项目报告的主要创新点”
+      2. “识别项目报告中的潜在风险”
+      3. “对比今年项目报告与去年方案的差异”
+  - 优势：每个子查询更精准，检索效果更好。
+  - 挑战：需要设计合理的分解逻辑，可能引入额外延迟。
+3. 分层检索（Hierarchical Retrieval）
+  - 流程：
+    1. 先对长文档（如用户上传的长报告）进行预处理，分割成段落或章节，并为其生成摘要或标题。
+    2. 用长问题去检索这些摘要/标题，快速定位相关章节。
+    3. 再在相关章节的细粒度内容中进行二次检索。
+  - 优势：大幅减少检索范围，提高效率和精度。
+4. 直接使用长上下文模型（Leverage Long-Context LLMs）
+  - 前提：如果使用的嵌入模型和生成模型都支持超长上下文（如支持 128K 的 gpt-4-turbo 或 Claude 3）。
+  - 策略：
+    - 可以直接将长问题与文档拼接，但需确保问题中最关键的信息位于上下文的开头或结尾（LLM 对中间位置的记忆较弱）。
+    - 结合 Prompt Engineering，在问题末尾添加：“以上是背景信息，请重点关注最后的问题：...” 来引导模型。
+5. 元数据过滤（Metadata Filtering）
+  - 原理：如果长问题中包含明确的过滤条件（如时间、作者、文档类型），可以先用这些条件在数据库层面进行硬过滤，缩小检索范围，再进行语义检索。
+  - 例：问题中提到“2023年发布的报告”，可先用时间元数据过滤。
+14. 使用RAG技术的步骤
+完整流程可分为 离线准备阶段 和 在线推理阶段 两大阶段
+一、离线准备阶段（知识库构建）
+步骤 1：数据收集与清洗
+  - 收集来源：企业文档、FAQ、PDF、网页、数据库、API 等。
+  - 清洗操作：
+    - 去重（Deduplication）
+    - 去噪（移除广告、页眉页脚）
+    - 格式标准化（HTML/Markdown → 纯文本）
+步骤 2：文本分块（Chunking）
+  - 将长文档切分为语义完整的短文本块（chunks）。
+  - 方法选择：
+    - 固定长度 + 重叠（如 512 tokens，overlap=50）
+    - 按段落/标题结构切分（推荐）
+    - 高级策略：父子分块、语义聚类等
+步骤 3：向量化与索引构建
+  - 使用 Embedding 模型（如 bge-large-zh, text-embedding-3-large）将每个 chunk 编码为向量。
+  - 构建索引：
+    - 向量索引：存入向量数据库（如 Milvus, Pinecone, Qdrant, FAISS）
+    - （可选）关键词索引：存入 Elasticsearch 等，用于混合检索
+  - 添加元数据：文档来源、时间、类型、章节标题等，便于过滤
+
+二、在线推理阶段（用户问答）
+步骤 4：查询理解与检索
+  - 用户输入问题（query）
+  - 检索：
+    - 向量检索：将 query 编码为向量，在向量库中 ANN 搜索 top-K chunks
+    - （可选）关键词检索（BM25）→ 实现混合检索
+    - （可选）元数据过滤：如限定时间范围、文档类型
+  - 结果融合与重排序（ReRank）：
+    - 使用 RRF 或 Cross-Encoder（如 bge-reranker）对候选 chunks 精排
+    - 取 top-3 ~ top-5 最相关 chunks 作为上下文
+步骤 5：上下文增强与生成
+  - 构造 Prompt
+  - 调用大语言模型（LLM）生成答案：
+    - 可选模型：GPT-4、Claude、Qwen、Llama 3、本地微调模型等
+  - （可选）后处理：
+    - 添加引用来源（如“根据《XX文档》第3节…”）
+    - 过滤敏感信息
+步骤 6：评估与反馈闭环（持续优化）
+  - 自动评估：
+    - 检索指标：Recall@K, MRR
+    - 生成指标：Faithfulness（忠实度）、Answer Relevancy（相关性）
+    - 工具：RAGAS、TruLens
+  - 人工评估：抽检回答质量
+  - 用户反馈：纠错入口
+  - 数据回流：将高质量问答对加入训练集，迭代优化 Embedding、Prompt 或 LLM
+
+RAG 的完整步骤 = 离线建库（数据 → 分块 → 向量化） + 在线问答（检索 → 重排序 → 生成） + 持续优化
+
+15. RAG原理、流程
+1. 检索（Retrieve）：
+  - 当用户提出一个问题时，系统首先将其转化为一个“查询”（Query）。
+  - 使用检索器（如向量数据库、Elasticsearch）在外部知识库（如文档库、维基百科、企业知识库）中搜索与查询最相关的文档片段（Passages）。
+  - 常见技术：向量召回（Embedding + FAISS）、关键词召回（BM25）。
+2. 增强（Augment）：
+  - 将检索到的相关文档片段作为上下文（Context），与原始用户问题拼接在一起。
+  - 形成一个新的、信息更丰富的 Prompt。
+3. 生成（Generate）：
+  - 将这个增强后的 Prompt 输入给大语言模型（LLM）。
+  - LLM 基于检索到的上下文和自身语言能力，生成最终的答案。
+16. RAG有什么问题
+1. 检索失败（Retrieval Failure）—— 最致命的问题
+  - 语义鸿沟（Vocabulary Mismatch）：
+    - 用户用“手机”提问，知识库用“移动设备”，关键词召回可能失败。
+    - 嵌入模型未能将同义词映射到相近向量，语义召回失败。
+  - 长尾查询：
+    - 对于罕见或表述复杂的查询，可能检索不到任何相关文档。
+  - 后果：LLM 在“无上下文”或“错误上下文”下生成，极易产生幻觉（Hallucination），回答看似合理实则错误。
+2. 噪声与干扰（Noise and Distraction）
+  - 检索到的文档可能包含大量与问题无关的冗余信息。
+  - LLM 可能被噪声干扰，提取错误信息，导致答案偏离主题。
+3. 多跳推理困难（Multi-hop Reasoning）
+  - 有些问题需要结合多个文档的信息进行推理。
+  - RAG 通常只返回 top-k 片段，LLM 难以在单次生成中完成复杂的逻辑整合。
+4. 上下文长度限制（Context Window Limitation）
+  - 检索到的文档、原始问题和生成答案都需要占用 LLM 的上下文窗口。
+  - 在长文档或多文档场景下，可能因截断而丢失关键信息。
+5. 延迟与成本（Latency and Cost）
+  - 额外延迟：检索步骤增加了系统响应时间（RT）。
+  - 计算成本：调用嵌入模型生成向量、查询向量数据库、运行 LLM，整个流程成本较高。
+6. 知识库质量依赖性强
+  - RAG 的效果高度依赖外部知识库的完整性、准确性和更新频率。垃圾进，垃圾出（Garbage in, garbage out）。
+7. 排序与融合问题
+  - 多路召回（如向量+关键词）后，如何有效融合和重排序结果，直接影响最终效果。简单的融合策略可能效果不佳。
+17. RAG的评估指标
+- BLEU：基于 N-gram 精确度，常用于机器翻译。
+- ROUGE：基于 N-gram 召回率，常用于摘要任务，ROUGE-L 较常用。
+- METEOR：考虑同义词和词干的指标，比 BLEU/ROUGE 更接近人类判断。
+- BERTScore：使用 BERT 模型计算 token 级别的相似度，当前更推荐，能捕捉语义等价。
+18. RAGAS 评估实现
+RAGAS (Retrieval-Augmented Generation Assessment) 是一个开源的 Python 框架；不需要准备大量标准答案，而是利用大模型（LLM）的能力，根据“上下文”和“问题”来自动判断答案的质量。
+RAGAS 将 RAG 流程拆解为检索和生成两个环节
+暂时无法在飞书文档外展示此内容
+19. RAGAS工作原理，怎么打分的
+- 评估忠实度：它会把生成的答案拆解成一个个独立的陈述句，然后拿着这些句子去问：“这句话能从给定的上下文中推导出来吗？”如果都能，忠实度就是 100%。
+- 评估答案相关性：它会利用大模型根据生成的答案，“反向生成”出几个可能的问题。如果反向生成的问题和用户原本的问题高度相似，说明答案切题；如果反向生成的问题变了，说明答案跑题了。
+
+20. 生成的文本和参考答案之间的关系
+评估方法主要分为两大类：自动化评估指标 和 人工评估。
+1. 基于 N-gram 重叠的指标
+  - BLEU (Bilingual Evaluation Understudy)：
+    - 原用于机器翻译，计算生成文本与参考答案之间 N-gram 的精确度。
+    - 局限：对同义词不敏感，分数与人类判断相关性一般。
+  - ROUGE (Recall-Oriented Understudy for Gisting Evaluation)：
+    - 常用于摘要任务，计算召回率（Recall），即参考答案中有多少 N-gram 出现在生成文本中。
+    - ROUGE-L 基于最长公共子序列（LCS），对句子结构有一定容忍度。
+    - 适用场景：评估生成答案是否覆盖了参考答案的关键信息。
+注意：BLEU/ROUGE 在 RAG 中的适用性有限，因为 RAG 的答案可能用不同词汇表达相同意思。
+2. 基于嵌入的语义相似度指标
+  - 原理：将生成文本和参考答案编码为向量，计算它们之间的语义相似度。
+  - 常用方法：
+    - Sentence-BERT (SBERT)：使用预训练模型（如 all-MiniLM-L6-v2）获取句子向量，计算余弦相似度。
+    - Google BLEU (GLEU) 或 BERTScore：
+      - BERTScore 是当前更优的选择，它使用 BERT 模型计算生成文本和参考答案中每个 token 的相似度，再通过 Precision、Recall 和 F1 值进行评估。
+      - 它能捕捉语义等价性，比传统 BLEU 更接近人类判断。
+3. 基于大模型的评估（LLM as a Judge）
+  - 原理：使用一个更强大、更可靠的 LLM（如 GPT-4、Claude 3）作为“裁判”，输入生成答案、参考答案和问题，让其打分或判断优劣。
+  - 评估维度：
+    - 事实一致性（Factuality）：生成答案是否与参考答案（或检索到的上下文）事实一致。
+    - 相关性（Relevance）：是否回答了问题。
+    - 完整性（Completeness）：是否覆盖了所有要点。
+    - 流畅性（Fluency）：语言是否自然。
+  - 优势：评估质量高，接近人类水平。
+  - 劣势：成本高、速度慢、可能存在裁判模型的偏见。
+4. RAG 特有的评估指标
+  这些指标直接关联 RAG 的核心流程：
+  - 检索相关性（Retrieval Relevance）：
+    - Hit Rate@K：检索到的 top-K 文档中是否包含与问题相关的文档。
+    - MRR (Mean Reciprocal Rank)：衡量第一个相关文档的排名。
+  - 答案忠实度（Answer Faithfulness）：
+    - 评估生成的答案是否忠实于检索到的上下文，有没有捏造（幻觉）信息。
+    - 可通过 NLI（自然语言推理）模型判断答案是否能从上下文中“蕴含”（Entailment）。
+  - 上下文相关性（Context Relevance）：
+    - 检索到的文档是否真的有助于回答问题。
+
+21. RAG有图片和视频该怎样处理
+当 RAG 系统需要处理图片、视频等非文本模态数据时，传统的纯文本 RAG 架构就不再适用。我们需要构建一个 多模态 RAG（Multi-modal RAG） 系统。
+多模态 RAG 的工作流程在传统 RAG 的基础上增加了多模态编码与理解环节：
+1. 多模态数据预处理：
+  - 对图片、视频帧、音频等进行提取和标准化。
+2. 多模态内容提取与编码：
+  - 使用多模态模型将非文本信息转化为文本描述或多模态向量。
+3. 索引构建：
+  - 将提取的文本和向量存入支持多模态检索的数据库。
+4. 多模态检索：
+  - 根据用户查询（文本或图像），检索最相关的多模态内容。
+5. 多模态上下文增强与生成：
+  - 将检索到的图像、视频片段及其文本描述提供给多模态大模型（如 GPT-4V, Gemini, Qwen-VL），生成最终答案。
+
+
+22. 知识库数据爆炸性增长要如何解决
+1. 分层存储（Tiered Storage）根据数据的访问频率、时效性和重要性，将数据存放在不同成本和性能的存储层。
+2. 采用分布式向量数据库（如 Milvus, Elasticsearch Cluster）实现水平扩展
+3. 数据预处理与清洗
+  - 去重（Deduplication）：
+    - 在入库前识别并删除重复或高度相似的文档（使用 MinHash、SimHash 等算法）。
+  - 信息提取与摘要：
+    - 对长文档进行关键信息提取或生成摘要，用更小的“元数据”代替原始全文进行索引和检索。
+    - 原始内容可存于冷存储，按需加载。
+4. 智能索引策略
+  - 混合索引（Hybrid Indexing）：
+    - 结合 倒排索引（关键词） 和 向量索引（语义），提高检索效率和准确性。
+  - 分块策略优化（Chunking）：
+    - 不再简单按固定长度切分，而是按语义边界（如段落、章节）切分。
+    - 使用 滑动窗口（Sliding Window） 或 父子分块（Parent-Child Chunking） 提高上下文完整性。
+  - 元数据过滤（Metadata Filtering）：
+    - 为文档添加丰富的元数据（时间、来源、类型、标签），在检索时先用元数据快速缩小范围，再进行语义搜索。
+5. 数据生命周期管理（Data Lifecycle Management）
+  - 自动归档：设置策略，将超过一定时间（如 6 个月）且无访问记录的数据自动迁移到冷存储。
+  - 数据过期与删除：对于有明确时效性的数据（如新闻、公告），设置 TTL（Time-To-Live）自动清理。
+  - 定期审计：评估数据价值，对长期无用的数据进行归档或删除。
+
+23. RAG的检索效率怎么提升
+1. 优化向量编码（Embedding Efficiency）
+  - 问题：嵌入模型推理是主要延迟来源之一。
+  - 解决方案：
+    - 选用轻量化 Embedding 模型：如 bge-m3, jina-embeddings-v2-small, text2vec 等，在效果和速度间取得平衡。
+    - 模型蒸馏（Distillation）：用大模型（如 BGE-large）作为教师模型，训练一个更小、更快的学生模型。
+    - 缓存查询向量（Query Caching）：
+      - 对高频查询或相似查询的结果进行缓存（如 Redis），避免重复编码。
+      - 使用 MinHash 或 SimHash 快速判断查询相似性。
+2. 加速向量检索（ANN Optimization）
+  - 问题：海量向量下的近似最近邻搜索仍可能较慢。
+  - 解决方案：
+    - 选择高效的 ANN 算法：
+      - HNSW (Hierarchical Navigable Small World)：速度快，召回率高，内存占用大。
+      - IVF (Inverted File Index)：内存友好，可通过 nprobe 参数调节速度/精度。
+    - 参数调优：
+      - 调整 ef_search (HNSW), nprobe (IVF) 等参数，在召回率（Recall） 和 查询延迟（Latency） 之间找到最佳平衡。
+    - 量化（Quantization）：
+      - 使用 PQ (Product Quantization) 或 SQ (Scalar Quantization) 将浮点向量压缩为低位表示，大幅减少内存占用和 I/O，加速计算。
+3. 智能索引与数据预处理
+  - 问题：检索范围过大，噪声多。
+  - 解决方案：
+    - 元数据过滤（Metadata Filtering）：
+      - 先用业务规则（如时间范围、文档类型、标签）过滤，缩小向量搜索范围。
+      - 例：问题“2024年的财报” → 先过滤 year=2024 且 type=report 的文档。
+    - 分层索引（Tiered Indexing）：
+      - 将知识库按热度/时效性分层（热/温/冷），优先在热数据层检索。
+    - 摘要索引（Summary Indexing）：
+      - 对长文档生成摘要，先用摘要进行粗筛，再对候选文档的细粒度块进行精搜。
+4. 查询优化（Query Optimization）
+  - 问题：原始查询质量差，导致检索效率低。
+  - 解决方案：
+    - 查询重写（Query Rewriting）：
+      - 用小模型将冗长、模糊的查询简化为简洁、精准的关键词或短语，减少编码和搜索开销。
+    - 查询分解（Query Decomposition）：
+      - 将复杂问题拆解为多个简单子查询，并行检索，提高准确性和可管理性。
+5. 混合检索与结果融合优化
+  - 问题：多路召回（向量+关键词）融合过程耗时。
+  - 解决方案：
+    - 异步并行召回：向量检索和关键词检索并行执行，取两者结果的并集。
+    - 高效融合算法：
+      - 使用 RRF (Reciprocal Rank Fusion)，计算简单，无需统一分数尺度。
+      - 避免复杂的 Learning-to-Rank 模型，除非必要。
+    - 控制召回数量：合理设置每路召回的 top-k 数量，避免后续处理压力过大。
+6. 架构与基础设施优化
+  - 分布式与水平扩展：
+    - 使用分布式向量数据库（如 Milvus Cluster, Pinecone）实现横向扩展。
+  - 缓存机制：
+    - 结果缓存：对高频问答对的结果进行缓存。
+    - 向量缓存：缓存常用文本的嵌入向量。
+  - 硬件加速：
+    - 在支持的环境下，使用 GPU 加速向量计算和 ANN 搜索。
+
+24. RAG被弃用，已死
+面试官说：看你做的项目比较多RAG类的， 但是现在RAG已经被弃用，过时的，已死； 你怎么看这个事情？
+如果单看传统RAG——就是那种固定走 ‘向量检索→拼接Prompt→生成’ 三步走的固定流水线，确实有很多问题，比如检索不准、上下文割裂、难以处理复杂逻辑推理。这类简单的RAG，在真实场景中确实不太实用，可以说是比较过时的（也就是简单的RAG方案是过时的）。
+
+但我在简历中做的那些项目，并不是简单的RAG，而是要处理检索质量、多源融合、延迟优化等一系列问题的。
+
+所以我个人的理解是：RAG这个概念本身没有过时，它只是原来直接的 检索-生成，演变为自进化的、成套的工程架构（Harness）方案；只要大模型需要借助外部知识来辅助生成，只要知识还需要动态更新而非静态固化在权重里，这就是RAG的思想。
+
+就比如我最近在研究的LLM Wiki来说，它其实就是将结构化知识库与模型的深度耦合； 大模型生成每一段内容时，都在动态查询、引用、综合Wiki中的实体关系和条目。这本质上就是一种升级版的RAG，只是它不再是‘先检索后生成’的串行模式，而是‘边检索边生成’的融合模式。
+
+25. ReRanker的目的
+在初筛召回的候选文档中，进一步提升相关文档的排序质量，从而为后续的生成阶段提供更精准、更相关的上下文信息。
+RAG 的检索通常分为两个阶段：
+1. 第一阶段：粗召回（Candidate Retrieval）
+  - 使用 高效但精度有限 的方法（如向量 ANN 搜索、BM25）从海量知识库中快速召回 top-K（如 100~1000）个候选文档。
+  - 目标是高召回率（Recall），确保相关文档不被漏掉，但排序可能不准。
+2. 第二阶段：精排序（ReRanking）
+  - 对粗召回的少量候选文档，使用 更精准但计算昂贵 的模型进行重新打分和排序。
+  - 目标是高排序精度，把最相关的文档排到最前面。
+
+- 典型流程：
+用户问题 → 向量/BM25 召回 top-100 → Cross-Encoder ReRank → 取 top-5 → 送入 LLM 生成
+26. ReRank的方法
+1. Cross-Encoder 模型（最常用）
+  - 如 bge-reranker, Cohere rerank, SBERT Cross-Encoder。
+  - 将 查询和文档拼接 输入 Transformer，输出相关性分数。
+  - 优势：能建模查询与文档的深度交互，精度远高于双塔模型（如普通 Embedding）。
+  - 劣势：计算开销大，只能用于小规模候选集（通常 < 100）。
+2. Learning-to-Rank (LTR)
+  - 基于多个特征（BM25 分数、向量相似度、点击率等）训练排序模型。
+3. LLM-based ReRanking
+  - 用大语言模型判断相关性（成本高，一般用于评估或关键场景）。
+27. BGE-ReRangker上下文长度
+bge-reranker-large 的默认上下文窗口上限通常是 512 tokens。
+智源（BAAI）后续推出的 bge-reranker-v2-m3 模型，支持高达 8192 tokens 的上下文长度。
+
+大家项目中提及的 BGE-M3 Reranker 大多都是指代 bge-reranker-v2-m3 模型；这样8192的长度才支持父块的重排。
+很多同学在直接讲 bge-reranker-large ；所以可以更换一下使用 bge-reranker-v2-m3
+
+28. BGE-Reranker 重排
+BGE-Reranker 的核心概括为：采用 Cross-Encoder（交叉编码器） 架构的 Transformer 模型，通过对查询和文档进行深度语义交互，来实现高精度的相关性打分。它的具体实现流程：
+1. 输入拼接：将用户的查询（Query）和待评估的文档（Document）拼接成一个完整的文本序列。其格式遵循 BERT 模型的标准输入格式：
+[CLS] 查询内容 [SEP] 文档内容 [SEP]
+2. 深度交互：将这个拼接后的长序列输入到 Transformer 模型（如 BERT 或 DeBERTa）中。在模型的自注意力（Self-Attention）层中，查询部分的每一个词都可以和文档部分的每一个词进行交互，计算注意力权重。这种机制让模型能够捕捉到非常细粒度的语义关系，比如指代消解、逻辑一致性等。
+3. 输出分数：模型会取出 [CLS] 标记位置的输出向量，这个向量包含了整个序列的聚合信息。然后，通过一个全连接层将这个向量映射成一个标量分数，这个分数就代表了查询和文档之间的相关性得分。
+4. 重新排序：对所有候选文档重复上述过程，得到一系列相关性分数，最后根据分数从高到低进行重新排序，选出得分最高的文档。
+
+
+为什么是交叉编码器：
+将查询和文档拼接后共同输入，并利用 Transformer 内部的交叉注意力（Cross-Attention）机制进行深度理解
+它只有一个编码器。它会把查询和文档拼接成一个完整的序列 [CLS] 查询 [SEP] 文档 [SEP]，然后一起送入模型。
+从输入的第一层开始，查询中的词和文档中的词就在一起了。在 Transformer 的自注意力层中，模型会计算序列中每一个词与所有其他词的关联度。这意味着查询里的词可以直接“关注”到文档里的词。
+
+随着对上下文的理解，这个 [CLS] 向量会逐步理解，形成一个上下文化的向量，也就是对语义理解的向量
+
+29. BGE-Reranker的延迟
+对于 BGE-Reranker 的延迟，我结合之前的实测数据和生产环境的优化经验，总结来看，它的延迟并不是一个固定值，而是取决于硬件环境、量化精度以及候选集的大小。
+- GPU 环境： 在 NVIDIA T4 或同等级显卡上，如果使用 FP16 半精度推理，处理 20 个文档的端到端耗时大约在 400ms 左右。这是生产环境中性价比最高的配置，既保证了速度也保证了精度。
+- CPU 环境： 如果只有 CPU（比如 8 线程），延迟会显著上升，可能达到 2000ms (2秒) 甚至更高。
+
+会关注以下两点来控制延迟：
+1. 候选集大小 (Top-K)：
+Reranker 的计算量与候选文档数量成正比。通常我会将向量检索召回的数量控制在 Top-15 到 Top-30 之间。如果直接丢进去 100 个文档，延迟会成倍增加，得不偿失。
+2. 推理精度 (FP16 vs FP32)：
+在部署时，我会强制开启 FP16 混合精度。实测表明，相比 FP32，FP16 能在几乎不损失重排序效果的前提下，将推理速度提升 30%-50%，显存占用也更低。
+
+30. 语义歧义怎么提高准确率和召回率
+语义歧义（比如 苹果 指水果还是手机）是向量检索的挑战。因为向量本质是几何距离，如果空间没拉开，模型就会混淆。解决这个问题，可以从下面三个方面进行：
+1. 第一层：表示层——引入上下文感知
+我不会使用静态词向量，而是采用 Sentence-BERT 或 BGE 等上下文感知模型。它们能根据句子整体语境生成动态向量，让 吃苹果 和 买苹果股票 在向量空间中自动分离。对于特定领域，我还会利用 Triplet Loss 进行微调，进一步拉开歧义词的距离。
+2. 第二层：检索层——混合检索与查询增强
+单靠向量检索不够，我会引入 混合检索。利用 BM25 的关键词匹配能力来抓住、锚定精确术语，结合向量的语义泛化能力。同时，利用 问题改写 ，让大模型将简短歧义的 Query 扩展为描述性的假设文档，用更丰富的信息去检索，提高命中精度。
+3. 第三层：排序层——元数据过滤与重排序
+  - 元数据过滤：如果业务允许，利用分类标签（如 科技 、 农业 ）进行预过滤，这也是解决歧义的手段。
+  - 重排序：向量检索（ANN）是近似搜索，会有误差。我会用 Cross-Encoder 对召回的 Top-K 结果进行精细化重排，它能深度计算 Query 和文档的交互，大幅修正排序结果。
+
+31. 向量检索慢
+1、我会先使用标量进行数据过滤；
+2、我会设置索引（FLAT,IVF-FLAT, IVF-SQ8， HNSW）
+3、我会缩小检索的簇数量
+4、所以我们也采用了父子分块，让每次检索对比的向量比较小，对比的是子块
+
+32. 稀疏和稠密向量（混合检索）
+同时使用稀疏向量（Sparse Vectors）和稠密向量（Dense Vectors），是为了融合关键词匹配的精确性与语义理解的泛化能力，从而构建一个更鲁棒、更全面的检索系统。
+暂时无法在飞书文档外展示此内容
+- 稀疏 = “查字典”：看 query 和文档是否包含相同关键词；
+- 稠密 = “懂意思”：看 query 和文档是否表达相似含义。
+稀疏向量：擅长精确匹配；对专有名词、ID、代码、数字、术语极其敏感，可解释性强：能明确知道是哪个词匹配上的。
+稠密向量：擅长语义泛化；理解同义词、 paraphrasing、上下文语义，支持“问法不同，答案相同”的场景。
+ 例子：
+用户问：“手机充不进电怎么办？”
+- 稠密检索 → 找到“移动设备无法充电的故障排查指南” --->语义上理解（相似度检索）
+- 稀疏检索 → 找到包含“充不进电”、“充电口损坏”等关键词的 FAQ  ---> 倒排索引检索
+
+→ 混合后，既覆盖专业文档，又命中用户原话，答案更全面。
+
+暂时无法在飞书文档外展示此内容
+33. 稀疏向量检索与BM25区别
+两者都属于稀疏检索，底层都依赖倒排索引加速，核心区别在计算方式和权重来源：
+- BM25：基于词频、逆文档频率、文档长度的统计公式，每个词对文档的贡献是 IDF * TF(文档长度归一化)，然后求和。
+- 稀疏向量检索：把文档和查询都映射成高维稀疏向量（维度=词表大小，大部分为0），得分是向量内积 Σ (查询权重 × 文档权重)，其中权重由神经网络学习得到，能捕获词与词间的相关性。
+34. 什么是BM25算法
+BM25 全称 Best Matching 25，是一种基于词频的文档排序算法，用于计算用户查询词（Query）与 文档（Document）之间的相关性得分。得分越高，代表两者越相似。
+35. BM25检索流程
+1. 查询分词：把用户问题拆成多个词。
+2. 逐词打分：对每个词，计算它和文档的相关性（本质是带饱和机制的TF-IDF，会控制词频的边际效应，并考虑文档长度）。
+3. 累加排序：把所有词的得分加起来作为文档最终得分，按分排序返回 Top-K。
+
+36.  BM25 和 TF-IDF 
+BM25 和 TF-IDF 都是用来计算查询词与文档相关性的算法。
+
+TF-IDF = TF（词频） × IDF（逆文档频率）
+词频 TF（Term Frequency）
+
+$$TF(t,d) = \frac{词t在文档d中出现的次数}{文档d的总词数}$$ 
+
+例如：文档共100词，“理赔”出现3次 → TF = 3/100 = 0.03
+
+逆文档频率 IDF（Inverse Document Frequency）
+
+$$IDF(t) = log(\frac{文档总数}{包含词t的文档数 + 1})$$
+这里的 加 1  是平滑项
+例如：
+- 总共1000个文档，“理赔”出现在200个文档中 → IDF = log(1000/201) ≈ 0.7
+- “的”出现在998个文档中 → IDF = log(1000/999) ≈ 0.002
+
+
+BM25 是 TF-IDF 的升级版
+$$BM25(Q,D)=\sum_{i=1}^{n} \frac{f(q_i, D)·(k_1 + 1)}{f(q_i, D) + k_1·(1-b+b· \frac{|D|}{avgdl})}×IDF（q_i)$$
+它解决了 TF-IDF 的两个主要问题：
+1. 文档长度偏差：长文档天然 TF 更高
+2. TF 增长饱和问题：一个词出现 100 次并不比 10 次重要 10 倍
+
+TF-IDF 的 TF 是线性的（出现10次就是1次的10倍），且不处理文档长度。
+BM25 的 TF 是饱和的（出现足够多次后加分衰减），并且会惩罚长文档。
+
+37. BGE-M3
+BGE-M3 是由北京智源人工智能研究院（BAAI）推出的一个通用语义向量模型； M3 表示三大核心能力：多语言、多粒度和多功能。
+- 支持 100 多种语言
+- 支持从短句到长文档的不同输入长度，最大上下文窗口高达 8192 tokens。 传统的向量模型（如早期的 BERT）通常只能处理 512 长度，处理长文章必须截断。BGE-M3 可以直接处理整篇论文、法律合同或长篇报告，保留完整的语义信息
+- 集成了三种检索方式，支持混合检索：
+  - 密集检索：生成标准的 1024 维稠密向量，用于语义匹配（理解意思）。
+  - 稀疏检索：生成类似 BM25 的稀疏向量（词权重），用于关键词匹配（精确匹配术语）。
+  - 多向量检索：类似 ColBERT 的机制，对每个 Token 分别编码，进行细粒度的交互匹配，精度最高。
+
+38. 知识图谱
+知识图谱（Knowledge Graph, KG） 是人工智能领域中一种非常重要的知识表示和推理技术。
+
+知识图谱的基本单元是 三元组：
+(头实体，关系，尾实体)
+(Head Entity, Relation, Tail Entity)
+
+举例：
+- (特斯拉, 创始人是, 埃隆·马斯克)
+- (埃隆·马斯克, 兼任 CEO 于, SpaceX)
+- (特斯拉, 竞争对手是, 比亚迪)
+- (比亚迪, 总部位于, 深圳)
+暂时无法在飞书文档外展示此内容
+用户问题：“特斯拉对应竞争对手总部在哪里？”
+传统向量 RAG 的表现：
+它会去搜包含“特斯拉”、“对应竞争对手”、“总部”的句子。
+文档里可能有一句话写“特斯拉的对手是比亚迪”，另一段写“比亚迪总部在深圳”。向量检索很难把这两段分散的信息逻辑串联起来，容易漏掉中间环节，或者直接回答不知道。
+结果：准确率较低，容易产生幻觉。
+
+知识图谱 RAG (GraphRAG) 的表现：
+第一步：识别实体“特斯拉”。
+第二步：在图谱上沿着边遍历 -> 找到 (特斯拉, 竞争对手, 比亚迪)。
+第三步：继续从“比亚迪”出发遍历 -> 找到 (比亚迪, 总部, 深圳)。
+结果：通过路径遍历，精准地推理出答案“深圳”。
+
+知识图谱缺陷：构建成本高，更新难度大，大模型自己就是一个压缩的知识图谱
+知识图谱适用场景：关系，推理，对比，多条件筛选场景
+不适用场景：用户问是什么，做什么，宽泛咨询问题
+
+如果遇到一个复杂问题；那么可以使用 混合检索（向量检索 + 知识图谱）：
+先用一个小模型或规则判断用户意图。如果是概念题，查向量库；如果是逻辑题，查图谱；如果是复杂题，用图谱定位关键实体和关系，再引导向量库去抓取对应的详细条款，最后由 LLM 综合生成。
+
+39. Graph RAG 知识图谱
+1. 提取 (Extraction)：让 LLM 阅读文档，自动提取出所有的实体和关系，构建成本地的小型知识图谱。
+  - 输入：一堆新闻文章。
+  - 输出：一个包含几百个实体和关系的图谱。
+2. 聚类与摘要 (Clustering & Summarization)：
+  - 将图谱中紧密连接的社区（Community）聚在一起（例如“所有关于特斯拉的节点”聚为一类）。
+  - 让 LLM 为每个社区生成一份高层摘要（例如：“这个社区主要讨论了特斯拉的股价波动和马斯克的言论”）。
+3. 检索与生成：
+  - 当用户提问时，不仅检索具体的三元组，还检索这些社区摘要。
+  - 这使得模型既能回答细节问题（具体关系），也能回答宏观问题
+40. RAGFlow框架
+RAGFlow 是一个基于深度文档理解构建的开源 RAG（检索增强生成）引擎。RAGFlow 的架构设计非常模块化，主要可以分为数据接入与解析、存储与检索、应用与编排。
+- 深度文档解析引擎 (DeepDoc)：这是 RAGFlow 最核心的竞争力。
+  - 功能：它不仅仅是提取文本，还能理解文档的版面布局。它能识别 PDF 中的标题、段落、表格、图片、页眉页脚等元素，并进行结构化提取。
+  - Ingestion Pipeline (摄入流水线)：在较新版本（如 v0.21.0）中，RAGFlow 引入了可视化的 ETL 流程。它包含 Parser（解析）、Transformer（转换/分块）和 Indexer（索引）三个算子，允许用户自定义数据处理链路。
+- 知识库管理模块：
+  - 功能：负责文档的分块（Chunking）。RAGFlow 提供了多种基于模板的分块策略（如简历、论文、手册等），而不是简单的固定长度切分，这保证了语义的完整性。
+- 检索服务：
+  - 功能：支持混合检索（Hybrid Search），即结合了关键词检索（BM25）和向量检索（Embedding），并支持重排序（Rerank）以提升准确率。
+- 生成与编排服务：
+  - 功能：负责与大模型（LLM）交互，基于检索到的上下文生成答案。它还支持基于图（Graph-based）的工作流编排，允许用户构建复杂的 Agent 应用。
+
+架构依赖组件
+在部署时，实际上是在部署一套微服务系统，主要依赖以下组件：
+- Elasticsearch：用于全文检索（关键词匹配）和倒排索引。
+- Milvus / Zilliz：用于存储向量数据，进行语义检索。
+- MySQL：用于存储元数据（用户信息、知识库配置等）。
+- Redis：用于缓存和任务队列。
+41. LLM Wiki
+LLM Wiki 是由前特斯拉 AI 总监、OpenAI 联合创始人 Andrej Karpathy 提出的一种个人知识库构建与管理新范式。
+传统 RAG 是每次从知识库中进行原始文档或文本的检索； 而LLM wiki 的话，它的检索流程是这样的；
+1. 提问与检索
+用户提出问题后，系统会进行向量化或语义检索。但它的检索目标不是零散的原始文档片段，而是已经经过大模型提炼、归纳的 Wiki 页面（如概念页、总结页、索引页）。
+2. 上下文拼接与生成
+系统将“用户问题”与检索到的“高质量 Wiki 页面”一起交给大模型。因为 Wiki 页面已经是逻辑自洽、结构清晰的结构化数据（去除了原始文档中的噪声和冗余），大模型可以直接基于这些“高浓度的知识卡片”生成综合答案，这比直接拼接原始碎片要高效得多。
+3. 知识回写与沉淀
+在传统 RAG 中，问答结束就结束了。但在 LLM Wiki 的流程中，如果这次问答产生了高质量的新答案，系统会将这个答案作为新知识，自动回写并更新到 Wiki 知识库中。这就实现了知识的复利效应，让知识库越用越聪明。
+
+42. LLM Wiki的结构
+第一层：原始资料层（Raw Sources）。 这是不可变的数据源，存放所有原始文档（如论文、笔记、会议记录等），不做任何加工，作为全量知识溯源的底座，保证内容可信度。
+第二层：Wiki 结构化知识层。 这是核心产出层，完全由 LLM 主导维护。AI 会阅读原始资料，用自己的话提炼、重组为结构化的 Markdown 页面（包含摘要、概念索引、双向链接等），并随着新资料的加入持续更新、修正矛盾。
+第三层：规则定义层（Schema）。 这是一个全局配置文件（如 CLAUDE.md 或 AGENTS.md），用来约束 LLM 的行为。它定义了知识的组织标准、写作风格、引用规范和纠错逻辑。
+43. LLM Wiki 适用场景
+适用场景： 它非常适合处理相对稳定的私有知识（如企业内部文档、个人学习笔记、科研资料等），能极大提升 Agent 的长期记忆和跨任务衔接能力18。
+局限性： 它不适合处理海量、高频的动态实时数据（如实时新闻、线上故障日志）。此外，持续整理知识库会消耗大量 Token，且整理质量高度依赖模型本身的理解能力
+44. LLM Wiki 与 RAG 的区别
+RAG：每次用户提问时，系统才去海量原始文档中检索相关的文本片段（Chunk），然后临时拼凑给大模型生成答案。知识无法积累。每次问同样的问题，系统都要从头推导；且检索出的碎片往往缺乏全局上下文，容易产生幻觉
+
+LLM Wiki：在数据构建阶段，大模型就提前将原始文档结构化，提炼出结构化的 Wiki 页面（如概念页、实体页），并建立交叉引用。检索到的是高度浓缩、逻辑自洽的知识卡片，不仅降低了检索噪声，还能在问答后将高价值答案回写进 Wiki，实现知识的持续生长。
+
+LLM Wiki 和 RAG 不是替代关系，而是互补关系。最合理的做法是分层混合架构：用 LLM Wiki 作为 Agent 的‘长期记忆’，承载稳定的核心知识；用轻量级 RAG 作为‘短期记忆’，处理实时的动态信息。
+
+五、大模型提示词
+
+1. 描述提示模板
+就是一段文本模板，里面有一些占位符，再发送给大模型之前会对这些变量进行替换。常见的可以设置如下：
+暂时无法在飞书文档外展示此内容
+2. 提示词优化技巧
+我大概会从设置提示词
+1. 明确任务目标：用指令式语言清晰定义要做什么；
+2. 结构化组织：拆分为角色设定、任务描述、输入数据、输出规范四个模块；
+3. 提供上下文示例（few-shot）：通过典型样例引导模型行为；
+4. 加入安全对齐约束：如“若信息不足，请回答‘无法确定’”；
+5. 建立评估迭代机制：结合自动化指标（如 RAGAS）持续优化。
+3. one-shot、few-shot
+暂时无法在飞书文档外展示此内容
+One-shot 和 Few-shot 学习是大语言模型“上下文学习”能力的直接体现。它们通过在输入中提供少量示范，让模型在推理时 “现场学习” 新任务，实现了无需微调的快速适配。其中，Few-shot 通常能带来比 Zero-shot 更稳定、更优的性能。
+4. 项目中提示词长度与结构
+一万内， 不同的智能体设置模型的提示词不同； 比如：我们的问题改写的大模型它的提示词200字内；
+而我们RAG项目生成使用的模型提示词就比较长：历史对话（5轮+摘要， 3000-5000）+用户问题+RAG中召回的父块（1200+1200），总提示词大概是5000+100+2400 = 7500； 随着询问的多，长度还会增加，我们限定最多两万
+
+意图识别的智能体对应的大模型提示词；也是比较短的，200内
+RAG的长一点，因为它有召回的文本块； 而其它智能体对应的大模型提示词介于这两个之间。
+
+5. 如何防止提示词注入
+1）使用分隔符（Delimiters）
+不要直接把用户输入拼接到指令中。使用明确的符号（如 """, ###, ---, XML标签 <input>）将用户输入包裹起来，并明确告诉模型“只处理分隔符内的内容”。
+
+6. 防止提示词泄漏
+防止提示词（Prompt）泄漏，是避免敏感的系统指令、业务逻辑、安全规则或专有 prompt 模板被用户通过输出、错误信息或对抗性输入意外获取。可以参考如下：
+1. 输出过滤：后处理模型回复，移除可能泄露指令的冗余内容；
+2. 隔离系统提示：系统级 prompt 由后端注入，不与用户输入拼接；
+3. 输入净化：转义或过滤换行符、特殊指令词等危险字符；
+4. 禁用指令回显：拒绝理由使用固定模板，不让模型自由解释规则；
+5. 日志脱敏：记录请求/响应时自动屏蔽 system prompt 内容。
+
+7. Skills 与提示词的区别
+- 提示词 (Prompt)：
+  - 本质：是一段自然语言指令，用于引导大模型的思考方向、语气风格或逻辑推理。
+  - 作用域：主要影响模型的输出内容（说什么）。
+  - 特性：具有概率性。同样的提示词，在不同上下文或不同温度设置下，模型的回答可能会有细微差异。
+- Skills (技能)：
+  - 本质：是一段结构化的代码逻辑或工作流定义（通常由 YAML/JSON 配置 + 底层 Tool 调用组成）。它明确规定了步骤顺序、条件判断和工具调用。
+  - 作用域：主要控制模型的行为路径（做什么、怎么做）。
+  - 特性：具有确定性。只要触发条件满足，Skill 会严格按照预设的流程执行（如：先读文件 -> 再调 API -> 最后发消息），不会“自由发挥”。
+8. 为什么需要Skills
+类似问题：有了工具调用，MCP为什么还需要Skills？
+① 降低幻觉，提升确定性
+- 如果只依赖 Function Call，面对复杂任务（如“用药咨询”），模型可能会胡乱组合工具，或者遗漏关键步骤（比如忘了查禁忌症）。
+- Skill 强制规定了执行流程（先查药品库 -> 再查禁忌症 -> 最后生成建议），将概率性的生成过程转化为确定性的工作流，极大降低了出错率。
+② 业务复用与模块化
+- Function Call 是散落的砖块，MCP 是水泥，而 Skill 是预制好的墙体。
+- 我们可以开发一个通用的“药品查询 Skill”，然后在“感冒咨询 Skill”、“慢性病管理 Skill”中直接复用它，而不需要每次都重新写提示词和配置工具。这符合软件工程中的高内聚、低耦合原则。
+③ 隐藏复杂度，降低使用门槛
+- 对于最终用户（或非技术人员），让他们理解复杂的 MCP 服务器配置或 Function Schema 是不现实的。
+- Skill 提供了一个友好的业务界面。用户只需要关心“我要做什么业务”，而不需要关心底层调用了哪个 API、参数怎么传。
+④ 上下文管理与记忆注入
+- Skill 可以携带专属的系统提示词（System Prompt）和领域知识库。
+- 例如，“法律合同审查 Skill”会自动注入法律领域的专业术语定义和审查标准，这是单纯的 Function Call 无法做到的。
+
+六、项目与场景
+1. 介绍一下你的RAG系统
+暂时无法在飞书文档外展示此内容
+稠密向量的维度：1024
+稀疏向量的维度：250002
+
+2. 项目团队构成情况
+如果要打造AI团队的话；也可以如下（3-5个人）：
+
+团队负责人：通常是技术出身，既懂AI也懂业务，负责统筹规划、资源协调和项目落地。
+AI应用/算法工程师 (2人)：核心执行者。擅长使用现有模型和工具解决具体业务问题。
+数据工程师 (1人)：负责数据的采集、清洗和管道搭建。
+产品经理：负责将模糊的业务需求转化为清晰的技术问题，并验证最终效果。
+
+3. 常见的AI编程工具
+cursor、trae（字节跳动）、qoder（阿里巴巴）、codeBuddy code（腾讯）、Claude code
+
+4. 使用AI编码的占比
+90% - 95%的使用率； 也就是完成一个功能几乎都是使用 cc/codex/qoder完成的； 
+还有10%为什么不是AI工具完成呢？什么原因需要人介入写呢？举例说一下？
+一个项目的开发，不只是功能实现完就可以的， 还需要使用的组件，出现问题的解决； 所以那10%几乎都是调用外部的工具，组件的时候，AI无法触及，部分我们的公司里面的组件是在内网（vpn）。
+例如：有一次我在使用分布式事务组件的时候，seata启动出现问题，连接不上； AI就解决不了，它大概分析的内容都是抓取网页上的解决方案，但是没有一个适合我当时的情景；（用户名，密码都在seata配置是正确的，前一天都还是启动好好的）
+后来发现是nacos中的配置优先级比较高，覆盖了seata本地的配置； 也就是nacos中的连接信息被同事修改了。而这样的常见ai就无法解决。
+
+5. 那使用了AI编码，你的作用是什么
+战场杀敌的不一定是将军！
+管理，规划，约束，调度AI完成； 这个工作比写基础的代码更重要。
+
+6. 意图识别为什么用bert不用qwen2.5
+bert是采用transformer的编码器，擅长理解内容和特别适合做分类任务，且输出的结果就是具体的分类值；而且比较小巧1-3亿参数，资源耗费不高，有限的数据就可以训练
+qwen 是通用大模型，是基于解码器实现的， 擅长生成内容做概率的输出，回归任务比较擅长；且输出的内容是概率的结果，不一定就严格是分类值，参数7b的话就是70亿参数，训练是肯定比bert要耗费资源的，需要比较可靠和数量较多才有更好的效果
+
+意图识别用qwen2.5模型实际效果如何？
+实际效果1000个里面分类900个都没有问题； 有问题的主要是：模型会自己输出； “我觉得大概是xxx分类” 或者 不够精确（就是问题与分类不对应）
+如果遇到非常复杂的问题需要做分类的话；那么通用大模型理解更加清楚，可以采用： 我使用了你们这个产品，发现效果达不到宣传要求，又那么贵，而且你们说效果不好是包退的  -----》  bert 退货   qwen2.5 投诉
+
+7. 项目遇到哪些挑战和困难
+最大的挑战是如何保证主工作流在第三方 A2A 服务不稳定的情况下依然保持高可用。
+因为我们的 Agent 编排依赖外部服务，一旦对方超时或宕机，很容易导致我们的系统线程阻塞甚至雪崩。我主要通过如下三种方式结合 LangGraph 的状态管理来解决：
+1. 熔断与降级（Resilience4j）
+我引入了 Resilience4j 组件。
+  - 熔断：当第三方服务的错误率超过阈值（例如 50%）时，自动触发熔断，阻断后续请求，防止资源耗尽。
+  - 降级：设计了 Fallback 逻辑。比如当外部 xxx服务 不可用时，Agent 会自动切换到 本地知识库 或返回缓存数据，确保用户体验不中断。
+2. 智能重试（Retry with Backoff）
+针对网络抖动等瞬态故障，我配置了重试机制。这既保证了临时故障能自动恢复，又避免了高频重试对下游服务造成压力。
+3. LangGraph 的状态恢复
+在 LangGraph 中，节点异常可能会导致图执行状态（State）卡死。
+  - 我编写了专门的异常处理逻辑，在捕获超时异常后，不仅执行降级，还会清理或重置当前的 Checkpointer 状态，确保工作流不会因为一次失败而永久挂起。
+通过这些措施，我们将外部依赖故障对核心业务的影响降低了 90% 以上。
+8. 印象深刻问题
+Langchain 版本从0.3.3 ---> 1.0.0
+千问模型升级之后； langchain的结构化输出问题
+智能体的调用过程出错而导致流程没有走下去---重试或者可以有容错（另外一个服务器;比如高德异常则调百度）
+
+9. 项目还可以怎么优化
+可能会增加短期会话中，历史消息列表的处理吧； 目前是考虑到业务情况，把所有消息都带给模型的； 这样可能对话轮次多的情况下，或者Langgraph的循环控制没有限制次数的话，会发送上下文爆炸的问题。
+  - 简单的做的话，我可能会先使用 简单滑动窗口做法，每次只携带最近10轮对话的记录；但是可能会丢失10轮之前的信息；
+  - 再优化的话；就将最近10轮的消息做摘要抽取，再结合最近10轮的消息一起携带给到模型；这样对于近期的对话记忆没有问题，早期的也有摘要抽取
+10. 智能体并发情况
+我们在本地使用 RTX 4090 进行过基准测试，Qwen2.5-7B 在 FP16 精度下，单卡能支撑的并发请求数大约是 XX（例如 20-30 个并发连接），再高就会出现显存溢出或延迟飙升。
+但在实际生产落地时，为了应对多智能体的高并发场景，我们部署在 阿里云上。
+我们并没有直接测试单机的极限并发，而是利用云原生的 HPA（水平自动伸缩） 机制。
+11. 多智能体系统的指标
+- 任务完成率（Task Success Rate）：比如“内训系统里，多智能体协同完成一个复杂的培训流程（如自动生成培训计划、推送课程、收集反馈）的成功率”。
+- 智能体协作效率：衡量智能体之间消息传递的冗余度、冲突解决次数，比如“通过LangGraph编排后，智能体间无效交互减少了多少”。
+- 首Token延迟（TTFT） 和 总响应时间：比如“多智能体协同编排时，从用户提问到第一个字输出，控制在多少秒以内”
+- 工具调用正确性：是否调用了正确的工具，参数是否正确
+12. 电商项目中的AI应用
+1、海量商品导致消费者决策疲劳，传统搜索和浏览耗时耗力。--- 自动下单
+用户可以使用自然语言、语音甚至多模态（如拍照）直接表达需求。智能体能够理解深层意图、自动全网比价、匹配商品并完成下单，购物时间从数十分钟缩短至数十秒。
+
+2、消费者容易受虚假宣传误导---辨别虚伪产品宣传
+AI购物助手能结合用户历史行为、实时上下文提供定制化推荐。它具备“劝退”功能，在识别到伪科学或虚假概念（如“量子水杯”）时，会主动进行科普并推荐靠谱平替
+
+3、线上购物缺乏实体试穿体验，且跨时区客服响应慢
+通过AR/VR具身智能实现虚拟试穿/试妆，有效降低退货率；同时提供7×24小时、跨语言的多模态客服，甚至能识别用户情绪，在检测到愤怒时自动升级人工服务并给出补偿方案
+- 结合提示词+原图+款式 --- 多模态模型（qwen3.7 plus）---- 理解文字和图片
+- 在我们的智能体中，会设置生成图片的工具； 
+- 上面的工具主要作用：生成图片， 我们会选择生成图片的模型，比如：qwen image edit，nano banana，GPT Image， mona lisa 模型；----- 生成图片
+- 返回图片流数据 或者 图片地址
+
+4、店铺运营、直播场控、广告投放等环节高度依赖人工，人力成本攀升且易出错
+多智能体协同矩阵可自主完成跨平台数据整合、直播复盘、切品调库存、发福袋等工作。例如，AI直播场控能让主播独立完成助播工作，使运营成本大幅降低；数字人Agent可实现24小时不间断直播，打破真人主播的体力限制
+
+5、选品、定价、补货等战略决策高度依赖个人经验，响应速度慢且风险高
+
+6、智能客服
+
+7、内容本地化与多平台一键分发； AI能一键生成适配不同平台（如亚马逊、TikTok）的多语言商品描述、营销文案，甚至生成符合当地文化偏好的“数字模特”图片和视频
+七、大模型微调
+1. 大模型微调流程
+1、数据准备
+  数据收集与清洗：强调数据质量远大于数据数量。收集与任务高度相关的、高质量的标注数据。数据清洗（去重、去噪、修正错误）是至关重要的一步，脏数据会严重影响模型效果。
+  数据格式化：将数据统一成模型能理解的格式。最常见的是“指令-输出”（Instruction-Response）的JSON或JSONL格式，例如 {"instruction": "用户问题", "output": "期望的模型回答"}。
+  数据划分：将数据集划分为训练集、验证集和测试集（常用比例为8:1:1）。训练集用于模型学习，验证集用于在训练中监控效果和调整超参数，测试集用于最终评估模型性能。
+2、模型选择
+  搭建训练组件，比如LLamaFactory
+  选择基座模型：根据任务需求和计算资源选择合适的预训练模型（基座模型）。例如，对于资源有限的场景，可以选择7B（70亿）参数量的模型，如Qwen2.5-7B、ChatGLM3-6B等。
+  配置超参数：如学习率（通常较小，如1e-5到5e-5）、批次大小 (Batch Size)、训练轮次 (Epochs)等
+3、训练
+  使用训练集开始模型训练；监控训练损失 (Training Loss) 和 验证集损失 (Validation Loss) 的变化曲线。
+  如果训练损失和验证损失都在下降，说明模型在学习。
+  如果训练损失下降但验证损失开始上升，说明模型可能出现了过拟合 (Overfitting)，需要采取措施，如早停（Early Stopping）、增加正则化或补充更多数据。
+
+4、评估
+使用预留的测试集对训练好的模型进行最终评估，计算之前定义的指标。
+
+5、部署
+将微调好的模型部署到生产环境中，使其能够通过API等方式提供服务。导出 GGUF 格式文件，部署到服务器中的ollama
+
+6、迭代
+据线上反馈和业务需求的变化，持续收集新数据，对模型进行迭代优化
+2. 大模型微调方法
+一、全量微调：在预训练好的模型基础上，使用新的领域或任务数据，对所有模型参数进行更新。成本高
+二、参数高效微调：只更新模型的一小部分参数，从而极大地降低了计算和存储成本。
+- Adapter适配器
+  - 核心思想：在Transformer的每个层中插入小型的前馈神经网络模块。在微调时，冻结原始模型的所有参数，只训练这些新插入的适配器。
+  - 工作方式：适配器通常放在自注意力层和前馈网络之后，形成一个残差连接。
+  - 优点：参数效率高，避免了灾难性遗忘。
+  - 缺点：会引入额外的推理延迟，因为增加了模型深度。
+- 提示微调 / P-Tuning
+  - 核心思想：不修改模型本身，而是在输入中引入一些可训练的“软提示”向量，与输入文本的嵌入向量一起送入模型。通过训练这些提示向量来引导模型产生期望的输出。
+    - P-Tuning v1：主要针对NLU任务，在输入层引入可训练的提示向量。
+    - P-Tuning v2：将可训练提示向量扩展到每一层Transformer，效果显著提升，成为目前的主流方法。
+  - 优点：不改变模型架构，几乎没有推理延迟；参数效率极高。
+  - 缺点：通常需要比适配器或LoRA更多的训练步数才能收敛。
+- LoRA及其变种微调
+  - 核心思想：假设模型在适应新任务时，权重变化具有“低秩”特性。因此，它不直接更新原始权重矩阵 W，而是用两个小的矩阵 A 和 B 的乘积来模拟其更新量：W′=W+BA。在训练时，只训练 A 和 B。
+  - 优点：
+    - 极高的参数效率和无推理延迟（训练结束后，可以将 BA 合并回原权重 W）。
+    - 性能通常能与全量微调相媲美。
+    - 非常灵活，可以只针对某些层的注意力机制进行微调。
+  - 流行变种：
+    - QLoRA：将模型以4位精度量化，然后再应用LoRA。
+    - AdaLoRA：动态地分配参数预算给最重要的权重矩阵，进一步提升参数效率。
+
+3. LoRA微调原理
+LoRA（Low-Rank Adaptation）是一种高效微调大模型的方法：它不修改原始模型的权重，而是在训练时“冻结”大模型，只添加少量可训练的低秩矩阵来模拟参数变化，从而大幅减少计算和存储成本。
+
+核心原理：
+大模型训练时不直接更新基座模型的原始权重矩阵 W，但会并联两个低秩矩阵 A 和 B 。其中 A 负责降维， B 负责升维。训练时只更新这两个小矩阵。
+
+$$W' =  W + \Delta W = W + A \cdot B$$
+  - 训练时冻结 W，只更新 A 和 B；
+  - 推理时可以把 A⋅B 合并回 W，零延迟。
+4. 微调-灾难性遗忘
+LoRA 冻结了基座，为什么还会灾难性遗忘？
+
+1. 输出空间的干扰（主要原因）：LoRA 学习到的新参数（ BA ）如果数值过大或更新方向不当，会掩盖基座模型原本的输出信号。
+2. 低秩假设的局限性：LoRA 假设任务更新是 低秩 的（微小的调整）。如果新任务与旧任务分布差异过大，或者强行让模型学习不兼容的知识，微小的 A 、 B 矩阵产生的扰动可能会破坏原有的语义流形，导致旧能力失效。
+3. 训练超参数设置：如果学习率过大或训练步数过多，LoRA 矩阵会过度拟合新数据，产生剧烈的梯度更新，这种剧烈的 震荡 会严重干扰基座模型的正常推理路径。
+
+怎么解决？
+- 数据层面（最有效）：我会采用混合数据回放策略，在训练集中混入少量（如 10%）的原始预训练数据或通用指令数据，让模型在学新知识的同时 复习 旧知识。
+- 参数层面：我会尝试降低学习率或减小 Rank ( r ) 值。很多时候遗忘是因为 LoRA 矩阵更新过猛，限制了它的更新幅度（低秩瓶颈）反而能起到保护作用。
+- 调整缩放系数 α （阿尔法）； 就是用来调节 新旧知识融合比例 的超参数；主要作用是控制 LoRA 新学到的知识（旁路矩阵 BA ）对最终结果的影响力有多大。我可能会调小一点这个值；
+  - α 越大：模型越倾向于表现新任务的特征，但也更容易覆盖掉基座模型的能力（导致灾难性遗忘）。
+  - α 越小：模型越保守，主要保留基座模型的能力，但可能学不会新任务。
+
+通常将 α 设置为 r 的 2倍
+如果设 r=8，那么 lora_alpha 通常设为 16
+此时 α÷r=2 ，意味着 LoRA 的更新幅度大约是原始信号幅度的 2 倍左右（经过 B 和 A 变换后）
+
+
+5. 全量微调与LoRA微调区别
+全量微调（Full Fine-tuning）是指对预训练模型的所有参数进行调整，通过合理的数据准备、训练、评估和策略调整，使模型在特定领域的数据集或任务上表现得更出色。全面微调适用于数据量大、计算资源充足的场景。在训练过程中，预训练模型的每一个权重参数（Weight）都会根据梯度进行更新。这需要加载完整的模型权重、优化器状态和梯度，显存占用极高
+
+参数高效微调PEFT 主要是LoRA 或者 QLoRA ；具体：
+LoRA（Low-Rank Adaptation）冻结原模型，只训练旁路注入的低秩矩阵。
+6. QLoRA与LoRA的区别
+LoRA（低秩适配）和 QLoRA（量化低秩适配）都是参数高效微调技术，目的都是避免全量微调带来的巨大算力开销。LoRA 通过冻结原模型、只训练极少量的低秩矩阵来降低显存需求；而 QLoRA 则在 LoRA 的基础上，进一步引入了4 bit（4比特） 量化技术，把底座模型也压缩了。
+
+- LoRA：底座模型通常保留在 16-bit 或 32-bit 的全精度/半精度状态，只是冻结了参数，只训练新增的适配器（Adapter）。
+- QLoRA：在训练前，先将底座模型压缩量化至 4-bit 精度（引入了 NF4 数据类型），但新增的 LoRA 适配器依然保持 16-bit 精度进行训练。
+
+7. 什么时候会选择微调大模型
+选择微调大模型的核心场景有以下几种：
+1. 任务专属化：当通用模型无法满足特定任务的高精度要求时（如法律审阅、医疗诊断），需微调以获得“专家级”能力。
+2. 知识私有化：当业务依赖私有数据或最新知识（如公司内部文档、数据库），且不愿通过RAG在提示中暴露时，通过微调将知识内化到模型中。
+3. 风格对齐化：当需要模型输出符合特定的风格、语气或格式（如品牌口吻、固定JSON结构）时，微调能实现稳定、统一的输出。
+4. 成本与延迟优化：对于高频使用的特定任务，一个微调后的小模型比持续调用巨型通用API更经济、快速且可控。
+反之，如果需求能通过提示工程或RAG解决，则应优先选择这些更轻量、低成本的方式。 微调是解决模型“能力”或“知识”根本性不足的手段。
+
+8. 什么时候会全量微调
+只有当任务极其关键、数据量足够大、且 LoRA 的效果确实没有更好的效果的时候，我们才会投入巨大的资源进行全量微调。
+- 当目标任务与模型预训练时的通用任务差异巨大，或者任务本身对模型底层能力的依赖极强时，LoRA 的“外挂”式修补可能不够用，需要更新模型的所有参数来深度适配。
+- 当私有数据规模达到百万级以上时，全量微调可以充分挖掘数据中隐藏的深层模式和隐蔽特征，这些是 LoRA 等轻量级方法难以完全学习的。
+- 虽然 LoRA 也能做风格迁移，但当品牌对语言风格的独特性、一致性要求达到极致时，也可选择全量微调
+
+9. 微调时的超参数都有哪些
+在微调大模型时，我主要关注以下几个核心超参数：
+1. 学习率：这是最关键的一个。我会使用一个较小的值（比如1e-5， $$10^{-5}$$  ），并配合Warmup和线性衰减策略，目的是在适应新任务和保留预训练知识之间取得平衡。
+2. 训练轮数：我会根据验证集的性能采用早停法来动态确定，防止模型过拟合到训练数据上。
+3. 批量大小：主要根据GPU显存设置为所能承受的最大值，以保证训练效率。
+4. 权重衰减：通常会设置一个较小的值（如0.01）来作为正则化，提升模型的泛化能力。
+至于优化器内部参数，我一般会沿用其默认值，因为它们对大模型已经很友好了。
+
+暂时无法在飞书文档外展示此内容
+
+10. 微调数据的构建方法
+构建微调数据的核心在于质量优先，大概可以：
+1. 定义结构：根据微调目标（指令遵循、对话等）确定数据格式，如 (指令，输入，输出)。
+2. 生成数据：优先采用 ‘大模型生成 + 人工精校’ 的高效混合模式。先生成大量候选数据，再由经过培训的标注员对关键样本进行审核和修正。
+3. 严格清洗：进行去重、格式标准化和内容过滤。
+4. 质量校验：这是最关键的一步。必须通过人工审核或模型交叉验证来保证数据的正确性和多样性，确保我们喂给模型的是高质量的数据。
+最终，数据会被规范化为像 JSONL 这样的标准格式，用于训练。
+11. 微调数据-单轮对话
+单轮对话数据格式通常用于让模型学习遵循特定指令，数据结构相对扁平。
+典型结构：通常包含 instruction (指令)、input (输入) 和 output (输出) 三个字段。
+例如：
+```JSON
+{
+  "instruction": "将以下文本翻译成英语",
+  "input": "你好，世界。",
+  "output": "Hello World"
+}```
+
+训练的时候；计算 Loss 的方式
+模型学习的是从 instruction + input 到 output 的直接映射。在训练时，模型会计算整个 output 的预测误差（Loss），目标是让模型生成最准确的单一回答。
+
+
+12. 微调数据-多轮对话
+多轮对话数据格式用于模拟真实的对话场景，强调上下文和历史。
+典型结构：通常是一个 messages 列表，其中每条消息都包含 role (角色) 和 content (内容)。角色一般分为 system (系统设定)、user (用户) 和 assistant (助手)。
+例如：
+```JSON
+[
+  {"role": "system", "content": "你是一个乐于助人的AI助手。"},
+  {"role": "user", "content": "我想去中国旅游。"},
+  {"role": "assistant", "content": "中国是个好地方！你对哪个城市最感兴趣？"},
+  {"role": "user", "content": "深圳。有什么推荐吗？"}
+]```
+
+训练的时候；计算 Loss 的方式
+模型学习的是在理解整个对话历史（messages 列表中之前的所有内容）的基础上，预测最后一个 assistant 的回复。
+- 关键点：在计算 Loss 时，通常只对最后一个 assistant 的回复内容进行计算，而忽略 user 的提问和之前的对话历史。
+- 目的：这迫使模型学会理解上下文、记忆之前的对话内容、保持人设和语气的一致性，而不是简单地复述或记忆整个对话。
+
+13. 微调中的过拟合问题
+在微调中，过拟合通常是因为模型在有限的数据上训练过度，比如数据量太少、训练轮次太多或学习率太大，导致模型记住了训练集的噪声而非学会泛化规律。
+我的解决方案会从三个层面入手：
+1. 数据优先：首先考虑增加高质量数据或进行数据增强，这是最根本的。
+2. 训练控制：我一定会使用早停法，并设置一个较小的学习率，这是微调时的标准做法。
+3. 方法选择：我会优先采用像 LoRA 这样的参数高效微调方法。它本身通过限制可训练参数量，就是一种非常强大的正则化手段，能有效防止过拟合。
+总结来说，就是通过 ‘更多更好的数据’、‘更谨慎的训练策略’和‘更高效的微调方法’ 三位一体来共同解决过拟合问题。
+14. 微调中的学习率设置
+通用范围：通常设置一个较小的学习率，范围在 1e-5（0.00001）到 1e-4（0.0001） 之间。
+为什么这么小？
+  - 避免灾难性遗忘：大学习率会猛烈更新权重，破坏模型在预训练阶段学到的宝贵通用知识。
+  - 稳定收敛：小学习率使训练过程更稳定、可控，允许模型平滑地适应新数据分布。
+在使用过程中不会固定学习率；会使用调度器，进行学习率 Warmup（预热） 后接 Linear Decay（线性衰减）。预热保证训练初期的稳定性，衰减则利于后期精细收敛。
+
+15. 微调中的batch size选择
+Batch Size 的选择本质上是 训练梯度稳定性、硬件利用率和模型泛化能力 之间的权衡。
+在 GPU 显存不溢出的前提下，尽可能使用较大的 Batch Size（比如32或64），这能最大化硬件利用率，加快训练速度。
+- 大Batch 训练稳定且高效，但可能导致模型泛化能力稍差。
+- 小Batch 训练虽慢且震荡，但噪声可能起到正则化作用，有助于找到更鲁棒的解决方案。
+如果我的首要目标是最终模型的泛化性能，我会倾向于选择较小的Batch Size。在实际操作中，我会固定其他参数，尝试不同的Batch Size，并根据验证集上的性能来做出最终选择。
+16. 微调中Epoch怎么设置
+Epoch 是什么：整个训练数据集被模型完整学习一遍的次数。
+- 太少的 Epoch（欠拟合）：模型还没有充分学习数据中的规律，性能未达到最优。
+- 太多的 Epoch（过拟合）：模型开始“死记硬背”训练数据，包括其中的噪声和特定模式，导致在未见过的数据（验证集/测试集） 上性能下降。这是微调中最主要的风险。
+由于预训练模型已经具备了强大的基础能力，微调只是“点拨”和“适应”，因此所需的 Epoch 通常不多。范围可能在 3 到 10 个之间，对于大型模型或小数据集，甚至更少。
+17. epoch与batch
+每个epoch是一轮训练，每个epoch下有多个batch；1个epoch就是将所有训练数据训练完的意思；而1个batch就是这个epoch下每次训练几条数据。 例如；训练数据100条， 1个epoch就是完整训练100条数据的意思，而batch为10的话，那么就是每个epoch，要分 100 / 10 = 10 次；要分10次才能训练完。
+
+18. 微调中的早停策略/早停法
+早停法是一种正则化技术，用于在模型开始过拟合训练数据时自动停止训练，从而找到泛化能力最强的模型状态。
+工作原理
+1. 数据划分：将数据分为训练集（用于更新模型参数）和验证集（用于评估模型泛化性能，不参与训练）。
+2. 监控验证集指标：在每一个Epoch（或一定步数）训练结束后，在验证集上计算评估指标（如 准确率、F1分数 或 损失值）。
+3. 提前终止条件：当验证集性能在连续多个Epoch（由 patience 参数控制）内不再提升 或 开始下降 时，触发停止。
+我的做法：
+早停法是我在微调中防止过拟合的核心策略。它的实现非常简单有效：
+1. 我会准备一个独立的验证集，并在训练中持续监控其上的性能（如验证损失）。
+2. 我设置一个 patience 参数（比如3）。这意味着如果验证集性能连续3个Epoch都没有提升，我就认为模型已经过拟合，并立即停止训练。
+3. 最关键的一点是，我会开启 restore_best_weights 选项。这样，训练停止后，模型会自动恢复到它在验证集上表现最好的那个检查点的状态。
+19. 微调中的评估指标
+1. 分类任务：我首选 F1分数，因为它能综合平衡精确率和召回率，尤其在类别不平衡的数据集上比准确率更可靠。
+2. 生成任务：
+  - 对于摘要，我使用 ROUGE 指标。
+  - 对于翻译，我使用 BLEU 指标。
+  - 不过这些自动指标有局限性。对于像对话这样的开放式生成任务，人工评估其流畅度和有用性是必不可少的最终环节。
+20. 量化或FP16
+FP16 全称是 16-bit Floating Point（半精度浮点数）。相比于传统的 FP32（单精度，32位），它将存储每个数值所需的比特数减半。
+- FP32 每个参数占 4 字节，而 FP16 只占 2 字节。
+- 在我们的项目中，7B 模型如果用 FP32 加载需要约 28GB 显存，这在单张 24GB 的 A10 卡上是跑不起来的。但换成 FP16 后，权重仅需 14GB（7 * 2 = 14GB；如果没有使用FP16则 7 * 4 = 28GB），这就留出了宝贵的空间给优化器状态、梯度缓存和激活值，让我们能在单卡上成功运行 LoRA 微调。
+
+21. 微调使用的服务器和显卡
+我们目前的微调环境是基于 单张 NVIDIA A10 (24GB 显存) 构建的；
+- 基座模型：我们选用的是 Qwen2.5-7B。在 FP16 精度下加载，模型权重本身占用约 14GB 显存。
+- 训练开销：引入 LoRA进行微调后，由于只需要更新少量的适配器参数，加上优化器状态和激活值，额外开销控制在 2-3GB。
+- 余量管理：总占用约 16-17GB，剩余约 7-8GB 用于上下文窗口（Context Window）和系统缓冲。这使得我们在 24GB 的显存限制下，既能保证模型加载，又能支持较长的输入序列，刚好卡在资源利用的极限边缘，但没有溢出。
+
+- 如果我们未来需要微调更大的模型（如 Qwen-72B）：
+  - 显存容量：72B 模型在 FP16 下需要约 144GB 显存，单卡 A10/A100 都无法容纳，必须使用 多卡分布式训练（如 4卡或8卡） 配合 DeepSpeed ZeRO-3 或 FSDP 进行参数分片。
+  - 显存带宽：除了容量，大模型训练对 显存带宽 要求极高。A10 的带宽（~600 GB/s）会成为严重瓶颈，导致训练极慢。这时候就必须升级到 A100 (2TB/s+) 或 H100 (3TB/s+)，利用其高速互联（NVLink）和高带宽来保证训练效率。
+
+22. 微调训练时长
+关于微调训练的耗时，我们的整体流程控制在 4 到 5 小时 左右：
+1. 训练配置与效率
+  - 数据规模：我们使用了约 1000 条 高质量指令微调数据。
+  - 批次策略：受限于显存，我们将 Per-Device Batch Size 设为 2，并开启了 梯度累积（Gradient Accumulation） 步数为 4。这意味着模型的有效批量大小（Effective Batch Size） 是 2×4=8 。这种设置既保证了显存不溢出，又维持了较稳定的梯度更新方向。
+  - 单轮耗时：在这样的配置下，完成一个 Epoch（全量数据遍历一轮） 大约需要 40 到 50 分钟（注：此处假设是在单卡/双卡高端显卡如 A100/4090 环境下，若硬件不同请调整）。
+2. 训练轮次与收敛判断
+  - 总轮次：我们总共训练了 8 个 Epochs。
+  - 停止依据：我们没有盲目增加轮次，而是实时监控 Loss 曲线。
+    - 在前 6 个 Epoch，Loss 下降明显，模型快速吸收领域知识。
+    - 到了第 8 个 Epoch，Loss 曲线已经基本趋于平稳（Plateau），验证集上的表现也达到峰值。
+  - 过拟合风险控制：对于 1000 条这样的小样本数据，如果超过 8 个 Epoch，很容易出现过拟合（Overfitting），导致模型在训练集表现好但泛化能力下降。因此，8 个 Epoch 是我们在‘充分学习’和‘泛化能力’之间找到的最佳平衡点，再多训练收益递减甚至为负。
+
+通过合理的梯度累积策略和基于 Loss 曲线的早停机制，我们在 5 小时内 就完成了从数据加载到模型收敛的全过程，实现了高效且低成本的迭代。
+23. 微调数据格式
+- Alpaca 格式（最广泛）；适用场景：单轮指令遵循任务（如文本生成、摘要、信息抽取）；结构清晰，易于构造和解析，被 Llama-Factory、HuggingFace 等工具广泛支持；适合大多数任务型微调。通常保存为 .json 或 .jsonl（每行一个样本）。示例：
+```JSON
+{
+  "instruction": "请从句子中提取主体(S)、动作(P)、客体(O)，格式为'S:xxx, P:xxx, O:xxx'",
+  "input": "李先生为妻子投保了友邦全佑惠享重大疾病保险。",
+  "output": "S:李先生, P:投保, O:友邦全佑惠享重大疾病保险"
+}```
+
+- ShareGPT 格式（多轮对话）；适用场景：对话系统、聊天机器人、多轮交互任务；可从客服日志、用户访谈记录中清洗构造。示例：
+```JSON
+{
+  "conversations": [
+    { "from": "human", "value": "今天天气怎么样？" },
+    { "from": "gpt", "value": "抱歉，我无法获取实时天气信息。" },
+    { "from": "human", "value": "那你能推荐些户外活动吗？" },
+    { "from": "gpt", "value": "当然，比如徒步、骑行、野餐等。" }
+  ]
+}```
+- 自定义 JSONL 格式；适用场景：SPO抽取、实体识别、表格生成等需精确控制输出的任务。在 Alpaca 基础上扩展字段，增强语义表达。.jsonl（JSON Lines），每行一个独立 JSON 对象，适合大文件流式读取。
+  示例：
+```JSON
+{"instruction": "提取SPO三元组", "sentence": "张女士购买了平安e生保长期医疗险", "subject": "张女士", "predicate": "购买", "object": "平安e生保长期医疗险"}```
+24. 高质量微调训练数据
+- 格式标准化：将数据清洗为标准的 Alpaca 格式（Instruction, Input, Output）。
+- 去重与去噪：剔除重复样本和包含乱码、错别字的数据，防止模型学习到错误的语言模式。
+- 人工校验：引入数据校验审核，尤其是法律，医疗类的数据； 可以接入审核系统，交由人工审核，校验。
+
+八、数据构建
+1. 数据清洗具体哪些操作
+  1. 去除噪声：清理 HTML 标签、广告代码、特殊字符、乱码和多余空白。
+  2. 格式标准化：统一编码（UTF-8）、大小写、日期/数字格式。
+  3. 去重：精确去重（哈希）和近似去重（MinHash+LSH），避免数据偏差。
+  4. 语言识别与过滤：保留目标语言内容。
+  5. 长度过滤：剔除过短无意义或过长冗余的文本。
+
+2. 知识库数据怎么清洗
+重点是提升检索准确性和上下文质量：
+  1. 文档切分：将长文档（如 PDF、网页）按语义合理分块（如按段落、标题），确保每块信息完整独立。
+  2. 元数据增强：添加来源 URL、标题、章节等元数据，便于后续过滤和溯源。
+  3. 关键信息保留：特别注意保留表格、代码块、术语定义等核心内容，避免切分破坏结构。
+  4. 低质量内容过滤：移除导航栏、页脚、版权声明等无关区域。
+  5. 向量化前处理：对文本块进行清洗后，再生成嵌入向量存入向量数据库。
+
+3. 微调数据怎么清洗
+重点是保证样本质量和标注一致性：
+1. 格式统一：确保所有样本符合预设格式（如 instruction-tuning 的 instruction/input/output 结构）。
+2. 标注质量审核：
+  - 检查输入与输出的相关性，剔除答非所问的样本。
+  - 评估输出的正确性、完整性和流畅性。
+  - 对多轮对话，检查上下文连贯性。
+3. 毒性与偏见过滤：严格移除包含歧视、偏见或有害内容的样本。
+4. 数据平衡：检查不同类别、任务类型的样本分布，避免模型偏向。
+5. 困惑度过滤：用小模型评估输出质量，过滤生成质量差的样本。
+核心原则是：知识库清洗为“高效检索”服务，微调数据清洗为“高质量学习”服务。
+4. 文本分割器分类
+- 递归字符分割器
+  - 原理：这是目前最推荐、最通用的分割方式。它定义一组分隔符（如 ["\n\n", "\n", "。", "，", " "]），按优先级递归切分。
+  - 逻辑：先尝试按段落（\n\n）切；如果段落太长，再按句子（。）切；如果句子还长，再按字符切。
+  - 优点：能最大程度保留文本的语义结构（段落、句子完整性），不会像简单切分那样把句子拦腰截断。
+  - 适用场景：绝大多数通用文档（小说、新闻、报告）。
+- 字符/Token 分割器
+  - 原理：简单粗暴地按固定字符数（如 500 字符）或 Token 数（如 512 tokens）切分。
+  - 缺点：极易破坏语义，比如在“人工”和“智能”中间切开。
+  - 适用场景：对语义要求不高的日志分析，或者配合滑动窗口使用。
+- 特定格式分割器 (Markdown / HTML / Code)
+  - 原理：利用文档的结构标签进行切分。
+    - Markdown：按标题层级（#, ##, ###）切分，保证一个章节的内容完整。
+    - Code：按编程语言语法（如 Python 的 class, def）切分，保证函数或类的完整性。
+  - 适用场景：技术文档、代码库检索、结构化网页数据。
+- 语义相似度分割器
+  - 原理：先将文本按句子拆分，计算相邻句子的向量相似度。如果相似度低于某个阈值（说明话题发生了跳跃），就在那里切分。
+  - 优点：能精准识别“话题转换点”，保证每个分块内的主题高度一致。
+  - 适用场景：复杂的对话记录、多主题混合的长文档。
+- 聚合分割器
+  - 原理：先将文本切分成很小的单元（如句子），然后利用聚类算法（如 K-Means）将语义相近的句子聚合成一个块。
+  - 优点：生成的块语义内聚性极强。
+  - 缺点：计算成本极高，速度慢。
+5. 文本切割的优化
+
+ 1. 根据文档类型选择策略
+暂时无法在飞书文档外展示此内容
+2. 合理设置 chunk size 与 overlap
+  - 经验范围：256–1024 tokens（取决于 LLM 上下文和任务）。
+  - Overlap：通常设为 chunk size 的 10%~20%（如 512 tokens → overlap 50–100）。
+  - 原则：确保一个完整句子/段落尽量落在同一个 chunk 内。
+3. 增强 chunk 的上下文信息
+  - 添加元数据：如来源文档名、章节标题、页码。
+  - 前缀/后缀注入：在 chunk 开头加入“本段来自《XXX》第3章”，增强上下文。
+4. 评估驱动优化
+  - 构建测试集，评估不同切分策略下的：
+    - 检索召回率（Recall@K）
+    - 答案准确率（Answer Accuracy）
+    - 幻觉率（Hallucination Rate）
+  - 选择在业务指标上表现最优的方案。
+5. 动态切分（Dynamic Chunking）
+  - 根据内容密度动态调整 chunk 大小：
+    - 技术性强、信息密集 → 切小；
+    - 描述性、冗余多 → 切大。
+6. 语义分割文本
+说了上一题的后还问；能不能按照语义分割文本的话； 那么回答：
+
+我们也可以采用按照语义分割文本； 可以使用 nlp_bert_document-segmentation_chinese-base 这个小型的bert模型；按照语义来分割文本。 
+
+缺点：分割出来的文本块，大小不一；长度可能无法控制。
+
+语义分割文本原理：
+本质上是一个 “句子对分类” 或 “边界检测” 任务，基于 BERT 微调实现。它把“语义分段”转化为“相邻句子是否属于同一话题”的二分类问题，利用 BERT 强大的上下文语义理解能力，判断句子间的语义连贯性，从而在话题切换处精准切分。 
+一般采用： 滑动窗口 + 边界二分类
+
+步骤：
+1. 将文档拆分为句子序列
+使用中文分句工具（如 pyltp、LAC 或规则）得到句子列表：
+S = [s₁, s₂, s₃, ..., sₙ]
+2. 对每两个相邻句子 (sᵢ, sᵢ₊₁)，判断是否为“分割点”
+  - 输入：[CLS] sᵢ [SEP] sᵢ₊₁ [SEP]
+CLS 表示每个输入序列的开头标识符； SEP 表示同一个输入序列中的不同句子或文本片段。
+  - 输出：二分类 —— “是否在此处切分”（0=不分割，1=分割）
+3. BERT 编码 + 分类头
+  - 用 BERT 获取 [CLS] 向量；
+  - 接一个全连接层 + sigmoid，输出分割概率。
+4. 后处理
+  - 对所有相邻句对预测结果，取概率 > 阈值的位置作为分割点；
+  - 可加入最小段落长度约束等规则。
+BERT 能捕捉 上下文语义相关性（因为它是基于Transformer的编码器）。如果 sᵢ 和 sᵢ₊₁ 属于不同话题（如从“经济”跳到“体育”），它们的语义关联弱，模型就倾向于预测“分割”。
+
+7. 分块的评估
+一个“好”的分块应该满足：
+1. 语义完整：不切断句子、代码、逻辑；
+2. 粒度合适：匹配下游任务需求；
+3. 可检索：包含足够关键词/语义，能被 query 命中；
+4. 信息充分：包含回答问题所需的最小上下文；
+5. 结构友好：保留原始文档的层级/元信息。
+最终验证标准：当用户提出一个问题时，最相关的 chunk 能独立支撑 LLM 生成准确、无幻觉的答案。
+
+
+8. 怎么读取跨页表格
+我们项目使用的是 百度的PaddleOCR （https://aistudio.baidu.com/paddleocr ）
+可以读取到跨页的表格，它会完整的读到表格数据；然后我们项目对这样的表格采用pandas读取表格行列数据；然后再拼接到当前页文本中。 以此类推的，逐页读取解析。
+读完整个pad文档之后， 我们再进行分块（父子块）
+
+9. 清洗PDF用什么包
+我们使用的是 pyPDF、pyMuPDF
+```Python
+from pypdf import PdfReader
+
+reader = PdfReader("document.pdf")
+text = ""
+for page in reader.pages:
+    text += page.extract_text() or ""
+...```
+10. 怎么读取PDF中的图片
+1、如果是扫描版 PDF：我会结合 PyMuPDF 和 PaddleOCR。先用 PyMuPDF 将 PDF 页面渲染成高分辨率图片；
+2、引入paddleOCR包含的ocr方法，设置图片地址；解析读取得到坐标（这段文字的文本框的四个顶点坐标），文本内容，置信度
+3、解析出来的每页数据，它都是分很多 文本框的； 所以只需要获取到文本框中的信息就可以
+
+11. 分页导致语义缺失怎么办
+早期的 OCR 确实是按页切分的，会导致表格截断。但现在的 PaddleOCR-VL 1.5 和 PP-StructureV3 已经解决了这个问题。
+它通过跨页表格自动合并技术，能够识别并拼接跨页的表格结构；同时利用版面分析功能，根据语义和坐标对文本段落进行逻辑重组，自动剔除页眉页脚并修复断裂的段落，从而输出结构完整的 Markdown 或 JSON 数据。
+
+升级到最新版本的 PaddleOCR，并使用 PP-Structure 而不是基础的 OCR 模式。代码如下：
+```Python
+from paddleocr import PPStructure
+
+# 1. 初始化 PP-Structure 引擎 (支持版面分析和表格还原)
+# 注意：需要安装 paddleocr >= 2.7 或最新版
+table_engine = PPStructure(show_log=True, image_orientation=True)
+
+# 2. 处理 PDF (PP-Structure 支持直接输入 PDF 路径)
+# 它会自动处理多页逻辑
+img_path = 'test_pdf.pdf' 
+result = table_engine(img_path)
+
+# 3. 获取结果
+# result 中包含了结构化的信息，表格会被单独提取出来
+for line in result:
+    if line['type'] == 'table':
+        # 这里获取的是完整的表格 HTML 或 Excel 数据
+        # 在新版中，跨页的表格理论上会被自动合并处理
+        print(line['res']['html']) 
+    else:
+        print(line['text'])```
+九、Transformer
+1. Transformer组成
+（1）输入部分
+  - 源文本嵌入层：将源文本中的词汇数字表示转换为向量表示，捕捉词汇间的关系。
+  - 位置编码层：为输入序列的每个位置生成位置向量，以便模型能够理解序列中的位置信息。
+  - 目标文本嵌入层（在解码器中使用）：将目标文本中的词汇数字表示转换为向量表示。
+（2）编码器部分
+  - 由N个编码器层堆叠（6层，每层8头）而成。
+  - 每个编码器层由两个子层连接结构组成：第一个子层是多头自注意力子层，第二个子层是一个前馈全连接子层。每个子层后都接有一个规范化层和一个残差连接。
+（3）解码器部分
+  - 由N个解码器层堆叠而成。
+  - 每个解码器层由三个子层连接结构组成：第一个子层是一个带掩码的多头自注意力子层，第二个子层是一个多头注意力子层（编码器到解码器），第三个子层是一个前馈全连接层。每个子层后都接有一个归一化层和一个残差连接。
+（4）输出部分
+  - 线性层：将解码器输出的向量转换为最终的输出维度。
+  - Softmax层：将线性层的输出转换为概率分布，以便进行最终的预测。
+2. Transformer原理
+首先，输入也就是源文本被映射为固定维度的词嵌入，与位置编码相加，以注入序列的位置信息。
+编码器通过多头自注意力机制，使每个位置能够聚合整个输入序列的上下文信息：具体地说，就是将输入线性变换为查询（Q）、键（K）和值（V）矩阵，计算 Q 与 K 的点积并缩放，经 Softmax 得到注意力权重，再对 V 加权求和，输出上下文感知表示。随后，这个表示通过前馈神经网络进行非线性变换。两个子模块都采用残差连接与层归一化，以稳定训练并缓解梯度问题。
+解码器包含两个注意力子模块：第一个是，带掩码的多头自注意力机制通过对未来位置施加掩码，确保生成过程仅依赖已生成内容，维持自回归特性；再接着就是，编码器-解码器注意力机制中，查询（Q）来自解码器，键（K）和值（V）来自编码器输出，使解码器在生成每个词时能动态聚焦于输入序列的相关部分。之后同样经过前馈网络及残差归一化处理。
+最终，解码器的输出通过线性层映射到目标词表，并经 Softmax 输出概率分布，选择概率最高的词作为输出。
+[图片]
+3. 注意力机制
+注意力机制 是一种让模型在处理序列时，能够 “关注” 输入中最重要部分的机制。 主要有如下：
+1. Soft Attention（软注意力）
+  - 对所有位置分配一个权重（Softmax），加权求和
+  - 可微分，易于训练
+  - 最常用形式
+2. Hard Attention（硬注意力）
+  - 只选择一个位置（如 argmax）
+  - 不可微，训练困难
+  - 少用
+3. Self-Attention（自注意力）
+  - Q、K、V 来自同一输入序列
+  - 每个词可以关注序列中其他词
+  - 是 Transformer 的核心
+4. Multi-Head Attention（多头注意力）
+  - 使用多组 Q、K、V 投影，学习不同子空间的注意力
+  - 每个“头”关注不同的语义模式（如语法、语义、指代）
+
+4. 自注意力机制
+自注意力（Self-Attention） 是一种让序列中的每个元素“关注”序列中其他元素的机制，从而动态地捕捉全局依赖关系。
+
+自注意力就是让模型在处理每个词时，自动去找最相关的上下文信息。
+
+5. 自注意力的计算步骤
+给定一个输入序列，自注意力的计算流程主要包含四个核心步骤：
+第一步：生成 Q、K、V 向量。
+这和我们之前沟通的一致。每个输入向量 x 会分别乘以三个可学习的权重矩阵 W_Q, W_K, W_V，从而得到 Query、Key 和 Value 向量。这一步的本质是将输入投影到三个不同的特征子空间，让模型学习不同类型的关系。
+第二步：计算注意力分数并缩放。
+这里有一个关键细节。我们首先计算 Q 和 K 的点积来衡量匹配度。但为了防止当向量维度 d_k 很大时，点积结果过大导致后续 Softmax 进入梯度极小的饱和区（引发梯度消失），我们必须将点积结果除以 √d_k 进行缩放。这是保证模型训练稳定性的关键一步。
+第三步：Softmax 归一化。
+将缩放后的分数通过 Softmax 函数转化为概率分布。这个分布就是‘注意力权重’，代表了在生成当前词的新表示时，应该从序列中其他词“汲取”多少信息。
+第四步：加权求和 Value。
+最后，用第三步得到的注意力权重，对 V 矩阵进行加权求和。这样，每个位置的输出就不再是孤立的，而是融合了整个序列中最相关上下文信息的新表示。
+
+6. 多头自注意力机制
+多头自注意力机制 是让模型从多个不同的子空间角度，并行地学习输入序列中词与词之间的依赖关系，从而捕捉更丰富、更复杂的语义模式。
+
+多头自注意力的计算流程
+第一步：线性投影与分头
+首先，我们将输入向量 X 分别乘以 h 组不同的权重矩阵（ $$W_i^Q  W_i^K  W_i^V$$ ）。
+这里有一个关键的维度细节：假设模型隐藏层维度是 $$d_{model}$$ （比如512），我们有 h 个头（比如8个），那么每个头的维度 $$d_k$$ 就会被压缩为 $$d_{model}/h$$（即64维）。这样设计是为了保证计算量和单头注意力保持一致。
+
+第二步：并行计算自注意力
+接下来，这 h 个头在各自的低维子空间里，独立且并行地计算自注意力。
+这就好比我们在看一幅画：
+- 头1 可能关注语法结构（比如主谓关系）；
+- 头2 可能关注指代关系（比如‘它’指代‘猫’）；
+- 头3 可能关注局部词组搭配。
+每个头都能捕捉到不同类型的依赖关系。
+第三步：拼接
+计算完成后，我们将这 h 个头的输出矩阵拼接起来，恢复成原来的 $$d_{model}$$维度。
+第四步：线性变换（融合）
+最后，拼接后的矩阵会乘以一个输出权重矩阵 $$W^O$$ 。这一步的作用是将不同头捕捉到的多维度信息进行融合，生成最终的输出表示。
+
+7. Transformer智能涌现的原因
+涌现（Emergence）是指：当系统规模增大时，突然出现一些小模型不具备的新能力。
+智能涌现 = Transformer 架构 × 大规模参数 × 海量数据 × 有效训练目标 × 规模临界点
+1. 自注意力机制：全局依赖建模；每个词可以“看到”序列中所有其他词，支持长距离推理
+2. 大规模参数：知识的“存储空间”；模型参数多，参数越多，知识密度越高，越容易“想起来”
+3. 海量数据的训练；学习的东西多，更智能
+4. 预训练 + 微调范式； 更专业
+
+8. Transformer与传统模型的区别
+1. 并行处理能力：
+  - Transformer：通过自注意力机制（self-attention）允许模型并行处理整个序列，避免了序列数据处理的依赖关系，因此可以大大提高训练速度。
+  - 传统模型（RNN/LSTM）：这些模型通常是顺序处理的，意味着每个步骤的计算依赖于前一个时间步，限制了并行处理的能力。
+2. 自注意力机制：
+  - Transformer：自注意力机制使得每个输入位置都能与序列中的所有其他位置进行交互，这样模型可以捕捉到序列中更远距离的依赖关系。比如，通过加权平均，模型可以动态调整输入之间的相关性。
+  - 传统模型：RNN和LSTM依赖于通过递归的方式处理输入序列，虽然LSTM在理论上能捕捉长距离依赖，但在实践中仍然会遇到梯度消失或梯度爆炸的问题，尤其是处理很长的序列时。
+3. 处理长序列的能力：
+  - Transformer：由于自注意力机制，Transformer能够有效地处理非常长的序列，因为每个位置的表示都可以直接关注到其他位置的数据，不受递归计算的限制。
+  - 传统模型：RNN和LSTM在处理长序列时容易丧失早期信息，特别是长时间的依赖关系，虽然LSTM比RNN更擅长处理长距离依赖，但仍然存在一定的局限性。
+4. 训练效率和复杂度：
+  - Transformer：由于其能够并行计算，因此Transformer的训练效率通常较高，尤其是在使用现代硬件（如GPU）时。其时间复杂度是O(n^2)，这是因为每个位置都要与所有其他位置计算注意力得分。
+  - 传统模型：RNN和LSTM的时间复杂度是O(n)，因为每次仅需要计算一个时间步。然而，由于其顺序依赖，无法完全利用现代硬件的并行计算能力，训练速度通常较慢。
+5. 应用场景：
+  - Transformer：目前Transformer广泛应用于机器翻译、文本生成、图像生成等任务，并且大规模预训练模型（如BERT、GPT等）使其在自然语言处理（NLP）领域的表现非常出色。
+  - 传统模型：RNN和LSTM在一些传统的时序数据任务中仍然有效，如语音识别、音频处理等，但在许多NLP任务中已被Transformer所取代。
+
+9. Transformer中的掩码机制
+掩码机制主要有两种类型：自注意力掩码（Self-Attention Masking）和序列掩码（Sequence Masking），具体如下：
+1. 自注意力掩码（Self-Attention Masking）
+自注意力掩码主要用于控制模型在计算每个位置的表示时，能够“看到”哪些位置的输入。常见的掩码类型有两种：
+  a. 前向掩码（Causal Masking）
+  - 用途：这种掩码主要用于生成模型（如GPT）中，确保在预测某个位置的输出时，模型只能看到当前位置之前的内容，而不能看到未来的信息。换句话说，每个位置只能依赖于之前的词语和当前词语，防止信息泄漏。
+  - 实现方式：通过设置一个上三角的矩阵，标记当前位置之后的元素为不可见（通常设为负无穷大）。这样，在计算注意力得分时，未来的元素就会被掩蔽掉，确保模型只能使用当前及之前的位置的信息。
+  b. 填充掩码（Padding Masking）
+  - 用途：当处理的序列长度不一致时，通常需要对序列进行填充，以使得所有序列的长度相同。填充的位置不包含实际的信息，因此需要通过掩码机制来忽略这些填充符号。在计算注意力时，填充的位置不应对模型的学习产生影响。
+  - 实现方式：在填充的部分标记掩码为0，并在计算注意力时让模型忽略这些部分。
+2. 序列掩码（Sequence Masking）
+序列掩码用于特定任务中，需要掩盖序列中某些位置的信息。常见的类型包括：
+  a. 随机掩码（Random Masking）
+  - 用途：用于一些预训练任务，如BERT的掩码语言模型（Masked Language Model, MLM）。在这种任务中，输入序列中的一些位置会被随机掩蔽，模型需要预测被掩蔽的词汇。
+  - 实现方式：随机选择输入序列中的部分词汇，将其掩蔽（通常用特殊标记如[MASK]替换），然后训练模型去预测被掩蔽的词。
+  b. 固定掩码（Fixed Masking）
+  - 用途：在某些情况下，掩码是预先确定的，特定位置的元素会被掩蔽。例如，在多任务学习中，可能会选择性地掩蔽一些输入位置来训练模型解决某个具体问题。
+  - 实现方式：直接指定掩蔽的输入位置。
+10. Transformer中的掩码类型
+主要的掩码类型包括：
+- 前向掩码（Causal Masking）：用于防止模型在生成任务中查看未来的信息。
+- 填充掩码（Padding Masking）：用于忽略填充的无效位置。
+- 随机掩码（Random Masking）：常用于预训练任务，如BERT中的MLM。
+- 固定掩码（Fixed Masking）：用于特定的任务或训练设置。
+
+11. Transformer与BERT的区别
+- Transformer：Transformer模型是一个深度学习架构，用于处理序列数据，主要由两个部分组成：编码器（Encoder）和解码器（Decoder）。每个部分都包含多头自注意力机制和前馈神经网络。
+  - 编码器：负责从输入序列中提取信息。
+  - 解码器：负责生成输出序列（如在翻译中从英语生成法语）。
+- BERT：BERT仅使用Transformer的编码器部分，并且是一个双向的模型。这意味着BERT同时考虑了上下文的左右两边，而不像传统的Transformer模型那样只能单向地处理序列（从左到右或者从右到左）。
+
+- Transformer是一个基础架构，适用于生成任务，包含编码器和解码器。
+- BERT是基于Transformer的改进版，专注于理解任务，采用了双向编码器，并使用了预训练和微调的策略。
+- Transformer：用于序列到序列任务，如机器翻译、文本生成、图像描述等。
+- BERT：通常用于句子级别的理解任务，如情感分析、命名实体识别、问答系统、文本分类等。
+12. Transformer和CNN的区别
+Transformer和CNN最根本的区别在于它们捕捉数据内在关系的方式。
+- CNN 基于卷积核，通过局部连接和权重共享来提取特征。它有一个强的归纳偏置，即假设特征具有局部性和平移不变性。这使它效率高，特别适合图像类网格数据，但捕捉长程依赖需要深层的堆叠。
+- Transformer 的核心是自注意力机制，它能直接计算序列中任意两个元素之间的关系，实现全局感知。它的归纳偏置很弱，更加数据驱动，因而在拥有海量数据时（如NLP、大语言模型）表现出色，但其计算复杂度随序列长度平方级增长是一个瓶颈。
+简单来说，CNN是‘由局部到全局’，而Transformer是‘一眼看全貌’。
+
+13. Transformer的残差连接
+Transformer 中的残差连接（Residual Connection），是为了解决深层网络难以训练的问题。它主要有两个核心作用：
+1. 解决梯度消失问题：让梯度在反向传播时能 无损 地传回浅层。
+2. 保留原始信息：防止深层网络在复杂的变换中丢失输入的原始特征。
+
+问题：在深层网络反向传播时，梯度需要通过链式法则连乘。如果每一层的梯度都小于 1，连乘多次后梯度会趋近于 0，导致浅层参数无法更新（梯度消失）。
+原理：引入残差连接后，输出 y=x+F(x)
+- 当我们对 x 求导时，根据链式法则，梯度中会多出一项 1 （即 $$\frac{∂_y}{∂_x}=1+\frac{F(x)}{∂_x}$$）。
+- 这个 1 就像一条无损通道，保证梯度至少有一部分能直接传回去，不会因为连乘而消失。
+
+14. Q、K、V的含义
+在 Transformer 的 多头注意力机制（Multi-Head Attention） 中：
+暂时无法在飞书文档外展示此内容
+
+15. QKV计算
+1. 输入表示（Token Embedding）：
+  - 首先，输入序列被转换为一个词嵌入（Embedding），然后会加上位置编码（Positional Encoding）来表示序列中各个元素的位置信息。
+2. 线性变换（Linear Transformation）：
+  - 对输入的每个位置的表示（通常是一个向量），进行三个线性变换，分别得到Query（Q）、Key（K）和Value（V）。
+  - 这些变换是通过训练得到的权重矩阵来完成的。
+3. 点积计算注意力得分（Attention Scores）：
+  - 通过Q和K的点积来计算注意力得分，衡量查询（Query）与键（Key）之间的相似度。
+4. 应用掩码（Masking）：
+  - 在Decoder-Only架构中，为了保持自回归的性质（即当前时刻只依赖于之前的时刻），会应用掩码机制。具体来说，使用一个上三角的掩码矩阵，确保每个位置的表示只能关注到当前位置之前的信息，而不能访问未来的词。
+  - 这样，生成的每个词只依赖于其前面的词，确保了自回归生成过程。
+5. Softmax和加权求和：
+  - 对注意力得分进行Softmax归一化，得到每个位置的权重。
+  - 然后，利用这些权重对Value（V）进行加权求和，得到每个位置的最终输出
+6. 多头注意力：
+  - Transformer通常会使用多头注意力（Multi-Head Attention）。这意味着将Q、K、V分别划分为多个子空间（头），每个头独立计算注意力得分，然后将多个头的输出拼接在一起，最后通过一个线性变换获得最终的输出
+
+16. Decoder-Only架构中的QKV计算
+1. 输入嵌入加位置编码。
+2. 通过线性变换得到Query（Q）、Key（K）、Value（V）。
+3. 计算Q和K的点积，得到注意力得分。
+4. 进行缩放和应用掩码。
+5. 对得分进行Softmax归一化。
+6. 对Value（V）进行加权求和。
+7. 多头注意力通过多个头并行计算得到最终的输出。
+
+
+17. 位置编码类型
+1. 绝对位置编码 (Absolute Positional Encoding)
+这类编码为序列中的每个位置分配一个唯一的向量，表示其在序列中的绝对位置。常见的有 正弦/余弦位置编码、可学习位置编码
+2. 相对位置编码 (Relative Positional Encoding)
+这类编码关注的是序列中两个元素之间的相对距离，而不是它们的绝对位置。这更符合许多语言任务的直觉（例如，注意力权重可能更依赖于两个词之间的距离）。
+3. 旋转位置编码 (Rotary Position Embedding, RoPE)
+将绝对位置信息编码为对查询（Query）和键（Key）向量进行旋转的操作。具体来说，每个位置对应一个旋转矩阵，通过旋转向量来注入位置信息。
+
+
+18. 旋转位置编码的优点
+- 原理: 将绝对位置信息编码为对查询（Query）和键（Key）向量进行旋转的操作。具体来说，每个位置对应一个旋转矩阵，通过旋转向量来注入位置信息。
+- 优点:
+  - 具有良好的理论外推性，可以线性外推到更长的上下文。
+  - 在长文本任务中表现优异。
+- 应用: LLaMA、ChatGLM、Baichuan、Qwen 等许多现代大语言模型（LLM）都采用了 RoPE 或其变体。
+
+
+19. BERT模型
+BERT（Bidirectional Encoder Representations from Transformers）是由Google在2018年提出的一种预训练语言表示模型。
+1. 核心思想
+- 双向编码（Bidirectional）：与之前如Word2Vec、ELMo或GPT等模型不同，BERT通过同时考虑一个词的左右上下文来理解语义，从而获得更丰富的语言表示。
+- 基于Transformer架构：BERT完全基于Transformer的Encoder部分，摒弃了RNN/CNN结构，利用自注意力机制（Self-Attention）捕捉长距离依赖。
+
+---
+2. 模型架构
+BERT主要有两个版本：
+- BERT-Base：12层（Transformer blocks），768个隐藏单元，12个注意力头，参数量约1.1亿。
+- BERT-Large：24层，1024个隐藏单元，16个注意力头，参数量约3.4亿。
+
+---
+为什么使用 BERT？
+1. 语义理解能力比较强
+BERT 通过 双向上下文建模 和 Transformer 架构，能够深入理解词语在具体语境中的含义。例如：
+  - “苹果很好吃” vs “苹果发布了新手机”
+  - BERT 能根据上下文区分“苹果”是水果还是公司。
+2. 预训练 + 微调范式，节省标注成本
+BERT 在大规模无标签语料（如维基百科、书籍）上进行了预训练，已经学到了丰富的语言知识。我们只需要在特定任务上进行少量数据微调（fine-tuning），就能达到很好的效果，大大降低了对标注数据的依赖。
+3. 通用性强，迁移能力好
+BERT 是一个通用的语言表示模型，可以迁移到多种 NLP 任务中，无需为每个任务从头设计特征工程或模型结构。
+20. Transformer哪部分最耗费算力资源
+大多数大模型都是基于Transformer的解码器来实现的；所以您如果说是哪部分最耗费算力资源的话，应该是 解码器部分； 如果必须是Transformer（比如T5）；那么就是编码器和解码器，两部分都耗费。 
+如果要硬说是哪部分，那么就是解码器（它有两个多头注意力机制，编码器只有一个）； 为什么？  因为多头注意力机制最耗费算力，原因： 每个头中的计算都是QKV多维矩阵的点积、缩放、非线性化等的计算，是非常耗费GPU资源的。
+
+十、大模型综合
+1. 大模型API
+OpenAI，阿里云百炼 比较常调用； 
+比较熟悉OpenAI 标准 SDK 调用方式，包括 ChatCompletion 接口、流式输出（Streaming）处理，以及函数调用（Function Calling）的实现。
+
+2. 常见大模型的擅长领域或场景
+- 文本创作、中文理解与综合办公
+  - 代表模型：文心一言 4.5/5.0、通义千问 3.5 (Qwen)
+  - 擅长场景：
+    - 文学/商业创作：文心一言在中文语境、成语典故、公文写作上积累深厚，适合写小说、营销文案。
+    - 长文档处理：通义千问在长文本（如1000万字上下文）处理上表现优异，适合财报分析、法律合同审查。
+    - 多语言支持：通义千问对小语种（如越南语、韩语）的支持较好，适合跨境电商场景。
+- 逻辑推理、数理计算与复杂任务规划
+  - 代表模型：GLM-5 (智谱AI)、GPT-5.4 (OpenAI)、Claude Opus 4.6
+  - 擅长场景：
+    - 数理推算：GLM-5 和 GPT-5.4 在逻辑论证和数学题求解上处于第一梯队，适合K12教育辅导、科研数据分析。
+    - 复杂任务拆解：当需要处理多步骤的复杂任务（如“帮我策划一次旅行并预定机票酒店”）时，这些模型的推理能力能确保步骤不遗漏。
+- 代码编写与开发者工具
+  - 代表模型：Claude Opus 4.6、通义千问 3.5、CodeLlama (开源)
+  - 擅长场景：
+    - 代码生成与Debug：Claude Opus 4.6 在 SWE-bench 评测中得分极高，擅长大型项目架构设计、复杂Bug排查，生成的代码注释规范、逻辑清晰。
+    - 全栈辅助：通义千问在代码补全和解释上表现成熟，适合集成到 IDE 中作为智能编码助手。
+- 多模态（图像、音频、视频）与内容创作
+  - 代表模型：Gemini 3.1 (Google)、昆仑万维 (Matrix/SkyReels)、讯飞星火
+  - 擅长场景：
+    - 原生多模态理解：Gemini 3.1 Pro 能直接理解视频、长图，适合视频内容审核、多媒体检索。
+    - AIGC 内容生成：昆仑万维的 SkyReels V4（视频）和 Mureka V9（音乐）在音画同步、游戏开发素材生成方面是垂直领域的佼佼者。
+    - 语音交互：讯飞星火依托其语音技术积累，在语音转文字、实时翻译、口语陪练场景下延迟最低、准确率最高。
+- 长文本分析与知识检索
+  - 代表模型：Kimi Chat (Moonshot)、Gemini 3.1
+  - 擅长场景：
+    - 超长上下文：Kimi 和 Gemini 支持百万级 token 窗口，适合整本小说分析、几十万字的技术文档问答、法律卷宗梳理。
+- 多智能体协作与调度
+  - 代表模型：Claude Opus 4.6 (Agent Teams)、GLM-5
+  - 擅长场景：
+    - 复杂工作流自动化：Claude 的“Agent Teams”功能支持多个智能体分工协作（如一个负责写代码，一个负责测试，一个负责写文档），适合自动化软件开发、企业级复杂流程编排。
+3. 大模型中的 token
+Token 是大语言模型处理文本的最小单位。
+由于模型只能处理数字，不能直接理解自然语言，因此需要通过 分词器（Tokenizer） 将输入文本切分成一系列 token，并映射为对应的 ID 序列。
+token 不等于单词。主流模型通常采用 子词分词算法（如 BPE、WordPiece），将词拆分为更小但高频的单元。例如，中文“人工智能”可能是一个或两个 token。
+
+Token 的数量直接影响：
+- 上下文长度限制（如 32K tokens），
+- API 调用成本（按 token 计费），
+- 推理速度和内存占用。
+4. 模型API推理相关的参数
+暂时无法在飞书文档外展示此内容
+5. 模型温度Temperature的原理
+“温度”（Temperature）是大语言模型（LLM）生成文本时控制输出随机性的一个关键超参数。它源自统计物理和信息论中的“softmax”函数，用于调节概率分布的“尖锐”或“平滑”程度。
+在语言模型中，每一步生成下一个词时，模型会输出一个 logits 向量（未归一化的对数概率），然后通过 softmax 函数将其转换为概率分布： $$P(w_i)=\frac{e^{z_i/T}}{\sum_ie^{z_j/T}}$$
+
+- 当温度很低（比如接近 0）时，模型会对 下一个词的对数概率（原始得分）进行放大，使得最高分的词的概率趋近于 1，其他词的概率趋近于 0。这相当于让模型几乎总是选择当前最可能的词，因此输出非常确定、一致、保守，但可能显得重复或缺乏创意。
+- 当温度很高（比如大于 1）时，下一个词的对数概率 被压缩，所有词的概率趋于接近，低分词也有较大机会被选中。这就引入了更多随机性，使得每次生成的结果可能不同，语言更多样、新颖，但也可能变得不连贯或不合逻辑。
+
+6. 模型压缩
+模型压缩一种减小模型的规模、降低计算和内存开销，同时尽可能保持其原始性能的技术；包括有：模型剪枝、知识蒸馏 、量化、低秩分解、参数共享 。
+
+- 剪枝、量化、低秩分解、参数共享：都是对原始大模型本身进行修改或转换，相当于给同一个模型“减肥”或“换装”。
+- 知识蒸馏：是创造一个全新的、更小的学生模型，这个学生模型是独立的，只是它的“老师”是大模型。
+7. 模型剪枝
+模型剪枝 (Model Pruning) 移除模型中“不重要”的连接、神经元或整个层，从而得到一个更稀疏、更小的模型。
+- 权重剪枝 (Weight Pruning)：移除单个权重（通常将接近零的权重设为0）。
+- 神经元/通道剪枝 (Neuron/Channel Pruning)：移除整个神经元或卷积层中的输出通道（filter），这能直接减少模型的宽度和计算量。
+优点：可以显著减小模型大小。
+缺点：可能需要重新训练（fine-tuning）来恢复性能；非结构化剪枝的加速效果有限。
+8. 模型/知识 蒸馏
+知识蒸馏 (Knowledge Distillation, KD) 训练一个更小、更简单的“学生模型”（Student Model）来模仿一个更大、更复杂的“教师模型”（Teacher Model）的行为，而不仅仅是学习原始数据标签。
+优点：学生模型通常比原始模型小得多，但性能接近教师模型；是提升小模型性能的有效方法。
+缺点：需要先有一个训练好的高性能教师模型。
+
+9. 模型量化
+量化（Quantization）将高精度的权重参数转换为低精度的类型；主要是为了在模型推理和部署时，进一步压缩模型体积并提升运行速度。
+量化的核心原理，是将原本连续的浮点数（比如 FP32 或 FP16）映射到离散的整数（比如 INT8 或 INT4）。量化后的占用空间与模型原始的精度（FP32 还是 FP16）无关，只要量化到相同的比特数，每个参数占用的空间就是一样的。
+暂时无法在飞书文档外展示此内容
+假设有一个 70亿（7B） 参数的大模型：
+- 如果是 FP32 精度，模型大小约为 70亿 × 4字节 = 28 GB。
+- 如果是 FP16 精度，模型大小约为 70亿 × 2字节 = 14 GB。
+- 如果是 INT8 精度，模型大小约为 70亿 × 1字节 = 7 GB。
+- 如果经过 INT4 量化，模型大小就变为 70亿 × 0.5字节 = 3.5 GB。
+在规划显卡时，通常需要预留 20% 到 50% 的额外显存冗余，才能保证模型流畅运行。 如果想流畅运行一个 FP16 精度下权重约为 28GB 的模型，至少需要一张 32GB 或 40GB+ 显存的专业级显卡（如 NVIDIA RTX A6000 或 A100）。对于常见的消费级旗舰显卡 RTX 4090（24GB 显存），是无法直接加载这种大小的 FP16 模型的。
+
+10. 大模型的框架都有什么
+PyTorch、TensorFlow 、Hugging Face Transformers、LangChain 、LangGraph
+
+11. 大模型与Agent的区别
+- 大模型 (LLM)：
+  - 本质上是一个大规模参数化的神经网络模型，其架构通常基于 Transformer。
+  - 它是一个被动的模式生成器，输入是文本序列（prompt），输出是基于概率分布的下一个 token 的预测。其行为完全由输入 prompt 和模型参数决定。
+  - 在系统架构中，它通常作为一个服务（Service）或 API 被调用，例如通过 text-generation 接口提供文本续写能力。
+- 智能体 (Agent)：
+  - 是一个自主的软件实体（Autonomous Software Entity），遵循“感知-思考-行动”（Perceive-Reason-Act）的闭环架构。
+  - 它是一个主动的决策系统，能够根据环境状态（如用户指令、外部反馈）自主规划并执行一系列动作以达成目标。
+  - 在系统架构中，它是一个完整的应用层系统，LLM 只是其内部的一个组件。
+
+
+12. qwen2.5-7B模型
+Qwen2.5-7B 采用与 GPT 系列相同的 仅解码器（Decoder-only） 架构。这意味着它由堆叠的 Transformer 解码器层组成，通过自回归（Autoregressive）方式生成文本，即根据前面的 token 预测下一个 token。
+- 总参数量：约 70亿 (7B)。
+- 层数 (Layers)：32
+- 隐藏层维度 (Hidden Size)：4096
+- 注意力头数 (Query Heads)：32
+- 键/值头数 (KV Heads)：8 （这是 GQA 的体现，32 个查询头共享 8 个键/值头）
+- 中间层维度 (FFN Intermediate Size)：11008
+13. 为什么选择某个模型
+比如简历中写了DeepSeek v3.2， r1，v4，Qwen-plus等模型的话； 面试官问为什么选择？模型选型是怎么考虑的？
+- 因为我们项目组都切换过进行测试； 我们的RAGAS的数据显示。。xxx比较好
+- 成本
+- 我们组长定的
+
+14. 为什么 qwen2.5-7B
+选择Qwen2.5-7B，是因为它在7B这个尺寸里做到了极致的平衡。它支持128K长文本，推理和代码能力强，而且可以在单张4090显卡上流畅运行，部署成本极低，非常适合我们这种需要快速落地、控制成本的企业级应用。
+
+15. DeepSeek的架构
+标准的 Decoder-only Transformer 架构
+DeepSeek-V2 是一次架构上的重大升级，其最大特点是采用了 稀疏化的混合专家模型（Sparse Mixture-of-Experts, MoE）。
+MoE (Mixture of Experts) 
+- 将模型中的前馈网络（FFN）层替换为多个“专家”（Experts）。
+- 在每一次前向传播中，仅激活其中的一小部分专家（例如 2 out of 64），而非全部。
+- 这使得模型可以拥有巨大的总参数量，但每次推理的计算量（FLOPs）却远低于同等规模的密集模型。
+
+- 总参数量：236B（2360亿）
+- 活跃参数量 (Active Parameters per Token)：~21B（约210亿）
+  - 这意味着虽然模型总很大，但每个 token 的计算成本只相当于一个 21B 的密集模型，极大地提升了推理效率。
+- 专家数量 (Number of Experts)：64
+- 每Token激活的专家数 (Experts per Token)：2
+- 注意力头：
+  - 使用 Grouped-Query Attention (GQA)，进一步优化推理速度。
+  - 查询头（Query Heads）和键/值头（KV Heads）分离，减少 KV Cache。
+- 其他组件：
+  - 位置编码：RoPE，支持 32K 长上下文。
+  - 归一化：RMSNorm。
+  - FFN 专家内部：同样采用 SwiGLU 结构。
+
+16. T5模型
+T5（Text-to-Text Transfer Transformer）是由 Google Research 在 2019 年提出的一种革命性的统一式（Unified）预训练语言模型框架。它的核心思想是：将所有自然语言处理任务都统一建模为“文本到文本”（Text-to-Text）的转换问题。
+T5 基于标准的 Encoder-Decoder Transformer 架构。
+- 编码器 (Encoder)：处理输入文本，生成上下文表示。
+- 解码器 (Decoder)：基于编码器的表示，自回归地生成输出文本。
+- 与 GPT 的区别：GPT 是 Decoder-only，用于生成；T5 是完整的 Encoder-Decoder，更适合需要理解输入并生成新文本的“转换”任务。
+- 与 BERT 的区别：BERT 是 Encoder-only，主要用于理解（如分类、NER），不擅长生成长文本。
+
+17. 多模态的实现原理
+多模态（Multimodal）模型的核心目标是让 AI 能够像人类一样，同时理解并关联多种类型的信息，如文本、图像、音频、视频等。其实现原理的本质是：建立不同模态数据之间的对齐（Alignment）与融合（Fusion），并在统一的语义空间中进行联合建模。
+
+18. 模型的部署
+如果是不需要微调的： 直接在ollama上下载模型并使用；
+如果是微调的：在阿里云上训练完后，打包为 GGUF 格式的文件；然后使用 ollama create 的创建模型的命令加载并创建模型；在使用 ollama run 运行模型即可。
+十一、硬件、部署与工具
+1. 了解哪些显卡
+一、大模型微调（训练）常用显卡
+暂时无法在飞书文档外展示此内容
+二、大模型部署（推理）常用显卡
+暂时无法在飞书文档外展示此内容
+目前大模型微调和部署高度依赖 NVIDIA GPU。训练首选 A100/H100（大显存+NVLink），推理可选 L40S/A10/T4 或消费级 4090。国产华为的显卡 昇腾
+
+2. 显存计算
+14B = 140亿；  常规模型使用精度是16bit位 = 1个字节8位， 16位 = 2个字节byte
+14000000000 = 14000000kb = 14000mb = 14GB
+显存需要至少： 14*2 = 28GB
+
+而量化的话；就是将16位量化为8或者4； 如果是量化为8位，同样的模型； 只需要显存 14GB
+
+显存计算的口诀：模型尺寸大小 * 2 ； 例如：32B 的模型需要在多少显存下才能部署； 32*2 = 64
+
+3. 怎么部署模型
+Qwen2.5-7B 在 FP16 精度下约需 15GB 显存。推荐使用 NVIDIA A10 或 RTX 4090（单卡即可），如果需要高并发，可以选择 4张 4090 做张量并行。
+
+1. 环境准备与镜像获取
+确保服务器已安装 英伟达 驱动（推荐 535+ 版本）和 Docker 环境（需配置 nvidia-container-toolkit 以支持 GPU 透传）；拉取 vLLM 的官方 OpenAI 兼容镜像：
+```Python
+docker pull vllm/vllm-openai:latest```
+2. 模型准备
+将微调好或开源的模型（如 Qwen-7B）下载到服务器本地，假设路径为 /data/models/my-qwen-7b
+3. 启动服务
+使用 docker run 启动服务，并配置关键的推理参数
+```Shell
+docker run -d --gpus all \
+    -v /data/models/my-qwen-7b:/app/model \
+    -p 8000:8000 \
+    --shm-size 16G \
+    -e LD_LIBRARY_PATH=/usr/local/cuda-13.0/compat:$LD_LIBRARY_PATH \
+    vllm/vllm-openai:latest \
+    --model /app/model \
+    --host 0.0.0.0 \
+    --port 8000 \
+    --tensor-parallel-size 1 \
+    --dtype auto \
+    --gpu-memory-utilization 0.9 \
+    --max-model-len 8192
+    --max-num-seqs 56```
+  --tensor-parallel-size：如果是多卡部署，会设置为 GPU 数量（如 2 或 4），利用张量并行加速推理。
+  --gpu-memory-utilization 0.9：预分配 90% 的显存给 KV Cache，防止显存碎片化，同时预留一点余量防止 OOM。
+  --max-num-seqs 直接控制 vLLM 服务能够同时处理的最大请求（序列）数量（并发）
+  --shm-size 16G 是设置容器内共享内存（/dev/shm）的大小为 16GB
+  --shm-size：增大共享内存，避免多进程通信时的瓶颈。
+  --max-model-len 4096
+限制模型支持的最大上下文长度（输入 Token + 输出 Token 的总和）。设为 4096 意味着单次请求的总 Token 数不能超过 4096。
+  
+4. 服务验证与集成
+  服务启动后，vLLM 会自动暴露一个兼容 OpenAI 协议的 API 端点。
+  在应用层（如 LangChain 或 Open WebUI）配置 base_url 指向该服务地址，完成最终的业务集成。
+4. 模型并发情况
+模拟 10 个（或者20- 50 个）用户同时提问，首token延迟时间；可以控制在1秒内。
+
+在使用了vllm部署的模型，例如在单卡a100上部署了qwen--20b 尺寸以上的模型，可以设置部署时候的并发请求数； 我们的项目设置的是50（64以内）左右，与任务的复杂程度。
+如果有多张显卡，每张显卡都有一个模型的权重副本。（一张显卡能够加载部署得下的情况）并发也就成倍数的提升。
+
+5. 内存溢出-GPU 显存不足
+在训练过程中，我主要遇到过两种资源溢出问题：一种是 GPU 显存不足（CUDA OOM），另一种是 系统内存不足（被系统 Killed）。
+如果显存实在不够，我会优先开启 QLoRA。在 LLaMA-Factory 的配置中，我把 finetuning_type 设为 qlora，并开启 --load_in_4bit。这能把模型权重的显存占用直接压缩到原来的 1/4 左右，让 7B 模型在单张 24G 显卡上也能跑起来。
+
+6. 内存溢出-系统内存不足
+在训练过程中，我主要遇到过两种资源溢出问题：一种是 GPU 显存不足（CUDA OOM），另一种是 系统内存不足（被系统 Killed）。这种情况通常发生在数据预处理阶段，表现为进程突然消失，没有报错。
+LLaMA-Factory 在预处理数据时会默认开启很多子进程（num_proc）。如果服务器内存有限，我会手动在配置里把 preprocessing_num_workers 调小（比如设为 2 或 4），甚至设为 1（单进程模式）。这虽然会让预处理变慢，但能有效防止因内存瞬间峰值过高导致进程被系统杀掉。
+7. vLLM 优势
+- 极致推理速度：采用 PagedAttention 技术，高效管理 KV Cache 内存，吞吐量比 Hugging Face Transformers 高 10–20 倍；
+- 高显存利用率：支持非连续内存分页存储注意力键值对，减少显存碎片，提升 batch 并发能力；
+- 无缝兼容主流模型：原生支持 Llama、Qwen、ChatGLM、Baichuan 等主流开源大模型，无需修改代码；
+- 开箱即用的生产部署：提供 OpenAI 兼容 API 接口，支持动态批处理（continuous batching），适合高并发服务；
+- 低延迟 + 高吞吐兼顾：通过优化调度和内存访问，在保证首 token 延迟的同时显著提升整体 QPS。
+8. vLLM 参数设置
+一般我们安装vllm之后 ； 在加载并启动模型的时候；会设置一些启动参数；常见的有：
+暂时无法在飞书文档外展示此内容
+9. vLLM 推理加速 - PagedAttention
+vLLM 的 PagedAttention（分页注意力） 是一种革命性的内存管理机制，旨在解决大语言模型（LLM）推理过程中 KV Cache 占用显存过大、碎片化严重的问题。
+它的核心灵感直接来源于操作系统的虚拟内存与分页机制。以下是关于它的核心原理、工作机制以及优势的详细解析：
+传统 KV Cache 的痛点
+在大模型推理时，注意力机制需要缓存 Key 和 Value（即 KV Cache），这会占用大量显存。传统的推理框架存在以下结构性缺陷：
+- 空间浪费与溢出并存：传统框架通常为每条请求预先分配一整块连续显存（按最大可能长度分配）。这导致大部分时间在多数时间内处于空闲状态；若按平均长度分配，一旦实际输出超出预期，便会因显存耗尽而触发崩溃（OOM）。
+- 显存碎片化：不同请求的长度和结束时间不同。当部分请求完成释放显存后，留下的是大小不一、彼此分散的空闲区域。即使剩余显存总量足够，新请求也可能因为缺乏足够长的连续空间而无法启动。
+PagedAttention 的核心原理
+vLLM 的 PagedAttention（分页注意力） 是解决大语言模型（LLM）推理过程中 KV Cache 占用显存过大、碎片化严重的问题。
+传统的推理框架存在以下结构性缺陷：
+- 空间浪费与溢出并存：传统框架通常为每条请求预先分配一整块连续显存（按最大可能长度分配）。这导致大部分时间在多数时间内处于空闲状态；若按平均长度分配，一旦实际输出超出预期，便会因显存耗尽而触发崩溃（OOM）。
+- 显存碎片化：不同请求的长度和结束时间不同。当部分请求完成释放显存后，留下的是大小不一、彼此分散的空闲区域。即使剩余显存总量足够，新请求也可能因为缺乏足够长的连续空间而无法启动。
+PagedAttention 将操作系统的内存管理思想平移到了 GPU 的 KV Cache 管理中，主要包括：
+- 固定大小的块（Block）：将 KV Cache 按照固定大小（例如 16 个 Token）切割成多个物理块（Physical Block），就像文件系统管理磁盘空间一样。这些块在显存中不必连续存储。
+- 块表（Block Table）映射：为每个请求维护一张块表（类似于操作系统的页表），记录该请求的逻辑块与物理块的对应关系。注意力计算时，通过查表即可找到真实的物理位置。
+- 按需分配与动态回收：序列开始时只分配少量块，随着 Token 的生成再动态追加。当序列结束或暂停时，其占用的块会立即回收并放入全局空闲池，供其他请求复用。
+- 写时复制（Copy-on-Write）实现前缀共享：如果多条序列拥有相同的前缀（例如相同的系统提示词或历史对话），它们可以先共享同一组物理块；只有当某条序列需要修改数据时，才复制出专属的新块，从而避免重复占用显存。
+10. Cursor中怎么应用Skill
+Skills，本质上是 Anthropic 推出的一套模块化能力封装标准，用来让 AI 在特定任务上表现更稳定。
+一个 Skill 通常包含：
+- SKILL.md：定义技能的元数据和执行指令
+- 可选的脚本或资源文件
+
+获取渠道主要是 GitHub 上的官方仓库 anthropics/skills，以及社区维护的 awesome-claude-skills 列表，https://skillsmp.com/，国内的 http://skillnet.openkg.cn/ 都可以获取到对应的skill。
+在 Cursor 里使用的话，一般是把 Skill 目录放到项目的 .cursor/skills 下，或者配置全局路径。AI 会根据任务自动识别并加载对应的 Skill，按预设的规则执行。
+我自己用得比较多的是自定义 Skill，把团队的代码规范、API 调用约定写进去，这样生成的代码能直接符合项目标准，减少后期调整。
+
+11. GPTQ、AWQ、GGUF量化方案区别
+GPTQ 和 AWQ 是为了在 GPU 上跑得更快、更省显存，而 GGUF 是为了让大模型能在 CPU（如笔记本电脑、MacBook）上跑起来
+暂时无法在飞书文档外展示此内容
+
+十二、数据库
+1. 有用过哪些数据库
+1. 向量数据库 (Vector Databases)：用在RAG - 检索增强生成，存储和检索文本、图像等多模态数据的嵌入向量（Embeddings）；实现高效的相似性搜索，为 LLM 提供上下文
+2. 关系型数据库 (RDBMS)：熟练使用 PostgreSQL、MySQL。使用在：
+  - 存储结构化的元数据，如用户信息、持久化的大量会话记录、API 调用日志、评估指标、Prompt 版本管理等。
+3. 文档数据库 (Document Database)--【可选】：存储非结构化或半结构化的数据，如原始的网页抓取内容、用户生成的内容（UGC）、复杂的配置文件或日志。
+4. 内存数据库 (In-Memory Database)：使用 Redis 作为缓存层
+  - 缓存频繁访问的 Prompt 模板、小规模的检索结果或模型的轻量级输出，显著降低延迟和后端负载。
+  - 用作临时会话存储（Session Store）或消息队列（结合 pub/sub）。
+  - 选型考量：Redis 的极低延迟和高吞吐量使其成为缓存的不二之选，对提升用户体验至关重要。
+5. 图数据库 (Graph Database)：了解 Neo4j。
+  - 管理知识图谱，用于增强 LLM 的推理能力。
+  - 分析实体（如用户、产品、概念）之间的复杂关系。
+
+2. 向量数据库使用了什么
+我主要使用过以下几种向量数据库：
+1. Chroma：常用于开发和原型设计阶段。它轻量级、易于本地部署，非常适合快速迭代实验和小规模项目，能无缝集成到 Python 开发环境中。
+2. Milvus ：在需要处理超大规模向量和追求极致性能的场景下使用。我配置过 Milvus 集群来管理数十亿级向量的索引，利用其强大的可扩展性和对多种 ANN 算法的支持。
+
+3. Milvus的查询效率
+Milvus 基于 FAISS（Facebook AI Similarity Search） 和自研算法，支持高效的 近似最近邻搜索（ANN, Approximate Nearest Neighbor），能在毫秒级响应百万至十亿级向量的 Top-K 查询。
+暂时无法在飞书文档外展示此内容
+4. Milvus索引类型
+暂时无法在飞书文档外展示此内容
+- 百万级：IVF_FLAT 或 HNSW；
+- 千万级以上：IVF_SQ8（平衡型）或 DISKANN（内存受限）；
+- 实时性要求极高：HNSW（但内存消耗大）。
+
+5. Milvus向量数据库中，数据存储的格式是什么？
+Milvus 将数据存储在分层的文件系统中，主要格式包括：
+1. 向量数据：使用列式存储格式（如 Apache Arrow），高效存储原始向量。同时，会将构建好的向量索引文件（如 HNSW 图、IVF 聚类中心）单独存储，用于加速检索。
+2. 标量数据：实体的属性字段（如 ID、标签、数值）通常以 Parquet 或 JSON 等格式存储，便于高效读取和过滤。
+3. 元数据：使用 etcd 存储集群配置、集合（Collection）Schema、索引状态等轻量级元信息。
+4. 日志：通过 Pulsar 或 Kafka 存储操作日志（WAL），保证数据的持久性和可重放性，用于数据恢复和增量同步。
+
+6. 向量数据库的混合精度索引怎么做
+1. 高精度存储，低精度索引：
+  - 原始向量（如 float32）被完整存储，保证最终重排序的精度。
+  - 在构建索引时，使用量化算法（如乘积量化 PQ、标量量化 SQ）将高维向量压缩成低精度的表示（如 uint8 甚至二进制码）。
+  - 搜索时，先用低精度的索引进行快速粗筛（Fast Scan），从海量数据中找出一个较小的候选集。
+2. 分层检索（Hybrid Search）：
+  - 将向量相似性搜索与标量过滤结合。
+  - 首先，通过标量条件（如时间范围、类别标签）在索引中快速过滤出一个子集。
+  - 然后，只在这个较小的子集上执行向量相似性搜索。
+  - 这避免了对全量数据进行昂贵的向量计算，显著提升了效率。
+3. 多阶段排序：
+  - 第一阶段（粗排）：使用低精度、快速的近似算法（如基于量化索引的搜索）得到 Top-K 候选。
+  - 第二阶段（精排）：对候选集使用原始的高精度向量和精确距离计算（如 float32 的内积）进行重排序，保证最终结果的准确性。
+7. 同时使用PostgreSQL和MySQL的原因
+PostgreSQL 主要使用在我们A2A项目，用于持久化保存LangGraph中每一个节点的执行状态（Checkpoint）
+MySQL 在我的RAG项目里面用来存储高频问答对的
+
+8. PostgreSQL和MySQL的区别
+MySQL是多线程架构，轻量、并发能力强，适合高并发的简单读写场景。PostgreSQL是多进程架构，功能更丰富，支持复杂查询、JSONB、GIS这些高级特性，适合数据分析或复杂业务。简单说，Web应用选MySQL，复杂系统选PostgreSQL。
+
+- MySQL（多线程）： 采用 一个连接对应一个线程 的模式。线程比进程轻量，内存开销小，上下文切换快。这使得 MySQL 在处理海量并发连接（尤其是短连接）时，资源利用率极高，非常适合 Web 应用的高并发读取场景。
+- PostgreSQL（多进程）： 采用 一个连接对应一个进程 的模式。每个连接都有独立的内存空间，隔离性极好。如果一个查询崩溃，不会影响整个数据库服务，稳定性极高。但代价是内存消耗较大，因此在高并发场景下，PostgreSQL 通常需要配合连接池（如 PgBouncer）使用。
+
+9. Faiss和Milvus的区别
+FAISS 是代码库， 单机部署， 只支持向量检索
+Milvus是数据库服务，可分布式部署，支持海量数据， 支持向量和标量（例如：搜索 机器学习 语义相似的； 且 type=1 ）混合检索
+
+Milvus 底层用了 FAISS （Milvus 的 Index Node 会在后台启动，在内存里调用 FAISS 的 C++ 接口。）
+
+十三、Linux
+1. 会使用哪些常用的shell语句
+我经常使用以下 Shell 命令：
+- 文件处理：grep 查找关键词，sed 和 awk 进行文本替换与字段提取，cut 按列切分数据，sort 和 uniq 排序去重。
+- 数据统计：用 wc -l 统计行数（样本数），head/tail 查看数据头尾，快速检查格式。
+- 批量操作：结合 find 查找文件，用 xargs 或 for 循环批量处理日志或数据文件。
+- 管道组合：熟练使用 | 将多个命令连接，例如 cat data.jsonl | grep "error" | wc -l 统计错误日志条数。
+- 系统监控：用 ps、top、df、du 查看进程、资源和磁盘使用情况，排查训练或服务异常。
+
+2. Linux 中变量用什么符号
+在 Linux Shell 中，定义和使用变量时：
+- 定义变量：直接写变量名并赋值，不需要特殊符号，但不能有空格。
+- 引用变量：在变量名前加 $ 符号。
+
+3. Dockerfile 中的环境变量怎么写
+在 Dockerfile 中设置环境变量使用 ENV 指令。
+```Shell
+ENV <key>=<value>
+
+# 例如
+ENV MODEL_PATH=/app/models
+ENV API_KEY=your_secret_key
+ENV PATH="/usr/local/bin:${PATH}"```
+
+4. 怎么做Docker的部署打包
+1. 编写 Dockerfile：
+  - 选择合适的基础镜像（如 python:3.9-slim）。
+  - 使用 COPY 或 ADD 将应用代码复制到镜像中。
+  - 用 RUN 安装依赖（如 pip install -r requirements.txt）。
+  - 通过 ENV 设置必要的环境变量。
+  - 使用 EXPOSE 声明服务端口（如 EXPOSE 8000）。
+  - 最后用 CMD 或 ENTRYPOINT 指定容器启动命令（如 CMD ["python", "app.py"]）。
+2. 构建镜像：
+在 Dockerfile 所在目录执行： docker build -t my-app:latest .
+3. 基于镜像运行容器
+4. 如果有必要的话，也可以将构建的镜像推送到镜像仓库
+
+5. 说一下Linux查看日志的最后100行的命令
+```Shell
+tail -n 100 filename.log```
+其中：
+- tail 命令用于查看文件末尾内容。
+- -n 100 表示显示最后 100 行。
+- filename.log 是要查看的日志文件名。
+如果需要实时跟踪日志新增内容，可以加上 -f 参数：
+6. 说一下Linux移动文件到新文件夹的命令
+移动文件到新文件夹的命令是 mv。语法为：  mv 源文件路径 目标文件夹路径   
+
+十四、Spring AI
+7. Spring AI有哪些类或常用方法
+ChatClient、ChatMemory、SimpleLoggerAdvisor、VectorStore、EmbeddingModel、SearchRequest
+8. Spring AI 实现流程
+添加 spring-ai-openai-spring-boot-starter 类似这样的依赖
+配置 base-url , api-key， model 等这些参数的值
+通过 ChatClient.Builder  创建 ChatClient 
+利用 ChatClient 对模型发起请求
+```Java
+public Flux<String> chatStream(String question, String sessionId) {
+    return chatClient.prompt()
+            .user( question)
+            .stream()
+            .content();
+}```
+
+十五、深度学习
+1. Pytorch与TensorFlow的区别
+PyTorch 与 TensorFlow 都是深度学习框架；
+PyTorch 坚持 ‘Python-first’ 和动态图优先，代码即执行（eager execution），非常像写 NumPy，调试方便。PyTorch 的 API 更简洁、直观，自定义模型灵活
+
+而 TensorFlow 最初以 静态计算图 为核心，强调性能和部署优化。
+
+我个人的话；主要了解和学习的是PyTorch，可以比较自由的自定义网络结构和调试中间结果，可以像写普通 Python 一样打断点、打印 张量，效率很高
+
+
+2. 深度学习与机器学习的区别
+深度学习（Deep Learning） 是 机器学习（Machine Learning） 的一个子集；深度学习是机器学习的一种方法，基于人工神经网络，特别是深层神经网络。
+暂时无法在飞书文档外展示此内容
+机器学习：适用在数据量小、特征明确、需要可解释性；资源有限，无GPU
+深度学习：适用在数据量大（尤其是图像、语音、文本）、特征复杂；追求高精度（如 ImageNet、机器翻译）
+3. 深度学习构建流程
+1、构建数据集
+  - CIFAR10
+  - 10类+6w数据+32*32大小
+2、构建模型
+  - CNN  （1个继承（继承 nn.Module 类），2个方法（实现 init 和 forward 两个方法））
+3、模型训练  .fit
+  - 2个初始化参数（损失函数，优化器）
+  - 2个遍历---轮次，数据
+  - 5个步骤（前向传播-损失计算-梯度归零-反向传播-参数更新）
+4、模型预测  .predict
+5、模型评估  .score
+4. 卷积神经网络（CNN）
+卷积神经网络（CNN）是一种专门用于处理网格状数据（如图像、音频、视频）的深度学习模型，其核心思想是通过局部感知和权值共享来高效提取空间特征。
+主要组成部分：
+1. 卷积层（Convolutional Layer）：
+  - 使用可学习的卷积核（滤波器）在输入数据（如图像）上滑动，进行局部区域的加权求和。
+  - 每个卷积核能检测一种特定的局部特征（如边缘、纹理）。
+  - 权值共享：同一个卷积核在整个输入上使用相同的参数，大大减少了参数量。
+2. 激活函数：
+  - 在卷积后通常加入非线性激活函数（如 ReLU），引入非线性能力，使网络能学习复杂模式。
+3. 池化层（Pooling Layer）：
+  - 对特征图进行下采样（如最大池化、平均池化），降低数据维度，减少计算量，同时增强特征的平移不变性。
+4. 全连接层（Fully Connected Layer）：
+  - 通常在最后几层，将前面提取到的高维特征“展平”后连接，用于最终的分类或回归。
+工作流程：
+输入图像 → 多个“卷积+激活+池化”组合 → 提取从低级（边缘）到高级（物体部件、整体）的特征 → 全连接层 → 输出预测结果。
+CNN 因其强大的特征提取能力，被广泛应用于图像分类、目标检测、语义分割等计算机视觉任务，是深度学习在视觉领域成功的关键。
+- CNN 模型结构
+  - 卷积层（Conv）：提取边缘、纹理等特征
+  - 池化层（Pool）：缩小尺寸，保留重要信息
+  - 全连接层（FC）：最终分类
+
+5. 激活函数与作用
+激活函数是神经网络中的核心组件，用于为神经元的输出引入非线性，让神经网络可以进行非线性转换；使网络能够学习和逼近复杂的非线性函数。如果没有激活函数，多层网络将退化为线性模型。
+- 引入非线性：使神经网络能够拟合任意复杂的函数（万能近似定理）。
+- 控制输出范围：如将输出压缩到 [0,1] 或 [-1,1]，便于优化和解释。
+- 决定神经元是否激活：根据输入加权和，判断是否“ firing”。
+ 如果没有激活函数，多层神经网络 = 单层线性变换（因为线性组合的线性组合仍是线性的）。
+6. 常见的激活函数
+1. ReLU（Rectified Linear Unit）：
+  - 公式：f(x)=max⁡(0,x)f(x)=max(0,x)
+  - 优点：计算简单，能有效缓解梯度消失问题，训练速度快。
+  - 缺点：存在“死亡 ReLU”问题（负数输出为0，梯度为0）。
+  - 最常用于隐藏层。
+2. Sigmoid：
+  - 公式：f(x)=11+e−xf(x)=1+e−x1
+  - 输出范围：(0, 1)
+  - 优点：可解释为概率。
+  - 缺点：容易导致梯度消失，输出不是零中心。
+  - 常用于二分类的输出层。
+3. Tanh（双曲正切）：
+  - 公式：f(x)=ex−e−xex+e−xf(x)=ex+e−xex−e−x
+  - 输出范围：(-1, 1)
+  - 优点：输出是零中心，比 Sigmoid 梯度更强。
+  - 缺点：仍有梯度消失问题。
+  - 可用于隐藏层。
+4. Softmax：
+  - 公式：f(zi)=ezi∑jezjf(zi)=∑jezjezi
+  - 输出范围：(0, 1)，且所有输出之和为 1。
+  - 用途：多分类任务的输出层，输出类别概率分布。
+5. Leaky ReLU / Parametric ReLU：
+  - 公式（Leaky）：f(x)=max⁡(0.01x,x)f(x)=max(0.01x,x)
+  - 优点：解决了 ReLU 的“死亡”问题，允许小的负数输出。
+  - 变种如 PReLU 将斜率作为可学习参数。
+6. GELU（Gaussian Error Linear Unit）：
+  - 公式：f(x)=xΦ(x)f(x)=xΦ(x)，其中 Φ(x)Φ(x) 是标准正态分布的累积分布函数（实际计算常用近似）。
+  - 优点：在 Transformer 等模型中表现优异，被认为是 ReLU 的平滑替代。
+  - 广泛用于 BERT、GPT 等大模型的隐藏层。
+选择哪种激活函数取决于具体任务和网络结构，但 ReLU 及其变种是目前最主流的选择。
+
+- 隐藏层首选：ReLU、GELU（尤其在Transformer中）。
+- 输出层：Sigmoid（二分类）、Softmax（多分类）
+7. 梯度
+梯度是多元函数在某一点处的方向导数中变化率最大的方向，它是一个向量，包含了函数在各个自变量方向上的偏导数。梯度是一个向量，既有大小（模长），也有方向。
+在训练模型时，我们希望最小化损失函数 L(θ)，其中 θ=(θ1,θ2,…,θn) 是模型参数。
+梯度告诉我们：每个参数应该如何调整，才能最快地降低损失。
+8. 梯度下降
+梯度下降是一种用于优化机器学习和深度学习模型的核心迭代算法，其目标是最小化一个损失函数（Loss Function）的值。
+最基础的分类方式：
+- 批量梯度下降（Batch Gradient Descent, BGD）：
+  - 计算方式：每次参数更新都使用整个训练集计算损失函数的梯度。
+  - 优点：梯度方向准确，收敛稳定。
+  - 缺点：当数据量大时，计算开销巨大，速度慢。
+  - 公式：θ=θ−η∇θJ(θ;X,y)θ=θ−η∇θJ(θ;X,y)，其中 X,yX,y 是全部数据。
+- 随机梯度下降（Stochastic Gradient Descent, SGD）：
+  - 计算方式：每次更新只使用一个随机样本计算梯度。
+  - 优点：计算快，内存占用小，能跳出局部极小。
+  - 缺点：梯度方向噪声大，更新路径震荡，收敛不稳定。
+  - 公式：θ=θ−η∇θJ(θ;x(i),y(i))θ=θ−η∇θJ(θ;x(i),y(i))，其中 (x(i),y(i))(x(i),y(i)) 是单个样本。
+- 小批量梯度下降（Mini-batch Gradient Descent）：
+  - 计算方式：每次更新使用一小批样本（如 32、64、128 个）计算梯度。
+  - 优点：结合了 BGD 和 SGD 的优点，计算效率高，利用 GPU 并行，收敛相对稳定。
+  - 缺点：需要选择合适的批量大小（batch size）。
+  - 现状：这是深度学习中最常用的标准方法。
+
+9. 梯度下降---优化器
+SGD (随机梯度下降)
+  SGD 是所有优化器的基础。它每次使用一小批数据（mini-batch）来计算梯度，并更新参数。
+  - 优点：原理简单，计算开销小。
+  - 缺点：
+    1. 收敛慢且震荡：在损失函数的“山谷”地带容易来回震荡，走“之”字形路线，收敛路径不稳定。
+    2. 学习率难调：所有参数共享同一个学习率，需要手动精细调整。学习率太小收敛慢，太大则可能错过最优解。
+Adam (自适应矩估计)
+  Adam 是目前最流行、应用最广泛的优化器之一，它结合了 Momentum 和 RMSprop 的优点。
+  - 核心思想：
+    1. 利用梯度的一阶矩（均值）来模拟动量，加速收敛。
+    2. 利用梯度的二阶矩（未中心化的方差）来实现自适应学习率。
+  - 优点：收敛速度快、稳定性高、对超参数（尤其是学习率）不那么敏感，通常使用默认参数就能取得不错的效果。
+  - 缺点：在某些任务中，可能收敛到次优解，泛化能力略逊于精心调参的 SGD。
+进阶变体：AdamW
+  AdamW 是 Adam 的一个重要改进版本，尤其在 Transformer 架构（如BERT, GPT）的微调中已成为标准选择。
+  - 核心改进：它将权重衰减（Weight Decay）与梯度更新解耦。原始的 Adam 将权重衰减和 L2 正则化混在一起，导致效果不佳。AdamW 修正了这个问题，能更好地提升模型的泛化能力。
+
+
+10. 梯度消失问题及处理方法
+在深度神经网络（尤其是早期的深度网络）中，使用反向传播算法计算梯度时，靠近输入层的浅层网络的梯度值变得非常小（趋近于 0），导致这些层的参数几乎无法更新，模型训练停滞。
+原因：
+- 激活函数的导数小于 1：如 Sigmoid（导数最大为 0.25）或 Tanh。
+- 深层网络中，梯度是通过链式法则连乘各层的导数得到的。
+- 当多个小于 1 的数连续相乘时，结果会指数级衰减，最终趋近于 0。
+后果：
+- 浅层网络无法有效学习特征。
+- 网络性能差，训练效率低。
+解决方法
+1. 使用合适的激活函数：
+  - ReLU（Rectified Linear Unit）：f(x)=max⁡(0,x)f(x)=max(0,x)，其导数在正区间为 1，避免了梯度在正区间的连乘衰减。
+  - Leaky ReLU / Parametric ReLU：解决 ReLU 的“死亡神经元”问题。
+  - GELU：在 Transformer 等大模型中广泛使用。
+2. 权重初始化：
+  - 不恰当的初始化会导致激活值过大或过小，加剧梯度消失。
+  - 使用 Xavier 初始化（适合 Sigmoid/Tanh）或 He 初始化（适合 ReLU）等方法，使每层的输出方差保持稳定。
+3. 批量归一化（Batch Normalization）：
+  - 对每层的输入进行归一化（减均值、除标准差），使数据分布稳定。
+  - 缓解内部协变量偏移，有助于梯度稳定传播。
+4. 残差连接（Residual Connections / Skip Connections）：
+  - 如 ResNet 中的“跳跃连接”，允许梯度直接绕过若干层。
+  - 公式：y=F(x)+x，即使 F(x) 的梯度消失，x 的梯度仍可直接传递。
+  - 是解决极深网络梯度问题的关键突破。
+5. 使用更先进的优化器：
+  - 如 Adam、RMSProp 等自适应学习率方法，能根据梯度历史调整更新步长，缓解梯度小带来的影响。
+11. 梯度爆炸问题及处理方法
+在深度神经网络或循环神经网络（RNN）中，反向传播时计算的梯度值变得非常大（趋于无穷），导致模型参数更新幅度过大，造成数值溢出或训练不稳定。
+原因：
+- 当网络中某些层的权重较大，且激活函数的导数也较大时，链式法则中的梯度会连乘并指数级增长。
+- 尤其在深层网络或长序列的 RNN 中，梯度经过多层传播后可能急剧放大。
+后果：
+- 参数更新剧烈，损失函数剧烈震荡。
+- 可能出现 NaN（非数字）值，导致训练失败。
+解决方法
+1. 梯度裁剪（Gradient Clipping）：
+  - 最常用、最直接的方法。
+  - 设定一个阈值（如 1.0 或 5.0），当梯度的范数（如 L2 范数）超过该阈值时，将梯度按比例缩放至阈值以内。
+  - 广泛应用于 RNN、Transformer 等模型。
+2. 权重初始化：
+  - 使用合适的初始化方法，避免初始权重过大。
+  - 如 Xavier 初始化、He 初始化，能有效控制前向传播和反向传播时信号的尺度。
+3. 使用批量归一化（Batch Normalization）：
+  - 对每层的输入进行归一化，使数据分布稳定，减少梯度爆炸的风险。
+4. 简化网络结构：
+  - 减少网络深度或隐藏层大小，降低梯度连乘的层数。
+  - 在 RNN 中，可使用更稳定的变体如 LSTM 或 GRU，它们通过门控机制缓解了长期依赖中的梯度问题。
+5. 降低学习率：
+  - 如果梯度很大，使用过大的学习率会加剧参数更新的不稳定性。
+  - 适当降低学习率可以缓解爆炸带来的影响。
+6. 使用残差连接（Residual Connections）：
+  - 在深层网络中，残差连接允许梯度直接“跳跃”传播，避免在长链中不断放大。
+
+12. 学习率
+学习率（通常记作 η（伊塔）或 lr）控制着模型参数在每次优化更新时的步长大小。
+
+如何选择学习率？
+- 常见值：0.1, 0.01, 0.001, 0.0001
+- 深度学习中常用 1e-3（0.001）作为 Adam 的默认值。
+
+13. 学习率与梯度的关系
+学习率（Learning Rate）和梯度（Gradient）是梯度下降优化算法中的两个核心要素，它们共同决定了模型参数的更新方式和训练过程的稳定性。
+- 梯度决定了参数更新的方向。
+- 学习率 是一个正数，控制每次参数更新的步长大小。
+暂时无法在飞书文档外展示此内容
+14. 残差连接
+残差连接（Residual Connection），也称为跳跃连接（Skip Connection），用于深度网络中的缓解梯度消失和解决性能退化问题。
+传统网络学习的是：y=F(x)
+残差网络学习的是：y=F(x)+x
+其中：
+- x是输入。
+- F(x) 是网络需要学习的残差函数（即输入与期望输出之间的差异）。
+- F(x)+x 是最终输出。
+本质：让网络去学习输入与输出之间的差值，而不是直接学习完整的输出。
+
+为什么有效？
+1. 缓解梯度消失：
+  - 反向传播时，梯度可以通过跳跃连接直接传回浅层，避免在深层网络中因连乘导致梯度衰减。
+  - 即使 F(x)F(x) 的梯度很小，xx 的梯度仍可直接传递。
+2. 解决性能退化问题：
+  - 理论上，更深的网络不应比浅层网络性能差（至少可以学习恒等映射）。
+  - 但传统深层网络训练后性能反而下降。
+  - 残差连接使得网络在 F(x)=0F(x)=0 时自动退化为恒等映射，保证了深度增加不会降低性能。
+
+15. 损失函数
+损失函数（Loss Function）用于衡量模型的预测值与真实值之间的差异或误差。
+核心作用
+- 损失函数的值越小，表示模型的预测结果越接近真实结果。
+- 模型训练的目标就是通过优化算法（如梯度下降）最小化损失函数的值，从而找到最优的模型参数。
+16. 常见的损失函数
+1. 回归任务（预测连续值）
+  - 均方误差（MSE, Mean Squared Error）：最常用，对异常值敏感。
+  - 平均绝对误差（MAE, Mean Absolute Error）：对异常值更鲁棒，但梯度不连续。
+2. 分类任务
+  - 交叉熵损失（Cross-Entropy Loss）：
+    - 二分类（常与 Sigmoid 配合）：
+    - 多分类（常与 Softmax 配合）：
+    - 优点：惩罚预测概率远离真实标签的情况，适合概率输出。
+  - Hinge Loss：主要用于支持向量机（SVM），强调分类间隔。
+
+17. 欠拟合-Underfitting
+欠拟合表示：模型在训练集和测试集上都表现不佳，无法捕捉数据的基本规律。
+- 表现：
+  - 训练误差高。
+  - 测试误差也高。
+- 原因：
+  - 模型太简单（如用线性模型拟合非线性数据）。
+  - 特征不足或特征工程不到位。
+  - 训练不足（如迭代次数太少）。
+- 解决方法：
+  - 使用更复杂的模型（如增加网络层数、使用非线性模型）。
+  - 增加有效特征。
+  - 延长训练时间或调整学习率。
+18. 过拟合-Overfitting
+过拟合表示：模型在训练集上表现很好，但在测试集或新数据上表现差，过度记忆训练数据的细节和噪声，缺乏泛化能力。
+- 表现：
+  - 训练误差很低。
+  - 测试误差明显高于训练误差。
+- 原因：
+  - 模型太复杂（参数过多）。
+  - 训练数据太少或噪声多。
+  - 训练时间过长。
+- 解决方法：
+  - 正则化：L1/L2 正则化（如 Ridge、Lasso）、Dropout（神经网络）。
+  - 早停（Early Stopping）：在验证误差不再下降时停止训练。
+  - 增加数据：数据增强、收集更多样本。
+  - 简化模型：减少参数、剪枝（决策树）。
+  - 集成方法：如随机森林、Bagging，降低方差。
+19. 怎么判断过拟合还是欠拟合
+通过比较训练误差和验证/测试误差：
+- 两者都高 → 欠拟合
+- 训练误差低，验证误差高 → 过拟合
+- 两者都低且接近 → 拟合良好
+
+20. 正则化方法
+正则化（Regularization）是机器学习中用于防止过拟合、提高模型泛化能力的一类技术。其核心思想是通过在训练过程中引入额外的约束或惩罚，限制模型的复杂度。
+常见方法有：
+- L1 正则化（Lasso）
+  - 原理：在损失函数中加入模型权重的 L1 范数（绝对值之和）：
+  - 优点：具有特征选择能力，能将不重要特征的权重压缩为 0，实现稀疏化。
+  - 缺点：在特征多于样本时可能不稳定。
+  - 适用：高维数据、希望简化模型。
+
+---
+- L2 正则化（Ridge）
+  - 原理：在损失函数中加入权重的 L2 范数（平方和）
+  - 优点：
+    - 使权重趋向于较小值，但不会为 0，提升模型稳定性。
+    - 有效缓解过拟合。
+  - 缺点：不进行特征选择。
+  - 适用：大多数线性模型、神经网络（常称权重衰减）。
+
+---
+- Dropout（神经网络专用）
+  - 原理：在训练过程中，随机“丢弃”一部分神经元（将其输出设为 0），比例由 dropout rate 控制（如 0.5）。
+  - 优点：
+    - 打破神经元之间的共适应性，相当于集成多个子网络。
+    - 显著提升神经网络的泛化能力。
+  - 注意：测试时所有神经元都参与，输出需按比例缩放。
+
+---
+- 早停（Early Stopping）
+  - 原理：在训练过程中监控验证集误差。当验证误差不再下降甚至上升时，停止训练。
+  - 优点：简单有效，避免模型在训练集上过度拟合。
+  - 适用：所有迭代训练的模型（如神经网络、GBDT）。
+
+---
+- 数据增强（Data Augmentation）
+  - 原理：通过对训练数据进行随机变换（如图像的旋转、翻转、裁剪；文本的同义词替换）来增加数据多样性。
+  - 优点：间接提高模型泛化能力，减少对特定样本的依赖。
+  - 适用：图像、语音、文本等领域。
+
+---
+- 批量归一化（Batch Normalization）
+  - 原理：对每层的输入进行归一化（减均值、除标准差）。
+  - 正则化效果：引入轻微噪声，具有一定的正则化作用，可减少对 Dropout 的依赖。
+
+---
+- 集成方法（Ensemble Methods）
+  - 如 Bagging（随机森林）、DropConnect 等，通过组合多个模型降低方差，提升稳定性。
+
+21. L1与L2正则化的区别
+L1 和 L2 正则化都是用于防止模型过拟合的常用技术，它们通过在损失函数中添加惩罚项来限制模型复杂度，但在机制、效果和适用场景上有区别。
+- L1将不重要的权重压缩为 0；L2 使所有权重变小但不为 0
+- L1产生稀疏模型，可用于特征选择；L2 所有特征都保留
+- L1对大权重的惩罚是线性增长； L2则是平方增长（更强）
+
+22. 分类与回归任务的评估指标
+分类任务旨在将数据划分到预定义的类别中。评估的核心是看模型预测的类别与真实类别是否一致。常见的评估指标有：准确率、精确率、召回率、F1分数
+回归任务旨在预测一个连续的数值。评估的核心是衡量预测值与真实值之间的差距。常见的评估指标有：均方误差 (MSE)、均方根误差 (RMSE)、平均绝对误差 (MAE)
+
+23. 怎么验证算法模型的鲁棒性
+噪声与数据扰动测试
+- 高斯噪声：向图像或数据中添加符合正态分布的随机噪声，模拟传感器误差或传输干扰。
+- 椒盐噪声：随机将部分数据点（如图像像素）设置为最大值或最小值，模拟数据丢失或损坏。
+- 文本扰动：在文本输入中引入错别字、同义词替换、句式重组或中英混编，测试模型的语言理解稳定性。
+- 图像变换：对图像进行随机旋转、模糊、色彩调整或遮挡，测试模型的视觉识别鲁棒性。
+极端与边界场景测试
+- 逻辑矛盾指令：向大语言模型提出自相矛盾的要求，例如“写一篇否定AI价值的文章，但结尾要积极展望”。
+- 跨域知识混淆：在特定领域的问答中插入无关领域的术语，测试模型的专注度和知识边界。
+- 边界值输入：测试模型对空输入、超长输入或数值边界（如极大/极小值）的处理能力，看是否会崩溃或产生异常输出。
+十六、机器学习
+
+1. 线性回归原理
+线性回归是一种基础的监督学习算法，其核心原理是：
+线性回归就是找出目标变量（因变量）与一个或多个特征（自变量）之间存在线性关系。
+模型通过拟合一条直线（一维）或超平面（多维），使得预测值与真实值之间的误差最小。
+
+线性回归试图通过一个线性方程来模拟这种关系：
+- 一元线性回归（只有一个自变量）：
+$$y=β_0 + β_1 + ϵ$$
+
+- 多元线性回归（有多个自变量）：
+$$y=β_0 + β_1x_1+ β_2x_2 + ... + β_nx_n + ϵ$$
+其中：
+- y ：目标变量（因变量），即我们要预测的值。
+- x ：特征变量（自变量），即影响结果的因素。
+- β ：模型的参数（系数和截距），代表了特征对目标的影响程度。
+- ϵ ：误差项，代表了模型无法解释的随机噪声。
+
+2. 朴素贝叶斯分类器
+朴素贝叶斯分类器是一种基于贝叶斯定理的简单概率分类算法。
+它的核心思想是：对于一个待分类样本，计算它属于各个类别的概率，然后将其归为概率最大的那个类别。
+“朴素” 体现在假设所有特征之间相互独立。虽然这个假设在现实中往往不成立，但算法在很多场景下（尤其是文本分类）依然表现良好且高效。
+工作流程是：
+1. 基于训练数据，统计每个类别出现的先验概率。
+2. 统计在每个类别下，各个特征取值的条件概率。
+3. 对新样本，利用贝叶斯公式计算其属于每个类别的后验概率
+4. 选择后验概率最大的类别作为预测结果。
+它优点是实现简单、训练和预测速度快、对小样本和高维数据（如文本）效果好，常用于垃圾邮件过滤、情感分析等任务。
+贝叶斯公式 是概率论中的一个核心定理，用于计算在已知某些证据条件下，某个假设成立的条件概率。
+
+3. 决策树的分裂指标
+决策树在选择特征进行分裂时，主要依据以下几种指标来衡量分裂的好坏：
+1. 信息增益（Information Gain）：
+  - 基于信息熵（Entropy）的概念。
+  - 信息熵衡量数据集的混乱程度，熵越大，纯度越低。
+  - 信息增益 = 分裂前的熵 - 加权平均的分裂后熵。
+  - 选择信息增益最大的特征进行分裂。
+  - 常用于 ID3 算法。
+2. 增益率（Gain Ratio）：
+  - 信息增益的一个改进，解决了信息增益偏向于选择取值较多的特征的问题。
+  - 增益率 = 信息增益 / 该特征的固有值（Intrinsic Value）。
+  - 选择增益率最大的特征。
+  - 常用于 C4.5 算法。
+3. 基尼不纯度（Gini Impurity）：
+  - 衡量从数据集中随机抽取两个样本，其类别标签不一致的概率。
+  - 基尼不纯度越小，数据集纯度越高。
+  - 选择能使得基尼不纯度下降最多（或分裂后加权基尼不纯度最小）的特征进行分裂。
+  - 常用于 CART 算法（分类树）。
+这些指标的核心目标都是通过分裂，使得子节点的“纯度”尽可能提高，从而构建出高效的分类或回归树。
+
+4. 聚类算法
+聚类是一种无监督学习算法，目标是将数据集中的样本划分为若干个组（簇），使得同一簇内的样本相似度高，不同簇间的样本相似度低。
+常见的聚类算法包括：
+1. K-Means：
+  - 最经典的聚类算法。
+  - 需要预先指定簇的数量 K。
+  - 通过迭代更新质心（簇的中心点），将每个样本分配到最近的质心对应的簇。
+  - 优点是简单、高效，适合球状分布的数据。
+2. 层次聚类（Hierarchical Clustering）：
+  - 不需要预先指定簇数量。
+  - 可以构建一个树状的聚类结构（树状图）。
+  - 分为凝聚式（自底向上）和分裂式（自顶向下）两种。
+  - 适合分析数据的层次结构。
+3. DBSCAN：
+  - 基于密度的聚类算法。
+  - 能发现任意形状的簇，并能识别噪声点（离群值）。
+  - 通过定义“核心点”、“边界点”和“噪声点”来划分簇。
+  - 适合处理有噪声且簇形状不规则的数据。
+4. 高斯混合模型（GMM）：
+  - 基于概率模型的聚类方法。
+  - 假设数据是由多个高斯分布混合生成的。
+  - 使用 EM 算法进行参数估计。
+  - 能给出样本属于每个簇的“软分配”概率。
+这些算法各有特点，选择时需根据数据分布、是否需要指定簇数、对噪声的敏感度等需求来决定。
+
+5. AdaBoost算法
+AdaBoost（Adaptive Boosting）是一种经典的集成学习算法，属于Boosting方法。
+通过组合多个弱学习器（通常是深度很浅的决策树，即决策树桩）来构建一个强学习器。
+工作流程如下：
+1. 初始化样本权重：开始时，所有训练样本的权重相同。
+2. 迭代训练弱学习器：
+  - 使用当前样本权重训练一个弱学习器。
+  - 计算该弱学习器的错误率。
+  - 根据错误率赋予该弱学习器一个权重：错误率越低，该学习器在最终模型中的投票权越大。
+  - 更新样本权重：提高被当前弱学习器错误分类样本的权重，降低正确分类样本的权重。
+3. 组合弱学习器：最终的预测结果是所有弱学习器的加权投票（分类）或加权和（回归）。
+AdaBoost 的关键在于自适应地调整样本权重，让后续的弱学习器更关注之前被分错的“困难样本”，从而逐步提升整体性能。
+
+6. KNN算法
+如果一个样本在特征空间中的k个最相似的样本中的大多数属于某一个类别，则该样本也属于这个类别
+
+7. KNN的计算方式
+KNN（K-Nearest Neighbors）算法的计算过程分为两个阶段：预测阶段和训练阶段。
+1. 训练阶段：
+- KNN 是一种“懒惰学习”（lazy learning）算法，训练阶段几乎不进行计算。
+- 它只是简单地将所有训练样本的特征向量和标签存储起来。
+2. 预测阶段（对新样本进行预测）：
+当有一个新样本需要预测时，执行以下步骤：
+1. 计算距离：
+  - 计算该新样本与每一个训练样本之间的距离。
+  - 常用的距离度量包括：
+    - 欧氏距离（L2）
+    - 曼哈顿距离（L1）
+    - 也可以使用余弦相似度等。
+2. 排序并选择 K 个最近邻：
+  - 将所有训练样本按照与新样本的距离从小到大排序。
+  - 选取距离最近的 K 个样本（K 是一个预先设定的超参数）。
+3. 聚合结果：
+  - 分类任务：对这 K 个邻居的类别进行多数投票，得票最多的类别作为预测结果。
+  - 回归任务：取这 K 个邻居的目标值的平均值（或加权平均）作为预测结果。
+核心思想：“物以类聚”，认为一个样本的性质应该与其最接近的几个邻居相似。
+KNN 的计算开销主要在预测阶段，尤其是当训练集很大时，计算所有距离会比较慢。
+8. 特征工程的标准化
+将特征数据转换为 均值为 0、标准差为 1 的正态分布；避免某些特征因量纲大而“主导”距离计算。
+KNN 依赖距离 → 距离依赖尺度 → 所以必须标准化
+在鸢尾花案例中，花萼长度和花瓣宽度单位不同（cm），如果不标准化，长度可能主导分类结果
+9. 无监督学习
+无监督学习特点是训练数据没有标签。模型的目标是从数据本身发现隐藏的结构、模式或规律。
+主要任务类型包括：
+1. 聚类（Clustering）：
+  - 将数据划分为若干组（簇），使得组内样本相似，组间样本相异。
+  - 常见算法：K-Means、层次聚类、DBSCAN、GMM。
+2. 降维（Dimensionality Reduction）：
+  - 在保留重要信息的前提下，将高维数据映射到低维空间，用于可视化或去噪。
+  - 常见算法：PCA（主成分分析）、t-SNE、UMAP。
+3. 密度估计（Density Estimation）：
+  - 学习数据的概率分布，可用于异常检测。
+  - 例如：高斯混合模型（GMM）。
+4. 关联规则学习（Association Rule Learning）：
+  - 发现数据项之间的有趣关系，如“购物篮分析”中“买啤酒的人也常买薯片”。
+  - 典型算法：Apriori。
+无监督学习广泛应用于客户分群、数据压缩、特征学习、异常检测等场景，是探索性数据分析的核心工具。
+10. 强化学习
+强化学习就是让一个“智能体”（Agent）在一个环境中，通过不断地“试错”（Trial-and-Error）来学习如何做出一系列决策，以达成某个长期目标。
+强化学习的核心思想：做对的事情会得到奖励，做错的事情会受到惩罚。
+11. 拟合的回归率
+衡量回归模型拟合效果最直观的指标是 决定系数（ R2 ）。
+它的取值范围通常在 0 到 1 之间。
+- $$R^2$$=1 ：表示模型完美拟合了数据，预测值与真实值完全重合。
+- $$R^2$$=0 ：表示模型的效果等同于直接取平均值（基准线），没有任何解释能力。
+- $$R^2$$ 越接近 1，说明模型对数据的拟合程度越好，解释变量对预报变量变化的贡献率越高。
+不过，在实际业务中，我们不会只看 $$R^2$$  ，通常还会结合 均方误差（MSE） 或 平均绝对误差（MAE） 来综合判断，因为$$R^2$$  高并不一定代表模型没有过拟合。
+
+在大模型相关的回归任务中（比如预测销量），如果 $$R^2$$  能达到 0.9 以上，通常被认为具有较高的预测准确性。但如果 $$R^2$$   很高但测试集表现差，那可能就是过拟合了，这时候我会去检查残差分布，看是否存在规律性误差。
+暂时无法在飞书文档外展示此内容
+
+十七、人事
+1. 离职原因
+- 实习期到，一直未转正
+- 项目做完，团队解散
+- 项目做完，模型已经上线可用，要求全员转到 go 团队；不符合我个人预期
+- 大模型项目开发上线完； 项目组工作不明朗，离职前工作内容主要变成是数据标注、清洗工作居多；不是太符合我个人预期。（预期还是更多希望在应用新模型，解决业务问题，或者训练、微调模型等这些方面的工作吧。 个人对AI方面比较喜欢）
+- 项目初期上线后，模型开发人数裁撤，调我到Java项目组做维护性开发工作；不太有挑战
+- 家里事情，需要较长时间（照顾老人、生病）所以离职
+- 同学在这边比较多； 他们发展的都不错（薪资、技术都比较好； 我在BOSS上搜索也确实发现如此），想着项目也差不多做完了就过来找了。
+- 想换个行业、业务、环境； AI更多的在金融、医疗、互联网等行业有更大的发展空间；我原来的项目组主要还是在传统的OA、ERP这些项目，当时的项目业务可能有一定的局限性吧；所以想换一换。希望加入一个技术驱动、团队氛围更开放、在AI领域有前沿探索的环境。
+
+2. 想要问的问题
+- 我想了解一下这个岗位日常所用的技术栈。（√）
+- 能介绍一下项目组的团队情况吗？（比如团队规模、岗位情况？）（√）
+- 我可以了解一下公司这边对当前招聘岗位的工作内容或者期望是怎么样的吗
+- 如果有幸加入的话，不知道团队对于我的定位是怎样的呢
+- 大概还有几轮面试呢
+- 大概什么时候能知道这次的面试结果呢
+- 对我所应聘的这个岗位来说，您认为当前团队面临的最大的技术挑战或待解决的技术难题是什么？是性能、 扩展性还是其他方面？
+- 公司对于员工的职业发展路径通常是怎样的
+- 团队或公司为工程师提供了哪些学习资源或成长机会？（比如内部技术分享、参加外部技术会议的预算、培训等）
+- 对于这个岗位的新人，您对他在试用期有什么期望呢
+好的；我这边暂时没有其它问题了；感谢面试官。谢谢！
+3. 职业规划
+短期（入职后3-6个月）：
+刚入职的前几个月，我的核心目标是理解业务场景，吃透技术栈，能独立交付。
+- 业务侧：深入理解我们产品的用户是谁、解决什么痛点、哪些环节可以用大模型提效或重构。我会花时间去梳理业务流中的‘高重复、高认知’任务，因为这才是大模型最有价值的地方。
+- 技术侧：快速掌握我们项目中的核心技术组件——比如RAG的检索与重排链路是如何设计的、Agent的规划和工具调用框架是怎么实现的、流式输出的性能瓶颈在哪里。我会争取在一个月内跑通完整的开发测试流程，三个月内能独立负责一个模块（比如一个问答场景的召回优化或一个工具的接入）。
+- 工程习惯：建立可观测、可评测的意识。我会参与建设我们的自动化评测集，因为在大模型应用里，没有评测就没有优化方向。
+中期（1-3年）：成为团队负责人或者某个技术领域上有自己的研究或者
+中期我希望在1-3年内，能在某一个方向上成为团队里技术负责人。比如能够在一些领域有研究或贡献：
+方向A：RAG系统的深度优化
+  - 不仅仅是调个向量库，而是深入理解分块策略、混合检索（关键词+向量+重排）、上下文压缩、查询改写等全套技术。
+  - 目标是让系统的召回率、精确率、首Token延迟达到生产级标准，能在特定业务场景下逼近甚至超过纯闭源模型的效果。
+方向B：Agent框架的工程化落地
+  - 研究ReAct、Plan-and-Execute、Multi-Agent协作等不同模式在真实业务中的适用性。
+  - 解决Agent开发中的痛点：规划失败如何自愈？工具调用出错如何降级？多步任务如何做状态管理？ 把Agent从‘演示很酷’变成‘稳定可用。
+方向C：大模型应用的评测与可观测性
+  - 建立自动化评测流水线，覆盖准确性、幻觉率、对抗鲁棒性等维度。
+  - 设计trace + metric + log体系，让每次模型输出都可追溯、可归因。这是企业级AI应用能否规模化推广的关键。
+同时，我会主动承担技术方案设计、跨团队协作的职责，比如和产品一起定义需求边界，和算法同学讨论提示词优化策略，和运维同学一起做压测与成本优化。我也希望在1-2年后能够带一个小模块或指导新入职的同事。
+
+长期（3-5年）或更远：架构师
+3-5年或更长远，我希望自己能够成长为技术负责人或架构师
+- 技术层面：能主导设计高并发、低成本、可扩展的大模型应用架构。比如在多个模型（GPT、Claude、开源模型）之间做智能路由，或者在保证效果的前提下把推理成本降低一个数量级。
+- 业务层面：能主动识别业务场景中的AI机会点，提出‘用大模型解决什么问题、怎么解决、ROI如何’的方案，并推动落地。我希望自己不仅是一个写代码的人，更是一个懂业务的技术产品思考者。
+- 影响力层面：将我们在实践中沉淀的工程经验（比如某个场景的RAG优化方案、Agent调试方法论）总结成文档或分享，对内帮助团队成长，对外如果能贡献开源或发表文章就更好了。
+- AI非常擅长编写代码，尤其是一般的功能；但是它的目标很明确就是当前这个功能的实现，长期的系统维护是非常薄弱的；而我们做企业级别项目开发需要稳定运行，可持续维护的项目； 所以从架构着手，约束，边界，熔断降级等方面做好AI Agent的引导，快速构建企业级项目
+
+4. 你对AI发展与看法
+我认为AI行业已经不只是技术探索，正在进入应用、落地爆发期；
+多模态和Agent是接下来的关键。AI不仅能聊天，还能看懂图纸、操作软件，这将极大扩展应用场景。
+
+我对大模型行业前景的看法是：短期看RAG，中期看Agent，长期看模型与应用的一体化。
+
+过去两年行业在堆算力、训基模，但从近一年开始，随着开源模型能力的提升，壁垒已经从算法转移到了工程。在企业应用过程中能用最便宜的Token、最低的延迟、最可靠的方式解决用户的实际问题，这样的应用，企业就应该有前景。
+
+作为大模型应用开发工程师，我认为才刚刚开始。
+我面试这个岗位，就是希望专注于把大模型可靠地嵌入业务流。比如构建一个幻觉更低的模型，或者设计一个能自动调用内部API的Agent，多Agent协同工作，长期记忆问题，上下文限制突破等。这些如果都有好的方案，那么所有软件都值得用AI重做一遍，而重做就得由我们AI应用开发工程师来实现；所以未来我认为非常值得期待。
+当然挑战也很明确：如何解决幻觉、如何设计多步推理的Agent、如何做好效果评测。这些都不是模型参数能直接给的，需要扎实的工程架构能力。
+5. 常用哪些AI工具
+日常使用Cursor 结合Trae、Qoder、灵码、腾讯的CoBuddy、百度的CoMate，不要讲太多了，2-3个足够
+cursor使用的是它的auto模式； 自动选择大模型
+6. Claude Code泄露启发
+关于业务的处理：
+- TAOR 循环：代码揭示其核心执行逻辑是一个极简的循环——思考 (Think) → 行动 (Act) → 观察 (Observe) → 重复 (Repeat)。
+- 原子化工具集：它没有给模型准备几百个复杂的专用工具，而是只提供了 Read、Write、Execute、Connect 等极少数原子能力。
+- 学习点：不要试图让模型去处理复杂的业务逻辑，而是把逻辑下沉到代码层（Runtime），让模型只做决策，具体的脏活累活交给标准化的原子工具。
+
+关于上下文：
+Claude Code 并没有把所有东西都塞进 Context Window，而是维护了三层记忆：
+  - 常驻规则：系统级 Prompt，极少变动。
+  - 会话上下文：当前的对话流。
+  - 专项任务/长期记忆：通过向量检索或文件系统动态加载。
+  - 学习点：通过分层管理上下文，既能节省 Token，又能避免模型“迷失在中间”。
+
+关于提示词：
+1. 结构化提示词
+  - Claude Code 大量使用 Markdown 标题、XML 标签来组织 Prompt。
+  - 学习点：结构化不仅利于模型解析，也利于人类维护（Diff、版本控制）。
+2. 模块化与缓存
+  - 它将 Prompt 拆分为静态规则、动态上下文和任务指令，并实现了缓存机制。
+  - 学习点：Prompt 是“软件 2.0”的核心代码，需要用软件工程的方法（模块化、缓存、版本控制）来管理。
+
+关于新功能：
+KAIROS 模式：它属于一个未发布的 持久生命 守护进程，支持后台会话和记忆整合。这说明长时记忆和自主运行是下一代 Agent 的标配。
+
+7. 日消耗Token情况
+
+- 使用是包月，包年（minimax ）比如：cursor
+- 如果是Claude code （简称CC）那么按照日消耗token计算； 日均1000万 - 1亿的token，如果是工作年限越低的可以更高到亿级别的token消耗
+- 使用Qoder，codeBuddy是按照积分的； 按照1积分10000token的比例； 大概 2000 - 5000积分一天
+
+目前使用的是Cursor Pro模式， 一般情况下，结合国内的AI工具 Qoder，所以cursor使用Pro够用了。
+
+Cursor 的三种收费模式：
+Pro
+  价格：20美元/月
+  描述：入门级套餐，可访问高级模型，享受无限次 Tab 补全，以及更多功能。
+  具体的模型；使用默认的 auto 模式；由cursor自己选择大模型。
+Pro+
+  价格：60美元/月
+  描述：获得 Pro 版本 3 倍的使用量，解锁 Agent 的更高限制，以及更多功能。
+Ultra
+  价格：200美元/月
+  描述：享受最高价值，拥有 20 倍的使用限制，并可提前体验高级功能。
+8. 个人价值
+问：AI agent 都可以做大多数事情；那你作为开发或者人的意义，价值在哪里？
+
+1. AI对于现实物理世界复杂业务上下文的深度理解比较缺乏，以及它不能承担责任的主体性。也就是说你开发好了，不可能不部署上线运维吧？你说有哪家公司现在敢把自己公司的服务器直接接入AI进行实时运维的呢？出了问题，自动重启，持续性的幻觉问题谁担责？
+2. AI能写出一段调用大模型的代码，但它不知道如何设计高并发的流式响应、如何做Token的限流与成本控制、如何设计多Agent之间的状态流转。像我的项目中，我就从增强型，链式工作流，路由工作流，并行工作流，协调器工作流，评估优化工作流智能体架构设计中结合我们的有业务需要和组内的评审采用了路由工作流多智能体架构方式来搭建的；
+3. AI会幻觉，会有安全漏洞，会有价值观对齐问题。在实际项目中，需要我设计RAG（检索增强生成）来减少幻觉，微调模型来对齐业务意图，设计兜底机制和人工介入流程；
+4. 如果是站在训练模型角度； 它也需要协调不同的部门，同事拿到数据； 这些数据需要采集，清洗，去噪；然后再训练模型，还要部署得到反馈后的持续调优；这些都离不开人；
+5. 模型的知识是预训练的，它需要在内容上，持续训练，优化更新迭代（例如：模型的量化，蒸馏，剪枝，怎么把一个大尺寸模型部署到硬件资源有限的服务器上）； 而且使用什么架构，硬件，公司的成本这些也都面临实际的问题要考虑。
+
+9. 个人优势、强项
+
+技术落地能力
+- 我不只做 Demo，更可以将大模型技术转化为可稳定运行的生产级应用。
+- 具体表现：我主导的 “xxx” 项目，都不是停留在概念验证（POC）阶段，而是真正上线并服务于实际业务的系统。
+  - 在项目中，我解决了大模型常见的幻觉控制、响应延迟、数据隐私等工程难题，确保了系统在真实场景下的可用性。
+  - 我擅长从 模型调优 到 业务集成 ，确保技术能切实解决问题
+具备“全栈视角”的系统架构思维
+- 以前也搞前后端；所以我拥有跨越传统后端与前沿 AI 的全链路视野。
+- 具体表现：
+  - 技术广度：我能独立处理从 数据库设计（MySQL/PG）、后端逻辑（Java/Python）、到 AI 编排（LangGraph/RAG） 的全流程，减少了团队间的依赖摩擦。
+  - 沟通效率：因为懂前端的交互限制、懂运维的部署瓶颈、也懂业务的实际需求，我在跨部门协作中能充当粘合剂的角色，能沟通能理解和快速对接，大幅降低沟通成本，避免需求理解偏差导致的返工。
+快速迁移与学习能力
+- 因为在工作之余也经常到b站学习新技术、方法；技术栈比较广泛，方案也还算可以
+- 具体表现：
+  - 转型速度：我从传统 Java 开发转型到 AI 应用开发，仅用了几个月时间就完成了技术栈的重构。
+  - 深度掌握：不仅仅是调用 API，我深入掌握了 LangChain 的组件机制、LangGraph 的状态管理、以及 RAG 的检索优化策略。
+  - 实战验证：这种学习能力直接转化为了生产力，使我能迅速独立承担复杂的 AI 项目，并在短时间内输出高质量代码。这证明了我面对未来任何新技术（如 MCP、Agent 新协议）时，都能快速上手并精通。”
+10.  个人劣势、弱项
+算法底层原理的深度有待加强
+- 我的核心优势在于大模型的应用落地和工程化架构（如 RAG、Agent 编排、高并发处理）。我能熟练运用 LangChain、LangGraph 等框架快速构建复杂系统。
+- 但在模型底层原理（如 Transformer 的数学推导、预训练/微调的深层机制、量化剪枝的底层实现）上，我的理解还停留在‘知其然’的阶段。如果让我从零手写一个高性能的 Transformer 或设计一个新的损失函数，我目前还比较吃力。
+我计划在业余时间尝试使用 PyTorch 复现一些经典的模型结构，或者参与一些轻量级的 Fine-tuning 实验，通过‘手搓代码’来加深对底层机制的理解。
+
+项目全局视野与资源协调能力需进一步拓展
+- 在过往项目中，我往往极度聚焦于自己负责的技术模块（如后端接口、Agent 流程），力求把代码写到极致。
+- 这导致我有时对项目整体的商业节奏、跨部门的资源依赖、以及前期技术选型的权衡过程参与度不够。有时候虽然模块做得很好，但可能不是整体最优解，或者在联调阶段才发现上下游的瓶颈。
+在接下来的项目中，我会主动申请参与需求评审的前期阶段和技术架构的决策会议，不仅仅听‘做什么’，更要问‘为什么做’和‘资源怎么配’
+我希望从单纯的‘模块交付者’成长为能把控项目全生命周期的核心骨干，确保技术产出与业务目标的高度对齐。
+11. Java 转 AI 差异，困难
+我觉得最大的差异在于：
+- Java 后端追求的是确定性（输入 A 必得输出 B，逻辑严密，事务一致）；
+- AI 应用面对的是概率性（模型可能胡说八道，需要容错、重试和评估）。
+
+我的克服方法是：
+1. 用工程化手段约束概率：比如在xxx项目中，我利用 RAG 检索增强来限制模型的知识边界，用 LangGraph 的状态机来规范执行流程，把不确定的模型输出包裹在确定的代码逻辑里。
+2. 转变测试思维：从传统的‘断言测试’转向‘评估集测试（Evaluation）’，关注准确率、召回率等指标，而不是单纯的 通过还是不通过。
+
+12. 公司的考核指标
+一：技术交付质量，比如我负责的RAG系统上线后召回率稳定在95%以上，线上故障率低于0.5%；
+二：内训系统上线后员工自助查询率提升了60%，HR咨询量下降了40%；
+三：团队贡献，我输出了3份技术文档，还带了一个新人上手LangGraph。

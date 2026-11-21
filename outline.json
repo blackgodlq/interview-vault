@@ -1,0 +1,3410 @@
+{
+  "sources": {
+    "java": {
+      "sha256": "456de468415a572087ce2f11a3e29f54b585a6434f38e54664655a3fbde96f1b",
+      "chapters": [
+        {
+          "title": "一、基础篇",
+          "line": 1,
+          "headings": [
+            {
+              "line": 2,
+              "number": 1,
+              "title": "String、StringBuffer 和 StringBuilder 的区别"
+            },
+            {
+              "line": 10,
+              "number": 2,
+              "title": "equals与==的区别"
+            },
+            {
+              "line": 16,
+              "number": 3,
+              "title": "final、finally 和 finalize区别"
+            },
+            {
+              "line": 25,
+              "number": 4,
+              "title": "Arraylist和Linkedlist区别"
+            },
+            {
+              "line": 31,
+              "number": 5,
+              "title": "HashTable和HashMap的区别"
+            },
+            {
+              "line": 37,
+              "number": 6,
+              "title": "HashSet与HashMap的区别"
+            },
+            {
+              "line": 45,
+              "number": 7,
+              "title": "HashMap中调用put的过程"
+            },
+            {
+              "line": 54,
+              "number": 8,
+              "title": "HashMap原理"
+            },
+            {
+              "line": 68,
+              "number": 9,
+              "title": "红黑树"
+            },
+            {
+              "line": 76,
+              "number": 10,
+              "title": "HashMap为什么红黑树"
+            },
+            {
+              "line": 79,
+              "number": 11,
+              "title": "HashMap 解决哈希冲突"
+            },
+            {
+              "line": 97,
+              "number": 12,
+              "title": "HashMap线程不安全"
+            },
+            {
+              "line": 119,
+              "number": 13,
+              "title": "ConcurrentHashMap实现原理"
+            },
+            {
+              "line": 125,
+              "number": 14,
+              "title": "同时重写hashCode与equals方法"
+            },
+            {
+              "line": 139,
+              "number": 15,
+              "title": "面向对象三大特性"
+            },
+            {
+              "line": 143,
+              "number": 16,
+              "title": "什么是CAS"
+            },
+            {
+              "line": 152,
+              "number": 17,
+              "title": "什么是多态"
+            },
+            {
+              "line": 162,
+              "number": 18,
+              "title": "深拷贝和浅拷贝"
+            },
+            {
+              "line": 165,
+              "number": 19,
+              "title": "重载和重写的区别"
+            },
+            {
+              "line": 168,
+              "number": 20,
+              "title": "接口和抽象类有什么区别"
+            },
+            {
+              "line": 181,
+              "number": 21,
+              "title": "Java集合/容器或数据结构"
+            },
+            {
+              "line": 219,
+              "number": 22,
+              "title": "Java的基础数据类型"
+            },
+            {
+              "line": 248,
+              "number": 23,
+              "title": "&和&&的区别"
+            },
+            {
+              "line": 250,
+              "number": 24,
+              "title": "try里有return，finally是否执行"
+            },
+            {
+              "line": 256,
+              "number": 25,
+              "title": "Exception与Error区别"
+            },
+            {
+              "line": 277,
+              "number": 26,
+              "title": "常见的五种运行时异常"
+            },
+            {
+              "line": 284,
+              "number": 27,
+              "title": "Java 反射机制，动态代理原理"
+            },
+            {
+              "line": 290,
+              "number": 28,
+              "title": "Java是值传递还是地址传递"
+            },
+            {
+              "line": 293,
+              "number": 29,
+              "title": "JUC包下的常见类"
+            },
+            {
+              "line": 301,
+              "number": 30,
+              "title": "线程创建方式有几种"
+            },
+            {
+              "line": 314,
+              "number": 31,
+              "title": "线程使用场景"
+            },
+            {
+              "line": 321,
+              "number": 32,
+              "title": "线程池有哪些创建方式"
+            },
+            {
+              "line": 341,
+              "number": 33,
+              "title": "线程池的7个核心参数"
+            },
+            {
+              "line": 360,
+              "number": 34,
+              "title": "线程池的流程或任务调度过程"
+            },
+            {
+              "line": 367,
+              "number": 35,
+              "title": "线程的调度方式有哪些"
+            },
+            {
+              "line": 378,
+              "number": 36,
+              "title": "线程安全"
+            },
+            {
+              "line": 395,
+              "number": 37,
+              "title": "线程死锁及避免、防止"
+            },
+            {
+              "line": 415,
+              "number": 38,
+              "title": "多线程变量可见性Volatile"
+            },
+            {
+              "line": 433,
+              "number": 39,
+              "title": "线程的状态有几种"
+            },
+            {
+              "line": 446,
+              "number": 40,
+              "title": "虚拟线程"
+            },
+            {
+              "line": 459,
+              "number": 41,
+              "title": "ThreadLocal"
+            },
+            {
+              "line": 474,
+              "number": 42,
+              "title": "什么是AQS"
+            },
+            {
+              "line": 488,
+              "number": 43,
+              "title": "sleep和wait区别"
+            },
+            {
+              "line": 496,
+              "number": 44,
+              "title": "Synchronized和 Lock 的区别"
+            },
+            {
+              "line": 504,
+              "number": 45,
+              "title": "什么是可重入锁"
+            },
+            {
+              "line": 507,
+              "number": 46,
+              "title": "Synchronized 实现，锁的升级、降级"
+            },
+            {
+              "line": 518,
+              "number": 47,
+              "title": "Synchronized锁类对象与锁实例对象的区别"
+            },
+            {
+              "line": 527,
+              "number": 48,
+              "title": "乐观锁与悲观锁"
+            },
+            {
+              "line": 537,
+              "number": 49,
+              "title": "AIO,BIO,NIO是什么"
+            },
+            {
+              "line": 541,
+              "number": 50,
+              "title": "Java中类加载器的类型有哪几种"
+            },
+            {
+              "line": 552,
+              "number": 51,
+              "title": "类加载过程，什么是双亲委派模型"
+            },
+            {
+              "line": 559,
+              "number": 52,
+              "title": "JDK8、11、17、21的新特性"
+            },
+            {
+              "line": 564,
+              "number": 53,
+              "title": "TCP和UDP的区别"
+            },
+            {
+              "line": 567,
+              "number": 54,
+              "title": "三次握手四次挥手"
+            },
+            {
+              "line": 583,
+              "number": 55,
+              "title": "为什么TCP比UDP可靠"
+            },
+            {
+              "line": 601,
+              "number": 56,
+              "title": "JVM内存模型或组成"
+            },
+            {
+              "line": 619,
+              "number": 57,
+              "title": "JDK垃圾回收器与垃圾回收算法"
+            },
+            {
+              "line": 636,
+              "number": 58,
+              "title": "CPU 假死"
+            },
+            {
+              "line": 643,
+              "number": 59,
+              "title": "动态代理实现"
+            },
+            {
+              "line": 653,
+              "number": 60,
+              "title": "IO流类型"
+            },
+            {
+              "line": 672,
+              "number": 61,
+              "title": "Java 对象的生命周期"
+            },
+            {
+              "line": 678,
+              "number": 62,
+              "title": "Java的四大引用"
+            }
+          ]
+        },
+        {
+          "title": "二、数据库篇",
+          "line": 688,
+          "headings": [
+            {
+              "line": 689,
+              "number": 1,
+              "title": "数据库优化经验"
+            },
+            {
+              "line": 701,
+              "number": 2,
+              "title": "SQL语句优化"
+            },
+            {
+              "line": 715,
+              "number": 3,
+              "title": "SQL慢怎么处理"
+            },
+            {
+              "line": 727,
+              "number": 4,
+              "title": "explain返回结果"
+            },
+            {
+              "line": 743,
+              "number": 5,
+              "title": "explain后type的值"
+            },
+            {
+              "line": 751,
+              "number": 6,
+              "title": "判断有没有走索引"
+            },
+            {
+              "line": 754,
+              "number": 7,
+              "title": "创建索引注意事项或原则"
+            },
+            {
+              "line": 769,
+              "number": 8,
+              "title": "覆盖索引"
+            },
+            {
+              "line": 773,
+              "number": 9,
+              "title": "索引失效场景"
+            },
+            {
+              "line": 796,
+              "number": 10,
+              "title": "MySQL索引有哪些类型"
+            },
+            {
+              "line": 803,
+              "number": 11,
+              "title": "MySQL的存储引擎"
+            },
+            {
+              "line": 815,
+              "number": 12,
+              "title": "聚簇与非聚簇索引"
+            },
+            {
+              "line": 818,
+              "number": 13,
+              "title": "如何创建索引"
+            },
+            {
+              "line": 829,
+              "number": 14,
+              "title": "创建索引的原则"
+            },
+            {
+              "line": 837,
+              "number": 15,
+              "title": "MySQL数据结构有哪些"
+            },
+            {
+              "line": 846,
+              "number": 16,
+              "title": "MySQL索引数据结构 B+树"
+            },
+            {
+              "line": 858,
+              "number": 17,
+              "title": "B+树与B树的区别，为什么快"
+            },
+            {
+              "line": 874,
+              "number": 18,
+              "title": "MySQL的锁有哪些"
+            },
+            {
+              "line": 892,
+              "number": 19,
+              "title": "MySQL死锁"
+            },
+            {
+              "line": 915,
+              "number": 20,
+              "title": "内、外、左、右连接"
+            },
+            {
+              "line": 928,
+              "number": 21,
+              "title": "MySQL的隔离级别"
+            },
+            {
+              "line": 942,
+              "number": 22,
+              "title": "事务特性ACID"
+            },
+            {
+              "line": 948,
+              "number": 23,
+              "title": "MySQL怎么保证ACID"
+            },
+            {
+              "line": 957,
+              "number": 24,
+              "title": "MVCC、快照读、当前读"
+            },
+            {
+              "line": 988,
+              "number": 25,
+              "title": "MySQL分页与分包"
+            },
+            {
+              "line": 992,
+              "number": 26,
+              "title": "#{}和${}的区别"
+            },
+            {
+              "line": 995,
+              "number": 27,
+              "title": "Mybatis和MybatisPlus有什么区别"
+            },
+            {
+              "line": 1005,
+              "number": 28,
+              "title": "Mybatis与Hibernate的区别"
+            },
+            {
+              "line": 1010,
+              "number": 29,
+              "title": "Mybatis的一级缓存与二级缓存"
+            },
+            {
+              "line": 1015,
+              "number": 30,
+              "title": "Mybatis的常用标签"
+            },
+            {
+              "line": 1019,
+              "number": 31,
+              "title": "SQL的执行顺序"
+            },
+            {
+              "line": 1034,
+              "number": 32,
+              "title": "常见数据库函数说几个"
+            },
+            {
+              "line": 1057,
+              "number": 33,
+              "title": "窗口函数"
+            },
+            {
+              "line": 1068,
+              "number": 34,
+              "title": "MySQL与Oracle的区别"
+            },
+            {
+              "line": 1073,
+              "number": 35,
+              "title": "MySQL 8 与 5.7区别"
+            },
+            {
+              "line": 1101,
+              "number": 36,
+              "title": "数据库三范式"
+            }
+          ]
+        },
+        {
+          "title": "三、传统Web",
+          "line": 1126,
+          "headings": [
+            {
+              "line": 1127,
+              "number": 1,
+              "title": "cookie和session的区别"
+            },
+            {
+              "line": 1130,
+              "number": 2,
+              "title": "Servlet生命周期"
+            },
+            {
+              "line": 1143,
+              "number": 3,
+              "title": "Servlet的作用域"
+            },
+            {
+              "line": 1146,
+              "number": 4,
+              "title": "JSP"
+            },
+            {
+              "line": 1151,
+              "number": 5,
+              "title": "http和https的区别"
+            },
+            {
+              "line": 1160,
+              "number": 6,
+              "title": "http请求与响应结构"
+            },
+            {
+              "line": 1169,
+              "number": 7,
+              "title": "http响应状态码"
+            },
+            {
+              "line": 1186,
+              "number": 8,
+              "title": "TP90、TP99与TP999"
+            },
+            {
+              "line": 1200,
+              "number": 9,
+              "title": "过滤器与拦截器的区别"
+            },
+            {
+              "line": 1205,
+              "number": 10,
+              "title": "Git常用命令有哪些"
+            },
+            {
+              "line": 1227,
+              "number": 11,
+              "title": "Git分支管理"
+            },
+            {
+              "line": 1239,
+              "number": 12,
+              "title": "Git rebase 与 merge"
+            },
+            {
+              "line": 1246,
+              "number": 13,
+              "title": "国产 信创 了解吗"
+            },
+            {
+              "line": 1259,
+              "number": 14,
+              "title": "什么是XSS？后端怎么预防XSS"
+            },
+            {
+              "line": 1274,
+              "number": 15,
+              "title": "对称加密与不对称加密"
+            },
+            {
+              "line": 1280,
+              "number": 16,
+              "title": "数字签名"
+            }
+          ]
+        },
+        {
+          "title": "四、Spring与SpringBoot",
+          "line": 1290,
+          "headings": [
+            {
+              "line": 1291,
+              "number": 1,
+              "title": "SpringBoot自动装配原理"
+            },
+            {
+              "line": 1302,
+              "number": 2,
+              "title": "Spring怎么解决循环依赖/三级缓存"
+            },
+            {
+              "line": 1318,
+              "number": 3,
+              "title": "Spring的 IOC"
+            },
+            {
+              "line": 1328,
+              "number": 4,
+              "title": "Spring 的 AOP"
+            },
+            {
+              "line": 1368,
+              "number": 5,
+              "title": "AOP失效的场景有哪些"
+            },
+            {
+              "line": 1394,
+              "number": 6,
+              "title": "事务的传播行为"
+            },
+            {
+              "line": 1417,
+              "number": 7,
+              "title": "Spring事务失效"
+            },
+            {
+              "line": 1429,
+              "number": 8,
+              "title": "Spring中Bean的加载流程"
+            },
+            {
+              "line": 1441,
+              "number": 9,
+              "title": "SpringMVC的执行流程"
+            },
+            {
+              "line": 1464,
+              "number": 10,
+              "title": "Spring中常用注解"
+            },
+            {
+              "line": 1485,
+              "number": 11,
+              "title": "Spring Bean的作用域"
+            },
+            {
+              "line": 1499,
+              "number": 12,
+              "title": "Spring Bean的生命周期"
+            },
+            {
+              "line": 1528,
+              "number": 13,
+              "title": "FactoryBean与BeanFactory的区别"
+            },
+            {
+              "line": 1535,
+              "number": 14,
+              "title": "Spring的优缺点"
+            },
+            {
+              "line": 1551,
+              "number": 15,
+              "title": "Spring是什么"
+            },
+            {
+              "line": 1554,
+              "number": 16,
+              "title": "Spring、SpringBoot、SpringMVC区别"
+            },
+            {
+              "line": 1561,
+              "number": 17,
+              "title": "SpringBoot的监视器"
+            },
+            {
+              "line": 1579,
+              "number": 18,
+              "title": "Spring的加载过程"
+            },
+            {
+              "line": 1593,
+              "number": 19,
+              "title": "Spring中设计模式有哪些"
+            },
+            {
+              "line": 1634,
+              "number": 20,
+              "title": "RestController和Controller有什么区别"
+            }
+          ]
+        },
+        {
+          "title": "五、Redis",
+          "line": 1637,
+          "headings": [
+            {
+              "line": 1638,
+              "number": 1,
+              "title": "Redis的作用、使用场景"
+            },
+            {
+              "line": 1648,
+              "number": 2,
+              "title": "常见五种数据类型及结构"
+            },
+            {
+              "line": 1658,
+              "number": 3,
+              "title": "除了常见的五种类型还有哪些"
+            },
+            {
+              "line": 1676,
+              "number": 4,
+              "title": "缓存问题三兄弟——缓存雪崩"
+            },
+            {
+              "line": 1680,
+              "number": 5,
+              "title": "缓存问题三兄弟——缓存穿透"
+            },
+            {
+              "line": 1685,
+              "number": 6,
+              "title": "缓存问题三兄弟——缓存击穿"
+            },
+            {
+              "line": 1691,
+              "number": 7,
+              "title": "布隆过滤器的实现，怎么用"
+            },
+            {
+              "line": 1707,
+              "number": 8,
+              "title": "Redis为什么快"
+            },
+            {
+              "line": 1711,
+              "number": 9,
+              "title": "Redis是单线程的吗"
+            },
+            {
+              "line": 1715,
+              "number": 10,
+              "title": "Redis宕机怎么办"
+            },
+            {
+              "line": 1724,
+              "number": 11,
+              "title": "Redis有哪些集群"
+            },
+            {
+              "line": 1727,
+              "number": 12,
+              "title": "Redis主从复制"
+            },
+            {
+              "line": 1734,
+              "number": 13,
+              "title": "Redis数据持久化策略"
+            },
+            {
+              "line": 1750,
+              "number": 14,
+              "title": "过期key处理策略-key删除"
+            },
+            {
+              "line": 1761,
+              "number": 15,
+              "title": "内存淘汰策略"
+            },
+            {
+              "line": 1774,
+              "number": 16,
+              "title": "分布式锁"
+            },
+            {
+              "line": 1812,
+              "number": 17,
+              "title": "分布式锁使用场景"
+            },
+            {
+              "line": 1821,
+              "number": 18,
+              "title": "分布式锁问题"
+            },
+            {
+              "line": 1836,
+              "number": 19,
+              "title": "Redisson的好处/优势"
+            },
+            {
+              "line": 1852,
+              "number": 20,
+              "title": "Redisson看门狗"
+            },
+            {
+              "line": 1860,
+              "number": 21,
+              "title": "Redis如何处理并发的"
+            },
+            {
+              "line": 1864,
+              "number": 22,
+              "title": "Redis的管道"
+            },
+            {
+              "line": 1867,
+              "number": 23,
+              "title": "Redis怎么存储一个对象"
+            },
+            {
+              "line": 1870,
+              "number": 24,
+              "title": "Redis 和数据库的数据一致性如何保证"
+            },
+            {
+              "line": 1879,
+              "number": 25,
+              "title": "Redis的默认内存大小"
+            },
+            {
+              "line": 1882,
+              "number": 26,
+              "title": "红锁RedLock"
+            }
+          ]
+        },
+        {
+          "title": "六、RabbitMQ",
+          "line": 1899,
+          "headings": [
+            {
+              "line": 1900,
+              "number": 1,
+              "title": "RabbitMQ在哪用到了/场景"
+            },
+            {
+              "line": 1905,
+              "number": 2,
+              "title": "RabbitMQ的核心组件有哪些"
+            },
+            {
+              "line": 1912,
+              "number": 3,
+              "title": "消息重复消费/幂等"
+            },
+            {
+              "line": 1917,
+              "number": 4,
+              "title": "消息怎么可靠的消费"
+            },
+            {
+              "line": 1922,
+              "number": 5,
+              "title": "消息怎么可靠生产"
+            },
+            {
+              "line": 1933,
+              "number": 6,
+              "title": "RabbitMQ自身可靠"
+            },
+            {
+              "line": 1937,
+              "number": 7,
+              "title": "消息积压/堆积问题"
+            },
+            {
+              "line": 1946,
+              "number": 8,
+              "title": "死信队列"
+            },
+            {
+              "line": 1955,
+              "number": 9,
+              "title": "MQ的工作模式和交换机类型、核心概念"
+            },
+            {
+              "line": 1959,
+              "number": 10,
+              "title": "RabbitMQ的队列类型"
+            },
+            {
+              "line": 1961,
+              "number": 11,
+              "title": "RabbitMQ 中实现顺序消费消息"
+            }
+          ]
+        },
+        {
+          "title": "七、SpringCloud",
+          "line": 1969,
+          "headings": [
+            {
+              "line": 1970,
+              "number": 1,
+              "title": "SpringCloud使用到了哪些组件"
+            },
+            {
+              "line": 1974,
+              "number": 2,
+              "title": "Spring，SpringBoot，SpringCloud的区别"
+            },
+            {
+              "line": 1981,
+              "number": 3,
+              "title": "Spring Cloud和Spring Cloud alibaba 有什么区别"
+            },
+            {
+              "line": 1992,
+              "number": 4,
+              "title": "负载均衡策略"
+            },
+            {
+              "line": 2003,
+              "number": 5,
+              "title": "Nacos服务注册与发现"
+            },
+            {
+              "line": 2016,
+              "number": 6,
+              "title": "Nacos 心跳机制"
+            },
+            {
+              "line": 2026,
+              "number": 7,
+              "title": "Gateway用来做什么"
+            },
+            {
+              "line": 2047,
+              "number": 8,
+              "title": "Spring Cloud Gateway 的路由"
+            },
+            {
+              "line": 2051,
+              "number": 9,
+              "title": "令牌桶、漏桶、滑动窗口"
+            },
+            {
+              "line": 2068,
+              "number": 10,
+              "title": "Eureka与Nacos区别"
+            },
+            {
+              "line": 2078,
+              "number": 11,
+              "title": "Nacos热更新"
+            },
+            {
+              "line": 2081,
+              "number": 12,
+              "title": "Seata使用场景"
+            },
+            {
+              "line": 2085,
+              "number": 13,
+              "title": "Seata的模式"
+            },
+            {
+              "line": 2109,
+              "number": 14,
+              "title": "Seata的原理"
+            },
+            {
+              "line": 2125,
+              "number": 15,
+              "title": "Spring Cloud常用注解"
+            },
+            {
+              "line": 2133,
+              "number": 16,
+              "title": "OpenFeign使用场景"
+            },
+            {
+              "line": 2138,
+              "number": 17,
+              "title": "OpenFeign原理"
+            },
+            {
+              "line": 2141,
+              "number": 18,
+              "title": "熔断降级"
+            },
+            {
+              "line": 2157,
+              "number": 19,
+              "title": "Sentinel熔断降级"
+            },
+            {
+              "line": 2169,
+              "number": 20,
+              "title": "Hystrix熔断降级"
+            },
+            {
+              "line": 2183,
+              "number": 21,
+              "title": "为什么使用XXL-JOB"
+            },
+            {
+              "line": 2192,
+              "number": 22,
+              "title": "XXL-JOB使用场景"
+            },
+            {
+              "line": 2199,
+              "number": 23,
+              "title": "XXL-JOB的阻塞策略有哪些"
+            },
+            {
+              "line": 2204,
+              "number": 24,
+              "title": "XXL-JOB的模式（路由策略）有哪些"
+            },
+            {
+              "line": 2217,
+              "number": 25,
+              "title": "XXL-JOB的任务调度/原理"
+            },
+            {
+              "line": 2228,
+              "number": 26,
+              "title": "时间轮（Time Wheel）原理"
+            }
+          ]
+        },
+        {
+          "title": "八、ElasticSearch",
+          "line": 2236,
+          "headings": [
+            {
+              "line": 2237,
+              "number": 1,
+              "title": "ES用来做什么"
+            },
+            {
+              "line": 2240,
+              "number": 2,
+              "title": "为什么使用ES"
+            },
+            {
+              "line": 2245,
+              "number": 3,
+              "title": "怎么同步数据与MySQL数据一致"
+            },
+            {
+              "line": 2248,
+              "number": 4,
+              "title": "有哪些数据类型"
+            },
+            {
+              "line": 2263,
+              "number": 5,
+              "title": "采用什么数据结构"
+            },
+            {
+              "line": 2281,
+              "number": 6,
+              "title": "使用什么分词器"
+            },
+            {
+              "line": 2289,
+              "number": 7,
+              "title": "倒排索引"
+            },
+            {
+              "line": 2304,
+              "number": 8,
+              "title": "正排索引/正向索引"
+            },
+            {
+              "line": 2306,
+              "number": 9,
+              "title": "ES的分词策略是什么"
+            },
+            {
+              "line": 2315,
+              "number": 10,
+              "title": "深度分页"
+            }
+          ]
+        },
+        {
+          "title": "九、Linux & Docker",
+          "line": 2319,
+          "headings": [
+            {
+              "line": 2320,
+              "number": 1,
+              "title": "Linux常用命令有哪些"
+            },
+            {
+              "line": 2367,
+              "number": 2,
+              "title": "查看进程的命令"
+            },
+            {
+              "line": 2394,
+              "number": 3,
+              "title": "查看网络的命令"
+            },
+            {
+              "line": 2409,
+              "number": 4,
+              "title": "查看CPU、内存命令"
+            },
+            {
+              "line": 2423,
+              "number": 5,
+              "title": "内存占满，CPU飙升查看工具"
+            },
+            {
+              "line": 2435,
+              "number": 6,
+              "title": "软链接和硬链接的区别"
+            },
+            {
+              "line": 2438,
+              "number": 7,
+              "title": "Docker常用命令"
+            },
+            {
+              "line": 2496,
+              "number": 8,
+              "title": "Docker复制日志的宿主机的命令"
+            },
+            {
+              "line": 2506,
+              "number": 9,
+              "title": "Docker的容器创建经历几个阶段"
+            },
+            {
+              "line": 2516,
+              "number": 10,
+              "title": "Docker容器的copy on write"
+            },
+            {
+              "line": 2522,
+              "number": 11,
+              "title": "Docker部署"
+            },
+            {
+              "line": 2528,
+              "number": 12,
+              "title": "Dockerfile 制作镜像"
+            },
+            {
+              "line": 2545,
+              "number": 13,
+              "title": "Docker桥接模式和host模式的区别"
+            },
+            {
+              "line": 2549,
+              "number": 14,
+              "title": "虚拟化和容器化有什么区别"
+            },
+            {
+              "line": 2553,
+              "number": 15,
+              "title": "CI/CD/持续集成/自动化部署 -- Jenkins"
+            },
+            {
+              "line": 2669,
+              "number": 16,
+              "title": "什么是火焰图"
+            },
+            {
+              "line": 2679,
+              "number": 17,
+              "title": "并发与并行的区别"
+            },
+            {
+              "line": 2682,
+              "number": 18,
+              "title": "Linux系统的用户态和核心态"
+            },
+            {
+              "line": 2688,
+              "number": 19,
+              "title": "程序局部性原理"
+            },
+            {
+              "line": 2692,
+              "number": 20,
+              "title": "Linux系统的文件描述符"
+            },
+            {
+              "line": 2699,
+              "number": 21,
+              "title": "Linux系统中的信号量"
+            },
+            {
+              "line": 2708,
+              "number": 22,
+              "title": "灰度发布、蓝绿发布、金丝雀发布"
+            }
+          ]
+        },
+        {
+          "title": "十、前端篇",
+          "line": 2712,
+          "headings": [
+            {
+              "line": 2713,
+              "number": 1,
+              "title": "JS里面的闭包"
+            },
+            {
+              "line": 2715,
+              "number": 2,
+              "title": "ES 6新增常用方法"
+            },
+            {
+              "line": 2724,
+              "number": 3,
+              "title": "null 和 undefined 的区别"
+            },
+            {
+              "line": 2727,
+              "number": 4,
+              "title": "jQuery的选择器有哪些"
+            },
+            {
+              "line": 2736,
+              "number": 5,
+              "title": "Vue的生命周期"
+            },
+            {
+              "line": 2753,
+              "number": 6,
+              "title": "Vue中组件之间传递参数的方式"
+            },
+            {
+              "line": 2759,
+              "number": 7,
+              "title": "VUE2 和 VUE3 的区别"
+            },
+            {
+              "line": 2779,
+              "number": 8,
+              "title": "v-if 和 v-show 的区别"
+            },
+            {
+              "line": 2784,
+              "number": 9,
+              "title": "CSS 中的盒子模型"
+            }
+          ]
+        },
+        {
+          "title": "十一、项目篇",
+          "line": 2797,
+          "headings": [
+            {
+              "line": 2798,
+              "number": 1,
+              "title": "项目中难点、挑战、自豪的地方--技术"
+            },
+            {
+              "line": 2813,
+              "number": 2,
+              "title": "中难点、挑战、自豪的地方--业务"
+            },
+            {
+              "line": 2818,
+              "number": 3,
+              "title": "项目生产环境问题如何排查"
+            },
+            {
+              "line": 2833,
+              "number": 4,
+              "title": "遇到最大并发怎么处理"
+            },
+            {
+              "line": 2841,
+              "number": 5,
+              "title": "项目有几个微服务"
+            },
+            {
+              "line": 2845,
+              "number": 6,
+              "title": "每个微服务的实例是多少个"
+            },
+            {
+              "line": 2851,
+              "number": 7,
+              "title": "系统的数据量、用户量、活跃用户"
+            },
+            {
+              "line": 2858,
+              "number": 8,
+              "title": "项目有哪些git的分支"
+            },
+            {
+              "line": 2863,
+              "number": 9,
+              "title": "项目开发流程"
+            },
+            {
+              "line": 2873,
+              "number": 10,
+              "title": "参与过部署吗版本发布流程"
+            },
+            {
+              "line": 2877,
+              "number": 11,
+              "title": "项目开发团队人员组成"
+            },
+            {
+              "line": 2881,
+              "number": 12,
+              "title": "为什么项目都是做几个月的"
+            },
+            {
+              "line": 2884,
+              "number": 13,
+              "title": "在开发这个项目的期间，会穿插其他的项目开发或者别的吗"
+            },
+            {
+              "line": 2887,
+              "number": 14,
+              "title": "系统监控软件"
+            },
+            {
+              "line": 2892,
+              "number": 15,
+              "title": "四方保险-对接了哪些保司"
+            },
+            {
+              "line": 2896,
+              "number": 16,
+              "title": "四方保险-保险产品的上下架是怎么做的"
+            },
+            {
+              "line": 2903,
+              "number": 17,
+              "title": "四方保险-你们可以自定义产品、价格吗"
+            },
+            {
+              "line": 2908,
+              "number": 18,
+              "title": "四方保险-为什么是你们试算"
+            },
+            {
+              "line": 2914,
+              "number": 19,
+              "title": "四方保险-投保审核/承保要多久"
+            },
+            {
+              "line": 2916,
+              "number": 20,
+              "title": "四方保险-审核不通过怎么办"
+            },
+            {
+              "line": 2918,
+              "number": 21,
+              "title": "四方保险-投保"
+            },
+            {
+              "line": 2920,
+              "number": 22,
+              "title": "四方保险-具体产品名称"
+            },
+            {
+              "line": 2923,
+              "number": 23,
+              "title": "四方保险-合同名称叫什么"
+            },
+            {
+              "line": 2925,
+              "number": 24,
+              "title": "四方保险-难点/亮点/印象深刻"
+            },
+            {
+              "line": 2942,
+              "number": 25,
+              "title": "WMS的出库"
+            },
+            {
+              "line": 2966,
+              "number": 26,
+              "title": "WMS的入库"
+            },
+            {
+              "line": 2987,
+              "number": 27,
+              "title": "WMS的仓内作业流程"
+            },
+            {
+              "line": 3034,
+              "number": 28,
+              "title": "MES系统的主要功能和流程"
+            }
+          ]
+        },
+        {
+          "title": "十二、AI",
+          "line": 3100,
+          "headings": [
+            {
+              "line": 3102,
+              "number": 1,
+              "title": "常见的大模型有哪些"
+            },
+            {
+              "line": 3129,
+              "number": 2,
+              "title": "DeepSeek低成本且能力强"
+            },
+            {
+              "line": 3137,
+              "number": 3,
+              "title": "什么是数据蒸馏"
+            },
+            {
+              "line": 3143,
+              "number": 4,
+              "title": "各大模型调用时候的多少B是什么意思"
+            },
+            {
+              "line": 3151,
+              "number": 5,
+              "title": "AI 项目实现流程"
+            }
+          ]
+        },
+        {
+          "title": "十三、场景篇",
+          "line": 3154,
+          "headings": [
+            {
+              "line": 3155,
+              "number": 1,
+              "title": "线上JVM问题/CPU 100%"
+            },
+            {
+              "line": 3169,
+              "number": 2,
+              "title": "生产环境/线上问题"
+            },
+            {
+              "line": 3185,
+              "number": 3,
+              "title": "接口设计注意事项及应对高并发"
+            },
+            {
+              "line": 3194,
+              "number": 4,
+              "title": "数据库调优的具体场景"
+            },
+            {
+              "line": 3210,
+              "number": 5,
+              "title": "有索引的字段，并且知道走了索引的情况下，也查得很慢怎么办"
+            },
+            {
+              "line": 3214,
+              "number": 6,
+              "title": "有个状态字段，也创建了索引；查询的时候会走索引吗"
+            },
+            {
+              "line": 3218,
+              "number": 7,
+              "title": "在高并发场景下，如何保证雪花算法生成的id唯一"
+            },
+            {
+              "line": 3234,
+              "number": 8,
+              "title": "数据库查询分页查询最后一页很慢怎么优化"
+            },
+            {
+              "line": 3258,
+              "number": 9,
+              "title": "HashMap不是线程安全的，怎么让它线程安全"
+            },
+            {
+              "line": 3261,
+              "number": 10,
+              "title": "MySQL从数据库同步很慢怎么解决"
+            },
+            {
+              "line": 3271,
+              "number": 11,
+              "title": "不允许使用事务自动提交，你该如何做到成功提交，失败回滚"
+            },
+            {
+              "line": 3274,
+              "number": 12,
+              "title": "继承a，c继承b，我能把b转化为c吗"
+            },
+            {
+              "line": 3276,
+              "number": 13,
+              "title": "要存储很多文件，时间比较长，有什么存储方案"
+            },
+            {
+              "line": 3281,
+              "number": 14,
+              "title": "基础数据发生改变的时候，产品里的系数也跟着改变吗"
+            },
+            {
+              "line": 3287,
+              "number": 15,
+              "title": "Docker容器挂了怎么检测"
+            },
+            {
+              "line": 3293,
+              "number": 16,
+              "title": "如果发生了超卖怎么解决"
+            },
+            {
+              "line": 3301,
+              "number": 17,
+              "title": "如何实现对于一个单链表内数据的反转"
+            },
+            {
+              "line": 3304,
+              "number": 18,
+              "title": "提交合并代码失败怎么办"
+            },
+            {
+              "line": 3310,
+              "number": 19,
+              "title": "遇到过线程死锁问题吗？怎么解决？"
+            },
+            {
+              "line": 3316,
+              "number": 20,
+              "title": "部署项目过程中出现问题，升级版本失败怎办"
+            },
+            {
+              "line": 3322,
+              "number": 21,
+              "title": "支付完会发送通知到后端；怎么解决重复通知问题"
+            },
+            {
+              "line": 3325,
+              "number": 22,
+              "title": "在后端开发中如何处理前端的跨域请求"
+            },
+            {
+              "line": 3360,
+              "number": 23,
+              "title": "代码评审怎么做"
+            },
+            {
+              "line": 3371,
+              "number": 24,
+              "title": "代码的漏洞检查是怎样做的"
+            },
+            {
+              "line": 3377,
+              "number": 25,
+              "title": "之前做的项目有没有投入到生产正式使用的"
+            },
+            {
+              "line": 3386,
+              "number": 26,
+              "title": "需求压缩时间怎么办"
+            },
+            {
+              "line": 3393,
+              "number": 27,
+              "title": "怎么对接对外接口的调用"
+            },
+            {
+              "line": 3400,
+              "number": 28,
+              "title": "价格在设计表字段使用什么类型"
+            },
+            {
+              "line": 3403,
+              "number": 29,
+              "title": "线上排查问题的工具有哪些"
+            },
+            {
+              "line": 3427,
+              "number": 30,
+              "title": "Arthas（阿尔萨斯）作用"
+            },
+            {
+              "line": 3431,
+              "number": 31,
+              "title": "要模糊查询加密之后的数据怎么做"
+            }
+          ]
+        },
+        {
+          "title": "十四、人事篇",
+          "line": 3437,
+          "headings": [
+            {
+              "line": 3438,
+              "number": 1,
+              "title": "离职原因"
+            },
+            {
+              "line": 3444,
+              "number": 2,
+              "title": "为什么来xx找工作"
+            },
+            {
+              "line": 3448,
+              "number": 3,
+              "title": "团队情况"
+            },
+            {
+              "line": 3451,
+              "number": 4,
+              "title": "加班情况"
+            },
+            {
+              "line": 3457,
+              "number": 5,
+              "title": "原来与期望薪资"
+            },
+            {
+              "line": 3459,
+              "number": 6,
+              "title": "现在住哪里"
+            },
+            {
+              "line": 3462,
+              "number": 7,
+              "title": "有什么想要问的"
+            },
+            {
+              "line": 3473,
+              "number": 8,
+              "title": "目前工作找的怎么样？手里有几个offer？"
+            },
+            {
+              "line": 3476,
+              "number": 9,
+              "title": "应聘这个岗位自己的核心优势是什么"
+            },
+            {
+              "line": 3483,
+              "number": 10,
+              "title": "未来的规划？比如干几年，想走哪个行业方向"
+            },
+            {
+              "line": 3495,
+              "number": 11,
+              "title": "一个团队应该要具备什么样的品质"
+            }
+          ]
+        }
+      ]
+    },
+    "python": {
+      "sha256": "d9d63da91a746e958e26d077c5506ceba672721740f198b6830ea2295677469f",
+      "chapters": [
+        {
+          "title": "一、Python",
+          "line": 1,
+          "headings": [
+            {
+              "line": 2,
+              "number": 1,
+              "title": "编译型与解释型语言区别"
+            },
+            {
+              "line": 8,
+              "number": 2,
+              "title": "什么是魔术/魔法方法"
+            },
+            {
+              "line": 11,
+              "number": 3,
+              "title": "装饰器"
+            },
+            {
+              "line": 24,
+              "number": 4,
+              "title": "迭代器"
+            },
+            {
+              "line": 38,
+              "number": 5,
+              "title": "高阶函数"
+            },
+            {
+              "line": 56,
+              "number": 6,
+              "title": "闭包"
+            },
+            {
+              "line": 60,
+              "number": 7,
+              "title": "数据结构或集合类型"
+            },
+            {
+              "line": 90,
+              "number": 8,
+              "title": "dict的底层结构"
+            },
+            {
+              "line": 116,
+              "number": 9,
+              "title": "不可变数据类型"
+            },
+            {
+              "line": 121,
+              "number": 10,
+              "title": "*args与 **kwArgs区别"
+            },
+            {
+              "line": 125,
+              "number": 11,
+              "title": "list中extend与append的区别"
+            },
+            {
+              "line": 129,
+              "number": 12,
+              "title": "深浅拷贝"
+            },
+            {
+              "line": 133,
+              "number": 13,
+              "title": "Python 里面 == 和 is 区别"
+            },
+            {
+              "line": 137,
+              "number": 14,
+              "title": "使用过哪些Python包"
+            },
+            {
+              "line": 140,
+              "number": 15,
+              "title": "lambda表达式"
+            },
+            {
+              "line": 148,
+              "number": 16,
+              "title": "Python的类型说明"
+            },
+            {
+              "line": 176,
+              "number": 17,
+              "title": "Python 实现字符串的倒转"
+            },
+            {
+              "line": 185,
+              "number": 18,
+              "title": "with 语句"
+            },
+            {
+              "line": 194,
+              "number": 19,
+              "title": "Python怎么实现异步、线程"
+            },
+            {
+              "line": 217,
+              "number": 20,
+              "title": "Python实现多线程"
+            },
+            {
+              "line": 235,
+              "number": 21,
+              "title": "协程"
+            },
+            {
+              "line": 240,
+              "number": 22,
+              "title": "进程、线程与协程的区别"
+            },
+            {
+              "line": 274,
+              "number": 23,
+              "title": "async 和 await 原理"
+            },
+            {
+              "line": 286,
+              "number": 24,
+              "title": "Python 单例"
+            },
+            {
+              "line": 321,
+              "number": 25,
+              "title": "单例存在的问题"
+            },
+            {
+              "line": 338,
+              "number": 26,
+              "title": "Python的GIL机制"
+            },
+            {
+              "line": 361,
+              "number": 27,
+              "title": "怎么实现真并发线程"
+            },
+            {
+              "line": 369,
+              "number": 28,
+              "title": "Python日志处理"
+            },
+            {
+              "line": 372,
+              "number": 29,
+              "title": "Python 单元测试"
+            },
+            {
+              "line": 377,
+              "number": 30,
+              "title": "Python 反射"
+            },
+            {
+              "line": 402,
+              "number": 31,
+              "title": "new 与 init 的区别"
+            },
+            {
+              "line": 409,
+              "number": 32,
+              "title": "生成器yield"
+            },
+            {
+              "line": 422,
+              "number": 33,
+              "title": "Python 的垃圾回收、内存管理"
+            },
+            {
+              "line": 437,
+              "number": 34,
+              "title": "Python爬虫实现"
+            },
+            {
+              "line": 452,
+              "number": 35,
+              "title": "爬虫遇到问题"
+            },
+            {
+              "line": 457,
+              "number": 36,
+              "title": "ASGI"
+            },
+            {
+              "line": 464,
+              "number": 37,
+              "title": "Python 中 Http"
+            },
+            {
+              "line": 480,
+              "number": 38,
+              "title": "FastAPI 核心功能/组件"
+            },
+            {
+              "line": 482,
+              "number": 39,
+              "title": "FastAPI性能提升"
+            },
+            {
+              "line": 494,
+              "number": 40,
+              "title": "FastAPI实现异步处理"
+            },
+            {
+              "line": 507,
+              "number": 41,
+              "title": "FastAPI的路由"
+            },
+            {
+              "line": 510,
+              "number": 42,
+              "title": "FastAPI的Depends"
+            }
+          ]
+        },
+        {
+          "title": "二、LangChain与LangGraph",
+          "line": 527,
+          "headings": [
+            {
+              "line": 528,
+              "number": 1,
+              "title": "LangChain的组成"
+            },
+            {
+              "line": 535,
+              "number": 2,
+              "title": "LangChain版本"
+            },
+            {
+              "line": 541,
+              "number": 3,
+              "title": "LangChain工具实现"
+            },
+            {
+              "line": 558,
+              "number": 4,
+              "title": "LangChain怎么操作大模型"
+            },
+            {
+              "line": 582,
+              "number": 5,
+              "title": "LangChain 代码创建模型、智能体"
+            },
+            {
+              "line": 599,
+              "number": 6,
+              "title": "LangChain与LangGraph区别"
+            },
+            {
+              "line": 613,
+              "number": 7,
+              "title": "对 LangGraph 的理解"
+            },
+            {
+              "line": 617,
+              "number": 8,
+              "title": "LangGraph的组成"
+            },
+            {
+              "line": 623,
+              "number": 9,
+              "title": "LangGraph原理"
+            },
+            {
+              "line": 630,
+              "number": 10,
+              "title": "LangGraph的状态怎么传递、流转的"
+            },
+            {
+              "line": 664,
+              "number": 11,
+              "title": "LangGraph 中断实现原理"
+            },
+            {
+              "line": 671,
+              "number": 12,
+              "title": "LangGraph的钩子"
+            },
+            {
+              "line": 694,
+              "number": 13,
+              "title": "LangGraph的回调"
+            },
+            {
+              "line": 713,
+              "number": 14,
+              "title": "LangGraph与Workflow的区别"
+            },
+            {
+              "line": 725,
+              "number": 15,
+              "title": "LangGraph与Dify区别"
+            },
+            {
+              "line": 741,
+              "number": 16,
+              "title": "LangGraph 怎么实现对话记忆"
+            },
+            {
+              "line": 750,
+              "number": 17,
+              "title": "LangChain和Dify优缺点"
+            },
+            {
+              "line": 754,
+              "number": 18,
+              "title": "使用LangChain有没有遇到一些问题"
+            },
+            {
+              "line": 792,
+              "number": 19,
+              "title": "Guardrails 模型护栏"
+            },
+            {
+              "line": 821,
+              "number": 20,
+              "title": "大模型结构化输出"
+            },
+            {
+              "line": 882,
+              "number": 21,
+              "title": "除了Langchain还有哪些方法可以调用模型"
+            },
+            {
+              "line": 889,
+              "number": 22,
+              "title": "Harness Engineering（驾驭工程）"
+            },
+            {
+              "line": 911,
+              "number": 23,
+              "title": "Harness 与 提示词、上下文工程的区别"
+            },
+            {
+              "line": 917,
+              "number": 24,
+              "title": "LangSmith 智能体监控"
+            }
+          ]
+        },
+        {
+          "title": "三、MCP、Agent与A2A",
+          "line": 953,
+          "headings": [
+            {
+              "line": 954,
+              "number": 1,
+              "title": "MCP协议"
+            },
+            {
+              "line": 968,
+              "number": 2,
+              "title": "SSE协议"
+            },
+            {
+              "line": 972,
+              "number": 3,
+              "title": "SSE原理"
+            },
+            {
+              "line": 983,
+              "number": 4,
+              "title": "JSON-RPC"
+            },
+            {
+              "line": 997,
+              "number": 5,
+              "title": "Streamable HTTP"
+            },
+            {
+              "line": 1013,
+              "number": 6,
+              "title": "MCP与普通HTTP接口的区别"
+            },
+            {
+              "line": 1024,
+              "number": 7,
+              "title": "MCP调用超时"
+            },
+            {
+              "line": 1027,
+              "number": 8,
+              "title": "MCP工具过多上下文过大"
+            },
+            {
+              "line": 1035,
+              "number": 9,
+              "title": "工具调用不准确怎么办"
+            },
+            {
+              "line": 1046,
+              "number": 10,
+              "title": "MCP服务端（工具）实现"
+            },
+            {
+              "line": 1146,
+              "number": 11,
+              "title": "A2A与MCP的区别"
+            },
+            {
+              "line": 1151,
+              "number": 12,
+              "title": "A2A协议"
+            },
+            {
+              "line": 1159,
+              "number": 13,
+              "title": "A2A智能卡片"
+            },
+            {
+              "line": 1171,
+              "number": 14,
+              "title": "智能卡片过多，选择模糊问题"
+            },
+            {
+              "line": 1190,
+              "number": 15,
+              "title": "A2A流程中上下文与工具调用是怎么关联和协同的"
+            },
+            {
+              "line": 1195,
+              "number": 16,
+              "title": "A2A（原理）智能体之间（客户端与服务端）怎么通信，消息传递机制"
+            },
+            {
+              "line": 1210,
+              "number": 17,
+              "title": "A2A多智能体与单智能体优势、劣势"
+            },
+            {
+              "line": 1217,
+              "number": 18,
+              "title": "多智能体会不会增加延迟和成本"
+            },
+            {
+              "line": 1221,
+              "number": 19,
+              "title": "多智能体上下文最大支持token"
+            },
+            {
+              "line": 1228,
+              "number": 20,
+              "title": "多智能体支持几轮对话， 是否有对话边界判断"
+            },
+            {
+              "line": 1237,
+              "number": 21,
+              "title": "Agent 范式"
+            },
+            {
+              "line": 1242,
+              "number": 22,
+              "title": "Agent和大模型的区别"
+            },
+            {
+              "line": 1250,
+              "number": 23,
+              "title": "单智能体与多智能体的区别"
+            },
+            {
+              "line": 1277,
+              "number": 24,
+              "title": "Agent工具调用"
+            },
+            {
+              "line": 1281,
+              "number": 25,
+              "title": "Agent怎么调用工具的"
+            },
+            {
+              "line": 1290,
+              "number": 26,
+              "title": "Agent定义的工具过多问题"
+            },
+            {
+              "line": 1300,
+              "number": 27,
+              "title": "Multi-Agent多智能体中，历史对话怎么对接"
+            },
+            {
+              "line": 1306,
+              "number": 28,
+              "title": "Agent记忆-短期记忆"
+            },
+            {
+              "line": 1315,
+              "number": 29,
+              "title": "Agent记忆-长期记忆"
+            },
+            {
+              "line": 1321,
+              "number": 30,
+              "title": "会话记忆-滑动窗口"
+            },
+            {
+              "line": 1332,
+              "number": 31,
+              "title": "会话/记忆管理"
+            },
+            {
+              "line": 1355,
+              "number": 32,
+              "title": "混合记忆架构"
+            },
+            {
+              "line": 1362,
+              "number": 33,
+              "title": "Agent是怎么调用skill的"
+            },
+            {
+              "line": 1370,
+              "number": 34,
+              "title": "A2A与LangGraph区别"
+            },
+            {
+              "line": 1374,
+              "number": 35,
+              "title": "A2A的客户端怎么实现"
+            },
+            {
+              "line": 1397,
+              "number": 36,
+              "title": "A2A的服务端怎么实现"
+            },
+            {
+              "line": 1526,
+              "number": 37,
+              "title": "A2A安全问题"
+            },
+            {
+              "line": 1530,
+              "number": 38,
+              "title": "Coze或Dify遇到的难点"
+            },
+            {
+              "line": 1536,
+              "number": 39,
+              "title": "Dify实现了什么业务"
+            },
+            {
+              "line": 1543,
+              "number": 40,
+              "title": "Dify如何清洗数据"
+            },
+            {
+              "line": 1626,
+              "number": 41,
+              "title": "Chatflow 与 Workflow 区别"
+            },
+            {
+              "line": 1631,
+              "number": 42,
+              "title": "OpenClaw 架构"
+            },
+            {
+              "line": 1645,
+              "number": 43,
+              "title": "OpenClaw 优缺点"
+            },
+            {
+              "line": 1655,
+              "number": 44,
+              "title": "OpenClaw 应用场景"
+            },
+            {
+              "line": 1664,
+              "number": 45,
+              "title": "多智能体与OpenClaw的区别"
+            },
+            {
+              "line": 1670,
+              "number": 46,
+              "title": "Skill"
+            },
+            {
+              "line": 1682,
+              "number": 47,
+              "title": "Skill 原理"
+            },
+            {
+              "line": 1700,
+              "number": 48,
+              "title": "Skill 使用与分发流程"
+            },
+            {
+              "line": 1714,
+              "number": 49,
+              "title": "常用skill"
+            },
+            {
+              "line": 1743,
+              "number": 50,
+              "title": "CLI "
+            },
+            {
+              "line": 1758,
+              "number": 51,
+              "title": "CLI 与 MCP的区别"
+            },
+            {
+              "line": 1767,
+              "number": 52,
+              "title": "SDD 与 TDD"
+            }
+          ]
+        },
+        {
+          "title": "四、大模型RAG",
+          "line": 1785,
+          "headings": [
+            {
+              "line": 1786,
+              "number": 1,
+              "title": "如何提高RAG系统的效果"
+            },
+            {
+              "line": 1800,
+              "number": 2,
+              "title": "为什么不是使用现成的RAG框架而要自己搭建"
+            },
+            {
+              "line": 1807,
+              "number": 3,
+              "title": "提升 RAG 精确度或怎么Index解决语义缺失"
+            },
+            {
+              "line": 1820,
+              "number": 4,
+              "title": "大模型幻觉"
+            },
+            {
+              "line": 1829,
+              "number": 5,
+              "title": "准确率"
+            },
+            {
+              "line": 1832,
+              "number": 6,
+              "title": "精准率"
+            },
+            {
+              "line": 1835,
+              "number": 7,
+              "title": "召回率"
+            },
+            {
+              "line": 1841,
+              "number": 8,
+              "title": "优化召回率的核心参数与策略"
+            },
+            {
+              "line": 1877,
+              "number": 9,
+              "title": "TF-IDF"
+            },
+            {
+              "line": 1884,
+              "number": 10,
+              "title": "F1-Score 分值"
+            },
+            {
+              "line": 1897,
+              "number": 11,
+              "title": "F1、召回率、精确率关系"
+            },
+            {
+              "line": 1909,
+              "number": 12,
+              "title": "RAG有几种召回方式"
+            },
+            {
+              "line": 1944,
+              "number": 13,
+              "title": "RAG中用户输入的问题特别长"
+            },
+            {
+              "line": 1977,
+              "number": 14,
+              "title": "使用RAG技术的步骤"
+            },
+            {
+              "line": 2027,
+              "number": 15,
+              "title": "RAG原理、流程"
+            },
+            {
+              "line": 2038,
+              "number": 16,
+              "title": "RAG有什么问题"
+            },
+            {
+              "line": 2062,
+              "number": 17,
+              "title": "RAG的评估指标"
+            },
+            {
+              "line": 2067,
+              "number": 18,
+              "title": "RAGAS 评估实现"
+            },
+            {
+              "line": 2071,
+              "number": 19,
+              "title": "RAGAS工作原理，怎么打分的"
+            },
+            {
+              "line": 2075,
+              "number": 20,
+              "title": "生成的文本和参考答案之间的关系"
+            },
+            {
+              "line": 2113,
+              "number": 21,
+              "title": "RAG有图片和视频该怎样处理"
+            },
+            {
+              "line": 2128,
+              "number": 22,
+              "title": "知识库数据爆炸性增长要如何解决"
+            },
+            {
+              "line": 2150,
+              "number": 23,
+              "title": "RAG的检索效率怎么提升"
+            },
+            {
+              "line": 2203,
+              "number": 24,
+              "title": "RAG被弃用，已死"
+            },
+            {
+              "line": 2213,
+              "number": 25,
+              "title": "ReRanker的目的"
+            },
+            {
+              "line": 2225,
+              "number": 26,
+              "title": "ReRank的方法"
+            },
+            {
+              "line": 2235,
+              "number": 27,
+              "title": "BGE-ReRangker上下文长度"
+            },
+            {
+              "line": 2242,
+              "number": 28,
+              "title": "BGE-Reranker 重排"
+            },
+            {
+              "line": 2258,
+              "number": 29,
+              "title": "BGE-Reranker的延迟"
+            },
+            {
+              "line": 2269,
+              "number": 30,
+              "title": "语义歧义怎么提高准确率和召回率"
+            },
+            {
+              "line": 2279,
+              "number": 31,
+              "title": "向量检索慢"
+            },
+            {
+              "line": 2285,
+              "number": 32,
+              "title": "稀疏和稠密向量（混合检索）"
+            },
+            {
+              "line": 2300,
+              "number": 33,
+              "title": "稀疏向量检索与BM25区别"
+            },
+            {
+              "line": 2304,
+              "number": 34,
+              "title": "什么是BM25算法"
+            },
+            {
+              "line": 2306,
+              "number": 35,
+              "title": "BM25检索流程"
+            },
+            {
+              "line": 2311,
+              "number": 36,
+              "title": "BM25 和 TF-IDF "
+            },
+            {
+              "line": 2339,
+              "number": 37,
+              "title": "BGE-M3"
+            },
+            {
+              "line": 2348,
+              "number": 38,
+              "title": "知识图谱"
+            },
+            {
+              "line": 2380,
+              "number": 39,
+              "title": "Graph RAG 知识图谱"
+            },
+            {
+              "line": 2390,
+              "number": 40,
+              "title": "RAGFlow框架"
+            },
+            {
+              "line": 2408,
+              "number": 41,
+              "title": "LLM Wiki"
+            },
+            {
+              "line": 2418,
+              "number": 42,
+              "title": "LLM Wiki的结构"
+            },
+            {
+              "line": 2422,
+              "number": 43,
+              "title": "LLM Wiki 适用场景"
+            },
+            {
+              "line": 2425,
+              "number": 44,
+              "title": "LLM Wiki 与 RAG 的区别"
+            }
+          ]
+        },
+        {
+          "title": "五、大模型提示词",
+          "line": 2432,
+          "headings": [
+            {
+              "line": 2434,
+              "number": 1,
+              "title": "描述提示模板"
+            },
+            {
+              "line": 2437,
+              "number": 2,
+              "title": "提示词优化技巧"
+            },
+            {
+              "line": 2444,
+              "number": 3,
+              "title": "one-shot、few-shot"
+            },
+            {
+              "line": 2447,
+              "number": 4,
+              "title": "项目中提示词长度与结构"
+            },
+            {
+              "line": 2454,
+              "number": 5,
+              "title": "如何防止提示词注入"
+            },
+            {
+              "line": 2458,
+              "number": 6,
+              "title": "防止提示词泄漏"
+            },
+            {
+              "line": 2466,
+              "number": 7,
+              "title": "Skills 与提示词的区别"
+            },
+            {
+              "line": 2475,
+              "number": 8,
+              "title": "为什么需要Skills"
+            }
+          ]
+        },
+        {
+          "title": "六、项目与场景",
+          "line": 2490,
+          "headings": [
+            {
+              "line": 2491,
+              "number": 1,
+              "title": "介绍一下你的RAG系统"
+            },
+            {
+              "line": 2496,
+              "number": 2,
+              "title": "项目团队构成情况"
+            },
+            {
+              "line": 2504,
+              "number": 3,
+              "title": "常见的AI编程工具"
+            },
+            {
+              "line": 2507,
+              "number": 4,
+              "title": "使用AI编码的占比"
+            },
+            {
+              "line": 2514,
+              "number": 5,
+              "title": "那使用了AI编码，你的作用是什么"
+            },
+            {
+              "line": 2518,
+              "number": 6,
+              "title": "意图识别为什么用bert不用qwen2.5"
+            },
+            {
+              "line": 2526,
+              "number": 7,
+              "title": "项目遇到哪些挑战和困难"
+            },
+            {
+              "line": 2539,
+              "number": 8,
+              "title": "印象深刻问题"
+            },
+            {
+              "line": 2544,
+              "number": 9,
+              "title": "项目还可以怎么优化"
+            },
+            {
+              "line": 2548,
+              "number": 10,
+              "title": "智能体并发情况"
+            },
+            {
+              "line": 2552,
+              "number": 11,
+              "title": "多智能体系统的指标"
+            },
+            {
+              "line": 2557,
+              "number": 12,
+              "title": "电商项目中的AI应用"
+            }
+          ]
+        },
+        {
+          "title": "七、大模型微调",
+          "line": 2579,
+          "headings": [
+            {
+              "line": 2580,
+              "number": 1,
+              "title": "大模型微调流程"
+            },
+            {
+              "line": 2602,
+              "number": 2,
+              "title": "大模型微调方法"
+            },
+            {
+              "line": 2626,
+              "number": 3,
+              "title": "LoRA微调原理"
+            },
+            {
+              "line": 2635,
+              "number": 4,
+              "title": "微调-灾难性遗忘"
+            },
+            {
+              "line": 2654,
+              "number": 5,
+              "title": "全量微调与LoRA微调区别"
+            },
+            {
+              "line": 2659,
+              "number": 6,
+              "title": "QLoRA与LoRA的区别"
+            },
+            {
+              "line": 2665,
+              "number": 7,
+              "title": "什么时候会选择微调大模型"
+            },
+            {
+              "line": 2673,
+              "number": 8,
+              "title": "什么时候会全量微调"
+            },
+            {
+              "line": 2679,
+              "number": 9,
+              "title": "微调时的超参数都有哪些"
+            },
+            {
+              "line": 2689,
+              "number": 10,
+              "title": "微调数据的构建方法"
+            },
+            {
+              "line": 2696,
+              "number": 11,
+              "title": "微调数据-单轮对话"
+            },
+            {
+              "line": 2711,
+              "number": 12,
+              "title": "微调数据-多轮对话"
+            },
+            {
+              "line": 2728,
+              "number": 13,
+              "title": "微调中的过拟合问题"
+            },
+            {
+              "line": 2735,
+              "number": 14,
+              "title": "微调中的学习率设置"
+            },
+            {
+              "line": 2742,
+              "number": 15,
+              "title": "微调中的batch size选择"
+            },
+            {
+              "line": 2748,
+              "number": 16,
+              "title": "微调中Epoch怎么设置"
+            },
+            {
+              "line": 2753,
+              "number": 17,
+              "title": "epoch与batch"
+            },
+            {
+              "line": 2756,
+              "number": 18,
+              "title": "微调中的早停策略/早停法"
+            },
+            {
+              "line": 2767,
+              "number": 19,
+              "title": "微调中的评估指标"
+            },
+            {
+              "line": 2773,
+              "number": 20,
+              "title": "量化或FP16"
+            },
+            {
+              "line": 2778,
+              "number": 21,
+              "title": "微调使用的服务器和显卡"
+            },
+            {
+              "line": 2788,
+              "number": 22,
+              "title": "微调训练时长"
+            },
+            {
+              "line": 2802,
+              "number": 23,
+              "title": "微调数据格式"
+            },
+            {
+              "line": 2825,
+              "number": 24,
+              "title": "高质量微调训练数据"
+            }
+          ]
+        },
+        {
+          "title": "八、数据构建",
+          "line": 2830,
+          "headings": [
+            {
+              "line": 2831,
+              "number": 1,
+              "title": "数据清洗具体哪些操作"
+            },
+            {
+              "line": 2838,
+              "number": 2,
+              "title": "知识库数据怎么清洗"
+            },
+            {
+              "line": 2846,
+              "number": 3,
+              "title": "微调数据怎么清洗"
+            },
+            {
+              "line": 2857,
+              "number": 4,
+              "title": "文本分割器分类"
+            },
+            {
+              "line": 2880,
+              "number": 5,
+              "title": "文本切割的优化"
+            },
+            {
+              "line": 2901,
+              "number": 6,
+              "title": "语义分割文本"
+            },
+            {
+              "line": 2928,
+              "number": 7,
+              "title": "分块的评估"
+            },
+            {
+              "line": 2938,
+              "number": 8,
+              "title": "怎么读取跨页表格"
+            },
+            {
+              "line": 2943,
+              "number": 9,
+              "title": "清洗PDF用什么包"
+            },
+            {
+              "line": 2953,
+              "number": 10,
+              "title": "怎么读取PDF中的图片"
+            },
+            {
+              "line": 2958,
+              "number": 11,
+              "title": "分页导致语义缺失怎么办"
+            }
+          ]
+        },
+        {
+          "title": "九、Transformer",
+          "line": 2984,
+          "headings": [
+            {
+              "line": 2985,
+              "number": 1,
+              "title": "Transformer组成"
+            },
+            {
+              "line": 2999,
+              "number": 2,
+              "title": "Transformer原理"
+            },
+            {
+              "line": 3005,
+              "number": 3,
+              "title": "注意力机制"
+            },
+            {
+              "line": 3023,
+              "number": 4,
+              "title": "自注意力机制"
+            },
+            {
+              "line": 3028,
+              "number": 5,
+              "title": "自注意力的计算步骤"
+            },
+            {
+              "line": 3039,
+              "number": 6,
+              "title": "多头自注意力机制"
+            },
+            {
+              "line": 3059,
+              "number": 7,
+              "title": "Transformer智能涌现的原因"
+            },
+            {
+              "line": 3067,
+              "number": 8,
+              "title": "Transformer与传统模型的区别"
+            },
+            {
+              "line": 3084,
+              "number": 9,
+              "title": "Transformer中的掩码机制"
+            },
+            {
+              "line": 3102,
+              "number": 10,
+              "title": "Transformer中的掩码类型"
+            },
+            {
+              "line": 3109,
+              "number": 11,
+              "title": "Transformer与BERT的区别"
+            },
+            {
+              "line": 3119,
+              "number": 12,
+              "title": "Transformer和CNN的区别"
+            },
+            {
+              "line": 3125,
+              "number": 13,
+              "title": "Transformer的残差连接"
+            },
+            {
+              "line": 3135,
+              "number": 14,
+              "title": "Q、K、V的含义"
+            },
+            {
+              "line": 3139,
+              "number": 15,
+              "title": "QKV计算"
+            },
+            {
+              "line": 3156,
+              "number": 16,
+              "title": "Decoder-Only架构中的QKV计算"
+            },
+            {
+              "line": 3166,
+              "number": 17,
+              "title": "位置编码类型"
+            },
+            {
+              "line": 3175,
+              "number": 18,
+              "title": "旋转位置编码的优点"
+            },
+            {
+              "line": 3183,
+              "number": 19,
+              "title": "BERT模型"
+            },
+            {
+              "line": 3205,
+              "number": 20,
+              "title": "Transformer哪部分最耗费算力资源"
+            }
+          ]
+        },
+        {
+          "title": "十、大模型综合",
+          "line": 3209,
+          "headings": [
+            {
+              "line": 3210,
+              "number": 1,
+              "title": "大模型API"
+            },
+            {
+              "line": 3214,
+              "number": 2,
+              "title": "常见大模型的擅长领域或场景"
+            },
+            {
+              "line": 3245,
+              "number": 3,
+              "title": "大模型中的 token"
+            },
+            {
+              "line": 3254,
+              "number": 4,
+              "title": "模型API推理相关的参数"
+            },
+            {
+              "line": 3256,
+              "number": 5,
+              "title": "模型温度Temperature的原理"
+            },
+            {
+              "line": 3263,
+              "number": 6,
+              "title": "模型压缩"
+            },
+            {
+              "line": 3268,
+              "number": 7,
+              "title": "模型剪枝"
+            },
+            {
+              "line": 3274,
+              "number": 8,
+              "title": "模型/知识 蒸馏"
+            },
+            {
+              "line": 3279,
+              "number": 9,
+              "title": "模型量化"
+            },
+            {
+              "line": 3290,
+              "number": 10,
+              "title": "大模型的框架都有什么"
+            },
+            {
+              "line": 3293,
+              "number": 11,
+              "title": "大模型与Agent的区别"
+            },
+            {
+              "line": 3304,
+              "number": 12,
+              "title": "qwen2.5-7B模型"
+            },
+            {
+              "line": 3312,
+              "number": 13,
+              "title": "为什么选择某个模型"
+            },
+            {
+              "line": 3318,
+              "number": 14,
+              "title": "为什么 qwen2.5-7B"
+            },
+            {
+              "line": 3321,
+              "number": 15,
+              "title": "DeepSeek的架构"
+            },
+            {
+              "line": 3342,
+              "number": 16,
+              "title": "T5模型"
+            },
+            {
+              "line": 3350,
+              "number": 17,
+              "title": "多模态的实现原理"
+            },
+            {
+              "line": 3353,
+              "number": 18,
+              "title": "模型的部署"
+            }
+          ]
+        },
+        {
+          "title": "十一、硬件、部署与工具",
+          "line": 3356,
+          "headings": [
+            {
+              "line": 3357,
+              "number": 1,
+              "title": "了解哪些显卡"
+            },
+            {
+              "line": 3364,
+              "number": 2,
+              "title": "显存计算"
+            },
+            {
+              "line": 3373,
+              "number": 3,
+              "title": "怎么部署模型"
+            },
+            {
+              "line": 3410,
+              "number": 4,
+              "title": "模型并发情况"
+            },
+            {
+              "line": 3416,
+              "number": 5,
+              "title": "内存溢出-GPU 显存不足"
+            },
+            {
+              "line": 3420,
+              "number": 6,
+              "title": "内存溢出-系统内存不足"
+            },
+            {
+              "line": 3423,
+              "number": 7,
+              "title": "vLLM 优势"
+            },
+            {
+              "line": 3429,
+              "number": 8,
+              "title": "vLLM 参数设置"
+            },
+            {
+              "line": 3432,
+              "number": 9,
+              "title": "vLLM 推理加速 - PagedAttention"
+            },
+            {
+              "line": 3449,
+              "number": 10,
+              "title": "Cursor中怎么应用Skill"
+            },
+            {
+              "line": 3459,
+              "number": 11,
+              "title": "GPTQ、AWQ、GGUF量化方案区别"
+            }
+          ]
+        },
+        {
+          "title": "十二、数据库",
+          "line": 3463,
+          "headings": [
+            {
+              "line": 3464,
+              "number": 1,
+              "title": "有用过哪些数据库"
+            },
+            {
+              "line": 3477,
+              "number": 2,
+              "title": "向量数据库使用了什么"
+            },
+            {
+              "line": 3482,
+              "number": 3,
+              "title": "Milvus的查询效率"
+            },
+            {
+              "line": 3485,
+              "number": 4,
+              "title": "Milvus索引类型"
+            },
+            {
+              "line": 3491,
+              "number": 5,
+              "title": "Milvus向量数据库中，数据存储的格式是什么？"
+            },
+            {
+              "line": 3498,
+              "number": 6,
+              "title": "向量数据库的混合精度索引怎么做"
+            },
+            {
+              "line": 3511,
+              "number": 7,
+              "title": "同时使用PostgreSQL和MySQL的原因"
+            },
+            {
+              "line": 3515,
+              "number": 8,
+              "title": "PostgreSQL和MySQL的区别"
+            },
+            {
+              "line": 3521,
+              "number": 9,
+              "title": "Faiss和Milvus的区别"
+            }
+          ]
+        },
+        {
+          "title": "十三、Linux",
+          "line": 3527,
+          "headings": [
+            {
+              "line": 3528,
+              "number": 1,
+              "title": "会使用哪些常用的shell语句"
+            },
+            {
+              "line": 3536,
+              "number": 2,
+              "title": "Linux 中变量用什么符号"
+            },
+            {
+              "line": 3541,
+              "number": 3,
+              "title": "Dockerfile 中的环境变量怎么写"
+            },
+            {
+              "line": 3551,
+              "number": 4,
+              "title": "怎么做Docker的部署打包"
+            },
+            {
+              "line": 3564,
+              "number": 5,
+              "title": "说一下Linux查看日志的最后100行的命令"
+            },
+            {
+              "line": 3572,
+              "number": 6,
+              "title": "说一下Linux移动文件到新文件夹的命令"
+            }
+          ]
+        },
+        {
+          "title": "十四、Spring AI",
+          "line": 3575,
+          "headings": [
+            {
+              "line": 3576,
+              "number": 7,
+              "title": "Spring AI有哪些类或常用方法"
+            },
+            {
+              "line": 3578,
+              "number": 8,
+              "title": "Spring AI 实现流程"
+            }
+          ]
+        },
+        {
+          "title": "十五、深度学习",
+          "line": 3591,
+          "headings": [
+            {
+              "line": 3592,
+              "number": 1,
+              "title": "Pytorch与TensorFlow的区别"
+            },
+            {
+              "line": 3601,
+              "number": 2,
+              "title": "深度学习与机器学习的区别"
+            },
+            {
+              "line": 3606,
+              "number": 3,
+              "title": "深度学习构建流程"
+            },
+            {
+              "line": 3618,
+              "number": 4,
+              "title": "卷积神经网络（CNN）"
+            },
+            {
+              "line": 3639,
+              "number": 5,
+              "title": "激活函数与作用"
+            },
+            {
+              "line": 3645,
+              "number": 6,
+              "title": "常见的激活函数"
+            },
+            {
+              "line": 3679,
+              "number": 7,
+              "title": "梯度"
+            },
+            {
+              "line": 3683,
+              "number": 8,
+              "title": "梯度下降"
+            },
+            {
+              "line": 3702,
+              "number": 9,
+              "title": "梯度下降---优化器"
+            },
+            {
+              "line": 3721,
+              "number": 10,
+              "title": "梯度消失问题及处理方法"
+            },
+            {
+              "line": 3747,
+              "number": 11,
+              "title": "梯度爆炸问题及处理方法"
+            },
+            {
+              "line": 3774,
+              "number": 12,
+              "title": "学习率"
+            },
+            {
+              "line": 3781,
+              "number": 13,
+              "title": "学习率与梯度的关系"
+            },
+            {
+              "line": 3786,
+              "number": 14,
+              "title": "残差连接"
+            },
+            {
+              "line": 3805,
+              "number": 15,
+              "title": "损失函数"
+            },
+            {
+              "line": 3810,
+              "number": 16,
+              "title": "常见的损失函数"
+            },
+            {
+              "line": 3821,
+              "number": 17,
+              "title": "欠拟合-Underfitting"
+            },
+            {
+              "line": 3834,
+              "number": 18,
+              "title": "过拟合-Overfitting"
+            },
+            {
+              "line": 3849,
+              "number": 19,
+              "title": "怎么判断过拟合还是欠拟合"
+            },
+            {
+              "line": 3855,
+              "number": 20,
+              "title": "正则化方法"
+            },
+            {
+              "line": 3902,
+              "number": 21,
+              "title": "L1与L2正则化的区别"
+            },
+            {
+              "line": 3908,
+              "number": 22,
+              "title": "分类与回归任务的评估指标"
+            },
+            {
+              "line": 3912,
+              "number": 23,
+              "title": "怎么验证算法模型的鲁棒性"
+            }
+          ]
+        },
+        {
+          "title": "十六、机器学习",
+          "line": 3922,
+          "headings": [
+            {
+              "line": 3924,
+              "number": 1,
+              "title": "线性回归原理"
+            },
+            {
+              "line": 3941,
+              "number": 2,
+              "title": "朴素贝叶斯分类器"
+            },
+            {
+              "line": 3953,
+              "number": 3,
+              "title": "决策树的分裂指标"
+            },
+            {
+              "line": 3973,
+              "number": 4,
+              "title": "聚类算法"
+            },
+            {
+              "line": 3998,
+              "number": 5,
+              "title": "AdaBoost算法"
+            },
+            {
+              "line": 4011,
+              "number": 6,
+              "title": "KNN算法"
+            },
+            {
+              "line": 4014,
+              "number": 7,
+              "title": "KNN的计算方式"
+            },
+            {
+              "line": 4035,
+              "number": 8,
+              "title": "特征工程的标准化"
+            },
+            {
+              "line": 4039,
+              "number": 9,
+              "title": "无监督学习"
+            },
+            {
+              "line": 4055,
+              "number": 10,
+              "title": "强化学习"
+            },
+            {
+              "line": 4058,
+              "number": 11,
+              "title": "拟合的回归率"
+            }
+          ]
+        },
+        {
+          "title": "十七、人事",
+          "line": 4069,
+          "headings": [
+            {
+              "line": 4070,
+              "number": 1,
+              "title": "离职原因"
+            },
+            {
+              "line": 4080,
+              "number": 2,
+              "title": "想要问的问题"
+            },
+            {
+              "line": 4092,
+              "number": 3,
+              "title": "职业规划"
+            },
+            {
+              "line": 4118,
+              "number": 4,
+              "title": "你对AI发展与看法"
+            },
+            {
+              "line": 4129,
+              "number": 5,
+              "title": "常用哪些AI工具"
+            },
+            {
+              "line": 4132,
+              "number": 6,
+              "title": "Claude Code泄露启发"
+            },
+            {
+              "line": 4156,
+              "number": 7,
+              "title": "日消耗Token情况"
+            },
+            {
+              "line": 4175,
+              "number": 8,
+              "title": "个人价值"
+            },
+            {
+              "line": 4184,
+              "number": 9,
+              "title": "个人优势、强项"
+            },
+            {
+              "line": 4202,
+              "number": 10,
+              "title": "个人劣势、弱项"
+            },
+            {
+              "line": 4213,
+              "number": 11,
+              "title": "Java 转 AI 差异，困难"
+            },
+            {
+              "line": 4222,
+              "number": 12,
+              "title": "公司的考核指标"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
