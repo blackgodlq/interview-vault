@@ -87,11 +87,19 @@ function search(question,previous=''){
 
 const get=id=>document.getElementById(id);
 const status=get('projectStatus'),list=get('projectList'),toggle=get('projectCode');
+const folderInput=get('projectFolder'),fileInput=get('projectFiles');
+const folderButton=get('pickProjectFolder'),fileButton=get('pickProjectFiles');
+const supportsFolders='webkitdirectory' in folderInput;
+if(supportsFolders)folderInput.webkitdirectory=true;
+folderButton.onclick=()=>folderInput.click();
+fileButton.onclick=()=>fileInput.click();
 let busy=false;
 function render(){
  list.replaceChildren();
  toggle.textContent=files.size?'项目代码 · '+files.size:'项目代码';
  get('projectClear').disabled=busy||!files.size;
+ folderButton.disabled=busy||!supportsFolders;
+ fileButton.disabled=busy;
  for(const path of files.keys()){
   const row=document.createElement('li'),label=document.createElement('span'),remove=document.createElement('button');
   label.textContent=path;
@@ -107,7 +115,6 @@ function render(){
 async function add(selected){
  if(busy)return;
  busy=true;
- get('projectFiles').disabled=get('projectFolder').disabled=true;
  status.textContent='正在索引项目代码…';
  render();
  let bytes=[...files.values()].reduce((sum,file)=>sum+file.size,0),added=0,skipped=0;
@@ -132,21 +139,23 @@ async function add(selected){
   }
  }finally{
   busy=false;
-  get('projectFiles').disabled=get('projectFolder').disabled=false;
   status.textContent='已索引 '+files.size+' 个文件，本次处理 '+added+' 个'+(skipped?'，跳过 '+skipped+' 个':'');
   render();
  }
 }
-toggle.onclick=()=>get('projectDialog').showModal();
+toggle.onclick=()=>{
+ if(!supportsFolders&&!files.size)status.textContent='此浏览器不支持整目录选择，请使用 Edge、Chrome，或选择单个文件。';
+ get('projectDialog').showModal();
+};
 get('projectClose').onclick=()=>get('projectDialog').close();
 get('projectClear').onclick=()=>{files.clear();status.textContent='已清空项目索引';render();};
-for(const id of ['projectFiles','projectFolder']){
- const input=get(id);
+for(const input of [fileInput,folderInput]){
  input.onchange=()=>{
   const selected=[...input.files];
   input.value='';
   if(selected.length)void add(selected);
  };
 }
+render();
 window.ProjectCode={search};
 })();
