@@ -54,7 +54,7 @@ async function start(){const {answerQuestion,streamInterviewAnswer,MODEL}=await 
    }
    if(url.pathname==='/api/answer'&&req.method==='POST'){
     if(!req.headers['content-type']?.includes('application/json'))return json(res,415,{error:'只接受 JSON 请求。'});
-    const body=await readBody(req);const result=await answerQuestion({query:body.query,scope:body.scope,apiKey:body.apiKey||process.env.DEEPSEEK_API_KEY,engine,byId,cache});return json(res,200,result);
+    const body=await readBody(req);const result=await answerQuestion({query:body.query,scope:body.scope,retrieveOnly:body.retrieveOnly===true,apiKey:body.apiKey||process.env.DEEPSEEK_API_KEY,engine,byId,cache});return json(res,200,result);
    }
    if(req.method!=='GET'&&req.method!=='HEAD')return json(res,405,{error:'Method not allowed'});
    const relative=decodeURIComponent(url.pathname).replace(/^\/+/, '')||'index.html',file=path.resolve(DIST,relative);

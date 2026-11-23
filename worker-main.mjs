@@ -45,7 +45,7 @@ export default {
      const stream=await streamInterviewAnswer({query:body?.query,apiKey:body?.apiKey||env.DEEPSEEK_API_KEY,signal:request.signal,turns:body?.turns});
      return new Response(stream,{headers:{'Content-Type':'text/event-stream; charset=utf-8','Cache-Control':'no-store, no-transform','X-Content-Type-Options':'nosniff'}});
     }
-    if(url.pathname==='/api/answer'&&request.method==='POST'){const shared=await sharedKnowledge(env);syncEdge(shared);return edgeJSON(await answerQuestion({query:body.query,scope:body.scope,apiKey:body.apiKey||env.DEEPSEEK_API_KEY,engine:edgeEngine,byId:edgeById,cache:edgeCache}));}
+    if(url.pathname==='/api/answer'&&request.method==='POST'){const shared=await sharedKnowledge(env);syncEdge(shared);return edgeJSON(await answerQuestion({query:body.query,scope:body.scope,retrieveOnly:body.retrieveOnly===true,apiKey:body.apiKey||env.DEEPSEEK_API_KEY,engine:edgeEngine,byId:edgeById,cache:edgeCache}));}
    }
    if(request.method!=='GET'&&request.method!=='HEAD')return edgeJSON({error:'Method not allowed'},405);
    let name;try{name=decodeURIComponent(url.pathname).replace(/^\/+/, '')||'index.html';}catch{return edgeJSON({error:'Not found'},404);}

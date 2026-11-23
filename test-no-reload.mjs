@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const source=fs.readFileSync(new URL('./dist/app.js',import.meta.url),'utf8');
+const fn=source.slice(source.indexOf('async function refreshModelStatus()'),source.indexOf('\n',source.indexOf('async function refreshModelStatus()')));
+const nodes=new Map();let reloads=0;
+const context={baseData:{version:'new'},data:{version:'new'},modelConfigured:false,apiKey:'',location:{protocol:'http:',reload(){reloads++;}},sessionStorage:{setItem(){throw new Error('Must not auto-resume or reload');}},$:id=>{if(!nodes.has(id))nodes.set(id,{});return nodes.get(id);},fetch:async()=>({ok:true,json:async()=>({knowledgeVersion:'old',configured:true})})};
+vm.createContext(context);vm.runInContext(fn,context);
+for(let i=0;i<3;i++)await vm.runInContext('refreshModelStatus()',context);
+assert.equal(reloads,0);assert.equal(nodes.get('status').textContent,'版本待同步');assert.equal(context.modelConfigured,true);
+context.fetch=async()=>({ok:true,json:async()=>({knowledgeVersion:'new',configured:true})});
+await vm.runInContext('refreshModelStatus()',context);assert.equal(nodes.get('status').textContent,'DeepSeek 已就绪');
+console.log('PASS: repeated version mismatch never reloads; matching version reports ready.');

@@ -102,3 +102,18 @@ html,body{height:100%;overflow:hidden}
 .composer #resultMeta:not([hidden])+#submit{margin-left:0}
 @media(min-width:761px){.answer-columns.paired{grid-template-columns:minmax(0,1.16fr) minmax(0,1fr)}}
 @media(max-width:650px){.composer #resultMeta{font-size:10px}.pane-actions{gap:8px}.answer-pane .pane-header{padding-inline:10px}.pane-actions .text-button,.similar-questions{font-size:12px}}
+
+/* Bottom workspace: persistent suggestions beside the composer. */
+.workspace>.composer{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;padding-top:10px;padding-bottom:10px}
+.composer #searchForm{width:100%;max-width:none;margin:0;min-width:0}
+.bottom-candidates{min-width:0;border-right:1px solid var(--line);padding-right:20px}
+.bottom-candidates h3{font-size:13px;margin:0 0 6px;color:var(--muted)}
+.bottom-candidates #candidateList{position:static;width:auto;max-height:100px;overflow:auto;display:flex;flex-wrap:wrap;align-content:flex-start;gap:5px;border:0;padding:0;box-shadow:none;background:transparent}
+#candidateList p{font-size:12px;color:var(--muted);margin:4px 0}
+.composer .search-toolbar{flex-wrap:wrap;gap:4px}.composer .filter{padding:5px 7px}.composer #submit{padding:6px 10px;height:32px}
+@media(max-width:800px){.workspace>.composer{grid-template-columns:1fr;gap:8px}.bottom-candidates{border-right:0;padding-right:0}.bottom-candidates #candidateList{max-height:60px}}
+
+/* Keep asynchronous candidate updates from resizing the answer workspace. */
+.workspace>.composer{height:144px;min-height:144px;max-height:144px;box-sizing:border-box}
+.bottom-candidates{overflow:hidden}
+@media(max-width:800px){.workspace>.composer{height:210px;min-height:210px;max-height:210px}}

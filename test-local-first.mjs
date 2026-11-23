@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const source=fs.readFileSync(new URL('./dist/app.js',import.meta.url),'utf8');
+const fn=source.slice(source.indexOf('async function run(query)'),source.indexOf('\nconst sidebarToggle='));
+const nodes=new Map();let resolveFetch;const pending=new Promise(resolve=>resolveFetch=resolve);
+const context={requestSerial:0,scope:'all',selected:null,selectedAnswer:'',lastResponse:null,interviewSession:null,modelConfigured:true,apiKey:'',history:[],location:{protocol:'http:'},performance,AbortSignal,window:{knowledgeReady:new Promise(()=>{})},localStorage:{setItem(){}},byId:new Map([['local',{}],['refined',{}]]),engine:{search:()=>({results:[{id:'local'}],ms:2})},$:id=>{if(!nodes.has(id))nodes.set(id,{value:'',textContent:'',scrollTop:0});return nodes.get(id);},cancelModel(){context.requestSerial++;},setMode(){},resetAI(){},candidates(){},generateInterviewAnswer(){},historyUI(){},showAnswer(id){context.selected={id};},fetch:()=>pending};
+vm.createContext(context);vm.runInContext(fn,context);
+await vm.runInContext('run("'+('这是一个包含很多背景描述的面试问题'.repeat(5))+'")',context);
+assert.equal(context.selected.id,'local');assert.equal(nodes.get('resultGrid').hidden,false);
+context.selected={id:'manual'};
+resolveFetch({ok:true,json:async()=>({candidateIds:['refined']})});
+await new Promise(resolve=>setTimeout(resolve,0));
+assert.equal(context.selected.id,'manual');
+console.log('PASS: local answer visible with model and knowledge sync pending; manual selection survives late refinement.');

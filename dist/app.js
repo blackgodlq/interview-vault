@@ -85,10 +85,11 @@ function showAnswer(id){
 }
 function candidates(response){
  const list=$('candidateList');
- $('similarQuestions').open=false;
+
  list.replaceChildren();
  const results=response.results.slice(0,5);
- $('similarQuestions').hidden=results.length<2;
+ $('similarQuestions').hidden=false;
+ if(!results.length)list.append(el('p','暂无相似问题，输入问题后按 Enter 检索。'));
  $('candidateCount').textContent='('+results.length+')';
  for(const result of results){
   const chunk=byId.get(result.id);
@@ -106,22 +107,8 @@ function candidates(response){
  }
 }
 function cancelModel(){requestSerial++;modelController?.abort();modelController=null;}
-function closeSimilarQuestions(focusSummary=false){
- const menu=$('similarQuestions');
- if(!menu.open)return;
- menu.open=false;
- if(focusSummary)menu.querySelector('summary').focus({preventScroll:true});
-}
-document.addEventListener('pointerdown',event=>{
- if(!$('similarQuestions').contains(event.target))closeSimilarQuestions();
-});
-$('similarQuestions').addEventListener('keydown',event=>{
- if(event.key==='Escape'&&$('similarQuestions').open){
-  event.stopPropagation();
-  closeSimilarQuestions(true);
- }
-});
-async function refreshModelStatus(){if(location.protocol==='file:'){$('status').textContent='离线原文模式';$('configStatus').textContent='离线 HTML 仅检索原文。使用 DeepSeek 请双击桌面上的面试知识库快捷方式。';return;}try{const r=await fetch('/api/status',{cache:'no-store'});if(!r.ok)throw new Error();const state=await r.json();if(state.knowledgeVersion&&state.knowledgeVersion!==data.version){sessionStorage.setItem('resume-interview-query',$('query').value);location.reload();return;}modelConfigured=!!state.configured;$('configStatus').textContent=state.configured?'后端已配置 API Key，可直接提问。':'当前服务尚未配置 API Key，请在下方填写。';$('status').textContent=state.configured||apiKey?'DeepSeek 已就绪':'请配置 DeepSeek Key';}catch{$('configStatus').textContent='无法连接模型后端。请通过桌面快捷方式启动，或使用在线版本。';$('status').textContent='模型后端未连接';}}
+function closeSimilarQuestions(){}
+async function refreshModelStatus(){if(location.protocol==='file:'){$('status').textContent='离线原文模式';$('configStatus').textContent='离线 HTML 仅检索原文。使用 DeepSeek 请双击桌面上的面试知识库快捷方式。';return;}try{const r=await fetch('/api/status',{cache:'no-store'});if(!r.ok)throw new Error();const state=await r.json();const versionMismatch=!!state.knowledgeVersion&&state.knowledgeVersion!==baseData.version;modelConfigured=!!state.configured;$('configStatus').textContent=state.configured?'后端已配置 API Key，可直接提问。':'当前服务尚未配置 API Key，请在下方填写。';$('status').textContent=state.configured||apiKey?'DeepSeek 已就绪':'请配置 DeepSeek Key';if(versionMismatch){$('status').textContent='版本待同步';$('configStatus').textContent='页面与后端版本不同。请重启本地服务后手动刷新；在线版本请完成部署后手动刷新。';}}catch{$('configStatus').textContent='无法连接模型后端。请通过桌面快捷方式启动，或使用在线版本。';$('status').textContent='模型后端未连接';}}
 let aiAnswer='';
 let interviewSession=null;
 const sessionToggle=$('sessionToggle');
@@ -281,17 +268,42 @@ async function run(query){
  history=[query,...history.filter(q=>q!==query)].slice(0,7);
  try{localStorage.setItem('interview-history-v1',JSON.stringify(history));}catch{}
  historyUI();
- if(window.knowledgeReady)await window.knowledgeReady;
- if(serial!==requestSerial)return;
+ const publish=(response,label='本地检索 · 完整原文')=>{
+  if(serial!==requestSerial)return;
+  lastResponse=response;
+  $('resultMeta').textContent=response.results.length+' 个候选 · '+response.ms.toFixed(1)+' ms';
+  candidates(response);
+  $('empty').hidden=!!response.results.length;
+  $('resultGrid').hidden=!response.results.length;
+  if(response.results.length){showAnswer(response.results[0].id);$('answerMode').textContent=label;}
+ };
  const response=engine.search(query,queryScope,5);
- lastResponse=response;
- $('resultMeta').textContent=response.results.length+' 个候选 · '+response.ms.toFixed(1)+' ms';
- if(!response.results.length){$('empty').hidden=false;return;}
- candidates(response);
- showAnswer(response.results[0].id);
- $('answerMode').textContent='本地检索 · 完整原文';
- $('resultGrid').hidden=false;
+ publish(response);
+ const initialId=selected?.id;
+ // Shared knowledge and semantic refinement never block the first local answer.
+ if(window.knowledgeReady)void window.knowledgeReady.then(()=>{
+  if(serial!==requestSerial||selected?.id!==initialId)return;
+  if(!response.results.length)publish(engine.search(query,queryScope,5));
+ }).catch(()=>{});
+ if(query.length>45&&location.protocol!=='file:'&&(modelConfigured||apiKey)){
+  $('resultMeta').textContent+=' · 后台校正中';
+  void (async()=>{
+   const started=performance.now();
+   try{
+    const res=await fetch('/api/answer',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query,scope:queryScope,retrieveOnly:true,...(apiKey?{apiKey}:{})}),signal:AbortSignal.timeout(12000)});
+    const result=await res.json();
+    if(!res.ok)throw new Error(result.error||'检索失败');
+    if(serial!==requestSerial||selected?.id!==initialId)return;
+    const results=result.candidateIds.filter(id=>byId.has(id)).map(id=>({id,match:'问题理解 · 主题匹配'}));
+    if(results.length)publish({results,ms:performance.now()-started},'问题理解 · 完整原文');
+   }catch(error){/* Keep the already visible local result on network failure. */}
+   finally{
+    if(serial===requestSerial)$('resultMeta').textContent=$('resultMeta').textContent.replace(' · 后台校正中','');
+   }
+  })();
+ }
 }
+
 const sidebarToggle=$('sidebarToggle');
 function setSidebarCollapsed(collapsed){
  document.body.classList.toggle('sidebar-collapsed',collapsed);
