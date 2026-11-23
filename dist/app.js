@@ -85,6 +85,46 @@ function candidates(response){$('candidateList').replaceChildren();$('candidateC
 function cancelModel(){requestSerial++;modelController?.abort();modelController=null;}
 async function refreshModelStatus(){if(location.protocol==='file:'){$('status').textContent='离线原文模式';$('configStatus').textContent='离线 HTML 仅检索原文。使用 DeepSeek 请双击桌面上的面试知识库快捷方式。';return;}try{const r=await fetch('/api/status',{cache:'no-store'});if(!r.ok)throw new Error();const state=await r.json();if(state.knowledgeVersion&&state.knowledgeVersion!==data.version){sessionStorage.setItem('resume-interview-query',$('query').value);location.reload();return;}modelConfigured=!!state.configured;$('configStatus').textContent=state.configured?'后端已配置 API Key，可直接提问。':'当前服务尚未配置 API Key，请在下方填写。';$('status').textContent=state.configured||apiKey?'DeepSeek 已就绪':'请配置 DeepSeek Key';}catch{$('configStatus').textContent='无法连接模型后端。请通过桌面快捷方式启动，或使用在线版本。';$('status').textContent='模型后端未连接';}}
 let aiAnswer='';
+let interviewSession=null;
+const sessionToggle=$('sessionToggle');
+sessionToggle.disabled=location.protocol==='file:';
+
+function renderInterviewHistory(){
+ const turns=interviewSession?.turns||[];
+ $('interviewHistory').hidden=!turns.length;
+ $('interviewHistoryLabel').textContent='本场问答 · '+turns.length+' 轮';
+ const list=$('interviewTurns');
+ list.replaceChildren();
+ for(const turn of turns){
+  const entry=el('article',undefined,'interview-turn');
+  const answer=el('div',undefined,'answer-body');
+  entry.append(el('p',turn.question,'interview-question'),answer);
+  renderText(turn.answer,answer);
+  list.append(entry);
+ }
+}
+sessionToggle.onclick=()=>{
+ interviewSession=interviewSession?null:{turns:[]};
+ sessionToggle.setAttribute('aria-pressed',String(!!interviewSession));
+ sessionToggle.textContent=interviewSession?'结束面试会话':'开启面试会话';
+ $('interviewChat').hidden=!interviewSession;
+ $('interviewQuestion').hidden=true;
+ $('interviewHistory').open=false;
+ renderInterviewHistory();
+ if(interviewSession){setAnswerTab('ai');$('query').focus();}
+ toast(interviewSession?'面试会话已开启，右栏将记住接下来的问答':'面试会话已结束');
+};
+function recentInterviewTurns(session){
+ const turns=[];
+ let budget=10000;
+ for(const turn of (session?.turns||[]).slice(-8).reverse()){
+  const question=turn.question.slice(0,1500),answer=turn.answer.slice(0,1800);
+  if(question.length+answer.length>budget)break;
+  turns.unshift({question,answer});
+  budget-=question.length+answer.length;
+ }
+ return turns;
+}
 function setAnswerTab(tab){
  $('answerColumns').dataset.active=tab;
  $('localTab').setAttribute('aria-pressed',String(tab==='local'));
@@ -101,7 +141,7 @@ function resetAI(visible){
  $('aiScroll').scrollTop=0;
  setAnswerTab('local');
 }
-async function generateInterviewAnswer(query,serial){
+async function generateInterviewAnswer(query,serial,session){
  if(location.protocol==='file:'){
   $('aiStatus').textContent='请使用本机服务或在线版本生成 DeepSeek 回答。';
   return;
@@ -116,7 +156,7 @@ async function generateInterviewAnswer(query,serial){
  try{
   const response=await fetch('/api/interview-answer',{
    method:'POST',headers:{'Content-Type':'application/json'},
-   body:JSON.stringify({query,...(apiKey?{apiKey}:{})}),signal:modelController.signal
+   body:JSON.stringify({query,...(session?{turns:recentInterviewTurns(session)}:{}),...(apiKey?{apiKey}:{})}),signal:modelController.signal
   });
   if(!response.ok){
    const body=await response.json().catch(()=>null);
@@ -160,6 +200,9 @@ async function generateInterviewAnswer(query,serial){
   if(serial!==requestSerial)return;
   if(!aiAnswer.trim())throw new Error('DeepSeek 未返回回答，请重试。');
   $('aiStatus').textContent=truncated?'回答达到长度上限。':finished?'':'连接提前结束，已保留收到的内容。';
+  if(finished&&!truncated&&session&&session===interviewSession){
+   session.turns.push({question:query,answer:aiAnswer.trim()});
+  }
   $('status').textContent='DeepSeek 已就绪';
  }catch(error){
   if(serial!==requestSerial)return;
@@ -188,7 +231,15 @@ async function run(query){
  $('copy').disabled=true;
  selected=null;
  selectedAnswer='';
- void generateInterviewAnswer(query,serial);
+ const session=interviewSession;
+ if(session){
+  renderInterviewHistory();
+  $('interviewHistory').open=false;
+  $('interviewQuestion').textContent=query;
+  $('interviewQuestion').hidden=false;
+  setAnswerTab('ai');
+ }
+ void generateInterviewAnswer(query,serial,session);
  history=[query,...history.filter(q=>q!==query)].slice(0,7);
  try{localStorage.setItem('interview-history-v1',JSON.stringify(history));}catch{}
  historyUI();

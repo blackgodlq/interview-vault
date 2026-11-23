@@ -122,7 +122,23 @@ export async function answerQuestion({query,scope='all',apiKey,engine,byId,cache
   return id===null?generalAnswer({query,apiKey,fetcher,endpoint,engine,started}):remember(result);
 }
 
-export async function streamInterviewAnswer({query,apiKey,signal}){
+function interviewContext(turns){
+  if(!Array.isArray(turns))return [];
+  const messages=[];
+  let budget=10000;
+  for(const turn of turns.slice(-8).reverse()){
+    if(typeof turn?.question!=='string'||typeof turn?.answer!=='string')continue;
+    const question=turn.question.trim().slice(0,1500);
+    const answer=turn.answer.trim().slice(0,1800);
+    if(!question||!answer)continue;
+    if(question.length+answer.length>budget)break;
+    messages.unshift({role:'user',content:question},{role:'assistant',content:answer});
+    budget-=question.length+answer.length;
+  }
+  return messages;
+}
+
+export async function streamInterviewAnswer({query,apiKey,signal,turns}){
   if(typeof query!=='string'||!query.trim()||query.length>1500)throw new RagError('请输入 1–1500 字的问题。',400);
   if(typeof apiKey!=='string'||!apiKey.trim())throw new RagError('请先配置 DeepSeek API Key。',428);
   const payload=payloadForGeneralAnswer(query.trim());
@@ -135,6 +151,11 @@ export async function streamInterviewAnswer({query,apiKey,signal}){
     '默认约一分钟、200 至 350 字，简单问题更短，复杂问题可适当展开。使用短段落，关键术语可加粗，默认少用标题、编号和表格。明确要求代码时给出代码和简短解释。',
     '只根据用户给出的经历来描述个人项目、数据和成果。未给经历时，用“如果遇到这种情况，我会……”讲思路。问题有错误前提时简短纠正，信息不足时说明假设或不确定性。'
   ].join('\n');
+  const context=interviewContext(turns);
+  if(context.length){
+    payload.messages[0].content+='\n这是同一场面试。结合前几轮理解简称、指代和追问，只回答最后一条问题。区分面试官给出的事实与之前回答里的假设。';
+    payload.messages.splice(1,0,...context);
+  }
   const timeout=AbortSignal.timeout(60000);
   const response=await requestModel(apiKey,payload,fetch,ENDPOINT,signal?AbortSignal.any([signal,timeout]):timeout);
   if(!response.body)throw new RagError('DeepSeek 未返回回答，请重试。');

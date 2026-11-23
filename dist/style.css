@@ -76,3 +76,12 @@ html,body{height:100%;overflow:hidden}
 .sidebar-collapsed #readingPane>#results{max-width:none}
 @media(max-width:900px){.header-left .breadcrumb{display:none}}
 @media(max-width:650px){.header-left{display:none}}
+
+.session-toggle{white-space:nowrap;border:1px solid #c9d6f7;border-radius:7px;background:#fff;padding:7px 10px;color:var(--blue);font-size:13px}
+.session-toggle[aria-pressed=true]{background:var(--soft);font-weight:650}
+.interview-question{background:var(--soft);border-radius:8px;padding:9px 12px;margin:0 0 14px;font-size:14px;line-height:1.6;overflow-wrap:anywhere}
+#interviewHistory{margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:10px}
+#interviewHistory summary{cursor:pointer;color:#526785;font-size:13px}
+.interview-turn{padding-top:12px;border-bottom:1px solid var(--line)}
+@media(max-width:650px){.session-toggle{font-size:12px;padding:6px 7px}.header-right .model-settings{font-size:11px;padding-inline:5px}}
+@media(max-width:650px){.workspace>header{height:auto;min-height:58px;padding-block:8px}.header-right{flex-wrap:wrap;justify-content:flex-start}}
