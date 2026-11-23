@@ -41,11 +41,11 @@ async function start(){const {answerQuestion,streamInterviewAnswer,MODEL}=await 
    }
    if(url.pathname==='/api/interview-answer'&&req.method==='POST'){
     if(!req.headers['content-type']?.includes('application/json'))return json(res,415,{error:'只接受 JSON 请求。'});
-    const body=await readBody(req,64000);
+    const body=await readBody(req,128000);
     if(res.destroyed)return;
     const controller=new AbortController();
     res.once('close',()=>controller.abort());
-    const stream=await streamInterviewAnswer({query:body?.query,apiKey:body?.apiKey||process.env.DEEPSEEK_API_KEY,signal:controller.signal,turns:body?.turns});
+    const stream=await streamInterviewAnswer({query:body?.query,apiKey:body?.apiKey||process.env.DEEPSEEK_API_KEY,signal:controller.signal,turns:body?.turns,project:body?.project});
     res.writeHead(200,{'Content-Type':'text/event-stream; charset=utf-8','Cache-Control':'no-store, no-transform','X-Accel-Buffering':'no','X-Content-Type-Options':'nosniff'});
     const {Readable}=require('node:stream');
     const {pipeline}=require('node:stream/promises');

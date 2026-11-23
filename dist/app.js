@@ -148,6 +148,8 @@ async function generateInterviewAnswer(query,serial,session){
  }
  $('aiStatus').textContent='正在生成口述回答…';
  modelController=new AbortController();
+ const context=session?recentInterviewTurns(session):[];
+ const project=window.ProjectCode?.search(query,context.at(-1)?.question)||[];
  let frame=0,finished=false,truncated=false;
  const paint=()=>{
   frame=0;
@@ -156,7 +158,7 @@ async function generateInterviewAnswer(query,serial,session){
  try{
   const response=await fetch('/api/interview-answer',{
    method:'POST',headers:{'Content-Type':'application/json'},
-   body:JSON.stringify({query,...(session?{turns:recentInterviewTurns(session)}:{}),...(apiKey?{apiKey}:{})}),signal:modelController.signal
+   body:JSON.stringify({query,...(context.length?{turns:context}:{}),...(project.length?{project}:{}),...(apiKey?{apiKey}:{})}),signal:modelController.signal
   });
   if(!response.ok){
    const body=await response.json().catch(()=>null);

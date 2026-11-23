@@ -30,7 +30,7 @@ export default {
     if(!request.headers.get('Content-Type')?.includes('application/json'))return edgeJSON({error:'只接受 JSON 请求。'},415);
     const importing=url.pathname==='/api/knowledge'||/^\/api\/knowledge\/extra-[a-f0-9-]+$/.test(url.pathname);
     if(importing&&!canManage)return edgeJSON({error:'请使用站点所有者账户登录后管理知识。'},403);
-    const text=await request.text();if(text.length>(importing?600000:url.pathname==='/api/interview-answer'?64000:12000))return edgeJSON({error:'请求过大。'},413);
+    const text=await request.text();if(text.length>(importing?600000:url.pathname==='/api/interview-answer'?128000:12000))return edgeJSON({error:'请求过大。'},413);
     let body;try{body=JSON.parse(text);}catch{return edgeJSON({error:'请求格式错误。'},400);}
     if(importing){
      const id=url.pathname.split('/')[3];
@@ -42,7 +42,7 @@ export default {
      });return edgeJSON({entry:result.entry,duplicate:!!result.duplicate,revision:result.revision});
     }
     if(url.pathname==='/api/interview-answer'&&request.method==='POST'){
-     const stream=await streamInterviewAnswer({query:body?.query,apiKey:body?.apiKey||env.DEEPSEEK_API_KEY,signal:request.signal,turns:body?.turns});
+     const stream=await streamInterviewAnswer({query:body?.query,apiKey:body?.apiKey||env.DEEPSEEK_API_KEY,signal:request.signal,turns:body?.turns,project:body?.project});
      return new Response(stream,{headers:{'Content-Type':'text/event-stream; charset=utf-8','Cache-Control':'no-store, no-transform','X-Content-Type-Options':'nosniff'}});
     }
     if(url.pathname==='/api/answer'&&request.method==='POST'){const shared=await sharedKnowledge(env);syncEdge(shared);return edgeJSON(await answerQuestion({query:body.query,scope:body.scope,apiKey:body.apiKey||env.DEEPSEEK_API_KEY,engine:edgeEngine,byId:edgeById,cache:edgeCache}));}
