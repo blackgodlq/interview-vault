@@ -49,7 +49,7 @@ for _,_,path,_,_ in SOURCES:
     pass  # Canonical TXT files already live in dist.
 html=(ROOT/'dist'/'index.html').read_text(encoding='utf-8')
 html=html.replace('<link rel="stylesheet" href="style.css">','<style>'+(ROOT/'dist'/'style.css').read_text(encoding='utf-8')+'</style>')
-for name in ['knowledge.js','engine.js','answers.js','knowledge-import.js','project-code.js','app.js','knowledge-ui.js']:
+for name in ['knowledge.js','engine.js','answers.js','knowledge-import.js','app.js','knowledge-ui.js']:
     script=(ROOT/'dist'/name).read_text(encoding='utf-8').replace('</script','<\\/script')
     html=html.replace('<script src="'+name+'"></script>','<script>'+script+'</script>')
 (ROOT/'面试知识库智能体.html').write_text(html,encoding='utf-8')

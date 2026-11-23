@@ -85,10 +85,3 @@ html,body{height:100%;overflow:hidden}
 .interview-turn{padding-top:12px;border-bottom:1px solid var(--line)}
 @media(max-width:650px){.session-toggle{font-size:12px;padding:6px 7px}.header-right .model-settings{font-size:11px;padding-inline:5px}}
 @media(max-width:650px){.workspace>header{height:auto;min-height:58px;padding-block:8px}.header-right{flex-wrap:wrap;justify-content:flex-start}}
-
-.project-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.project-picker{border:1px solid #c9d6f7;border-radius:7px;padding:8px 12px;color:var(--blue)}
-#projectList{list-style:none;margin:0;padding:0;max-height:36vh;overflow:auto}
-#projectList li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px}
-#projectList span{overflow-wrap:anywhere}
-#projectList button{flex-shrink:0}
