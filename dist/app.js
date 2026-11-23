@@ -79,9 +79,30 @@ function showAnswer(id){
  complete.sections.forEach((section,i)=>{const wrap=el('section',undefined,i?'expanded-reference':'primary-answer');if(i)wrap.append(el('h3',section.title,'reference-title'),el('div','原文引用已自动展开','reference-caption'));const body=el('div');renderText(section.text,body);wrap.append(body);$('answerBody').append(wrap);});
  $('rawText').textContent=complete.sections.map(section=>section.raw).join('\n\n────────────\n\n');
  $('evidenceMeta').textContent=complete.sections.map(section=>section.sourceName+' / '+section.chapter+' / '+section.title+' · 第 '+section.line+' 行').join('\n');
- document.querySelectorAll('.candidate').forEach(b=>b.classList.toggle('active',b.dataset.id===id));
+ document.querySelectorAll('#candidateList button').forEach(button=>{
+  button.setAttribute('aria-pressed',String(button.dataset.id===id));
+ });
 }
-function candidates(response){$('candidateList').replaceChildren();$('candidateCount').textContent=response.results.length+' 条';for(const r of response.results){const c=byId.get(r.id),b=el('button',undefined,'candidate');b.dataset.id=c.id;b.append(el('span',c.sourceName+' · '+c.chapter,'candidate-source'),el('strong',c.title),el('span',r.match||'目录原文','candidate-match'));b.onclick=()=>{showAnswer(c.id);$('answerMode').textContent='手动查看原文';};$('candidateList').append(b);}}
+function candidates(response){
+ const list=$('candidateList');
+ list.replaceChildren();
+ const results=response.results.slice(0,5);
+ $('similarQuestions').hidden=results.length<2;
+ $('candidateCount').textContent=results.length+' 条';
+ for(const result of results){
+  const chunk=byId.get(result.id);
+  const button=el('button',chunk.title,'similar-question');
+  button.type='button';
+  button.title=chunk.title;
+  button.dataset.id=chunk.id;
+  button.onclick=()=>{
+   showAnswer(chunk.id);
+   $('answerMode').textContent='本地检索 · 完整原文';
+   $('localScroll').scrollTop=0;
+  };
+  list.append(button);
+ }
+}
 function cancelModel(){requestSerial++;modelController?.abort();modelController=null;}
 async function refreshModelStatus(){if(location.protocol==='file:'){$('status').textContent='离线原文模式';$('configStatus').textContent='离线 HTML 仅检索原文。使用 DeepSeek 请双击桌面上的面试知识库快捷方式。';return;}try{const r=await fetch('/api/status',{cache:'no-store'});if(!r.ok)throw new Error();const state=await r.json();if(state.knowledgeVersion&&state.knowledgeVersion!==data.version){sessionStorage.setItem('resume-interview-query',$('query').value);location.reload();return;}modelConfigured=!!state.configured;$('configStatus').textContent=state.configured?'后端已配置 API Key，可直接提问。':'当前服务尚未配置 API Key，请在下方填写。';$('status').textContent=state.configured||apiKey?'DeepSeek 已就绪':'请配置 DeepSeek Key';}catch{$('configStatus').textContent='无法连接模型后端。请通过桌面快捷方式启动，或使用在线版本。';$('status').textContent='模型后端未连接';}}
 let aiAnswer='';
@@ -221,6 +242,7 @@ async function run(query){
  lastResponse={results:[]};
  setMode('search');
  resetAI(true);
+ candidates(lastResponse);
  $('readingPane').scrollTop=0;
  $('localScroll').scrollTop=0;
  $('resultTitle').textContent='检索结果';
@@ -245,7 +267,7 @@ async function run(query){
  historyUI();
  if(window.knowledgeReady)await window.knowledgeReady;
  if(serial!==requestSerial)return;
- const response=engine.search(query,queryScope);
+ const response=engine.search(query,queryScope,5);
  lastResponse=response;
  $('resultMeta').textContent=response.results.length+' 个候选 · 本地检索 '+response.ms.toFixed(1)+' ms';
  if(!response.results.length){$('empty').hidden=false;return;}

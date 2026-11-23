@@ -11,8 +11,12 @@
 <div class="answer-columns" id="answerColumns">
 <section class="answer-pane local-pane" id="localPane" aria-labelledby="localHeading">
 <div class="pane-header"><h3 id="localHeading">知识库原文</h3><button id="copy" class="text-button" disabled>复制原文</button></div>
+<nav class="similar-questions" id="similarQuestions" aria-label="相似问题" hidden>
+<div class="similar-heading">相似问题 <span id="candidateCount"></span></div>
+<div id="candidateList"></div>
+</nav>
 <div class="pane-scroll" id="localScroll" tabindex="0">
-<div id="empty" hidden><div class="empty-icon">⌕</div><h3>文档中未找到相关内容</h3><p>资料中没有足够依据回答这个问题。可以补充问题背景或选择其他资料范围。</p></div><div class="results-grid" id="resultGrid"><div class="answer-card"><div class="answer-top"><div><span class="answer-tag" id="answerMode">完整原文答案</span><span id="matchTag" class="match-tag"></span></div></div><h2 id="answerTitle"></h2><div class="source-line" id="sourceLine"></div><div id="answerBody" class="answer-body"></div><details class="evidence"><summary>核对已加载的原文</summary><div id="evidenceMeta"></div><pre id="rawText"></pre></details><div class="answer-footer">内容直接提取自你的资料，保留原文表述。原文中的错误也会保留。</div></div><details class="candidates"><summary>相关知识片段 <span id="candidateCount"></span></summary><div id="candidateList"></div></details></div></div></section>
+<div id="empty" hidden><div class="empty-icon">⌕</div><h3>文档中未找到相关内容</h3><p>资料中没有足够依据回答这个问题。可以补充问题背景或选择其他资料范围。</p></div><div class="results-grid" id="resultGrid"><div class="answer-card"><div class="answer-top"><div><span class="answer-tag" id="answerMode">完整原文答案</span><span id="matchTag" class="match-tag"></span></div></div><h2 id="answerTitle"></h2><div class="source-line" id="sourceLine"></div><div id="answerBody" class="answer-body"></div><details class="evidence"><summary>核对已加载的原文</summary><div id="evidenceMeta"></div><pre id="rawText"></pre></details><div class="answer-footer">内容直接提取自你的资料，保留原文表述。原文中的错误也会保留。</div></div></div></div></section>
 <section class="answer-pane ai-pane" id="aiPane" aria-labelledby="aiHeading" hidden>
 <div class="pane-header"><h3 id="aiHeading">DeepSeek 口述回答</h3><button id="copyAI" class="text-button" disabled>复制回答</button></div>
 <div class="pane-scroll" id="aiScroll" tabindex="0"><div id="interviewChat" hidden>
