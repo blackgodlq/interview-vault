@@ -9,7 +9,7 @@ function el(tag,text,cls){const n=document.createElement(tag);if(text!==undefine
 function toast(s){$('toast').textContent=s;$('toast').classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('toast').classList.remove('show'),2200);}
 function historyUI(){const list=$('history');list.replaceChildren();if(!history.length)list.append(el('div','暂无检索记录','history-empty'));for(const q of history){const b=el('button',q,'history-item');b.title=q;b.onclick=()=>run(q);list.append(b);}}
 function setScope(s){scope=s;document.querySelectorAll('[data-scope]').forEach(b=>b.classList.toggle('selected',b.dataset.scope===s));}
-function setMode(m){mode=m;document.body.classList.toggle('has-answer',!!lastResponse);document.body.classList.toggle('catalog-mode',m==='catalog');$('catalog').hidden=m!=='catalog';$('home').hidden=m==='catalog'||!!lastResponse;$('results').hidden=m==='catalog'||!lastResponse;$('searchNav').classList.toggle('active',m==='search');$('browseNav').classList.toggle('active',m==='catalog');if(m==='catalog')renderCatalog();}
+function setMode(m){mode=m;document.body.classList.toggle('has-answer',!!lastResponse);document.body.classList.toggle('catalog-mode',m==='catalog');$('catalog').hidden=m!=='catalog';$('home').hidden=m==='catalog'||!!lastResponse;$('results').hidden=m==='catalog'||!lastResponse;$('resultMeta').hidden=m==='catalog'||!lastResponse;$('searchNav').classList.toggle('active',m==='search');$('browseNav').classList.toggle('active',m==='catalog');if(m==='catalog')renderCatalog();}
 function renderText(text,target){
  target.replaceChildren();let code=false,buffer=[],lists=[];
  function inline(parent,value){
@@ -85,10 +85,11 @@ function showAnswer(id){
 }
 function candidates(response){
  const list=$('candidateList');
+ $('similarQuestions').open=false;
  list.replaceChildren();
  const results=response.results.slice(0,5);
  $('similarQuestions').hidden=results.length<2;
- $('candidateCount').textContent=results.length+' 条';
+ $('candidateCount').textContent='('+results.length+')';
  for(const result of results){
   const chunk=byId.get(result.id);
   const button=el('button',chunk.title,'similar-question');
@@ -99,11 +100,27 @@ function candidates(response){
    showAnswer(chunk.id);
    $('answerMode').textContent='本地检索 · 完整原文';
    $('localScroll').scrollTop=0;
+   closeSimilarQuestions(true);
   };
   list.append(button);
  }
 }
 function cancelModel(){requestSerial++;modelController?.abort();modelController=null;}
+function closeSimilarQuestions(focusSummary=false){
+ const menu=$('similarQuestions');
+ if(!menu.open)return;
+ menu.open=false;
+ if(focusSummary)menu.querySelector('summary').focus({preventScroll:true});
+}
+document.addEventListener('pointerdown',event=>{
+ if(!$('similarQuestions').contains(event.target))closeSimilarQuestions();
+});
+$('similarQuestions').addEventListener('keydown',event=>{
+ if(event.key==='Escape'&&$('similarQuestions').open){
+  event.stopPropagation();
+  closeSimilarQuestions(true);
+ }
+});
 async function refreshModelStatus(){if(location.protocol==='file:'){$('status').textContent='离线原文模式';$('configStatus').textContent='离线 HTML 仅检索原文。使用 DeepSeek 请双击桌面上的面试知识库快捷方式。';return;}try{const r=await fetch('/api/status',{cache:'no-store'});if(!r.ok)throw new Error();const state=await r.json();if(state.knowledgeVersion&&state.knowledgeVersion!==data.version){sessionStorage.setItem('resume-interview-query',$('query').value);location.reload();return;}modelConfigured=!!state.configured;$('configStatus').textContent=state.configured?'后端已配置 API Key，可直接提问。':'当前服务尚未配置 API Key，请在下方填写。';$('status').textContent=state.configured||apiKey?'DeepSeek 已就绪':'请配置 DeepSeek Key';}catch{$('configStatus').textContent='无法连接模型后端。请通过桌面快捷方式启动，或使用在线版本。';$('status').textContent='模型后端未连接';}}
 let aiAnswer='';
 let interviewSession=null;
@@ -245,7 +262,6 @@ async function run(query){
  candidates(lastResponse);
  $('readingPane').scrollTop=0;
  $('localScroll').scrollTop=0;
- $('resultTitle').textContent='检索结果';
  $('resultMeta').textContent='正在检索知识库…';
  $('empty').hidden=true;
  $('resultGrid').hidden=true;
@@ -269,7 +285,7 @@ async function run(query){
  if(serial!==requestSerial)return;
  const response=engine.search(query,queryScope,5);
  lastResponse=response;
- $('resultMeta').textContent=response.results.length+' 个候选 · 本地检索 '+response.ms.toFixed(1)+' ms';
+ $('resultMeta').textContent=response.results.length+' 个候选 · '+response.ms.toFixed(1)+' ms';
  if(!response.results.length){$('empty').hidden=false;return;}
  candidates(response);
  showAnswer(response.results[0].id);
@@ -290,7 +306,7 @@ sidebarToggle.onclick=()=>{
 };
 $('localTab').onclick=()=>setAnswerTab('local');
 $('aiTab').onclick=()=>setAnswerTab('ai');
-function renderCatalog(){const query=$('catalogFilter').value.toLowerCase(),s=$('catalogSource').value;let groups=new Map(),count=0;for(const c of data.chunks){if(s==='custom'?!c.entryId:s!=='all'&&c.source!==s)continue;if(query&&!(c.title+' '+c.chapter).toLowerCase().includes(query))continue;const key=c.sourceName+' / '+c.chapter;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(c);count++;}$('catalogMeta').textContent=count+' 个知识片段';$('catalogList').replaceChildren();for(const [name,chunks]of groups){const details=el('details',undefined,'catalog-group');details.open=!!query;const summary=el('summary',name);summary.append(el('small',chunks.length+' 题'));details.append(summary);for(const c of chunks){const b=el('button',c.title,'catalog-question');b.onclick=()=>{cancelModel();resetAI(false);$('localScroll').scrollTop=0;$('answerMode').textContent='目录原文';lastResponse={results:[{id:c.id,match:'目录原文'}],ms:0};setMode('search');$('resultTitle').textContent='目录原文';$('resultMeta').textContent=c.sourceName+' · '+c.text.length+' 字符';$('empty').hidden=true;$('resultGrid').hidden=false;candidates(lastResponse);showAnswer(c.id);$('readingPane').scrollTo({top:0,behavior:'smooth'});};details.append(b);}$('catalogList').append(details);}if(!count)$('catalogList').append(el('p','没有匹配的题目，请更换关键词。'));}
+function renderCatalog(){const query=$('catalogFilter').value.toLowerCase(),s=$('catalogSource').value;let groups=new Map(),count=0;for(const c of data.chunks){if(s==='custom'?!c.entryId:s!=='all'&&c.source!==s)continue;if(query&&!(c.title+' '+c.chapter).toLowerCase().includes(query))continue;const key=c.sourceName+' / '+c.chapter;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(c);count++;}$('catalogMeta').textContent=count+' 个知识片段';$('catalogList').replaceChildren();for(const [name,chunks]of groups){const details=el('details',undefined,'catalog-group');details.open=!!query;const summary=el('summary',name);summary.append(el('small',chunks.length+' 题'));details.append(summary);for(const c of chunks){const b=el('button',c.title,'catalog-question');b.onclick=()=>{cancelModel();resetAI(false);$('localScroll').scrollTop=0;$('answerMode').textContent='目录原文';lastResponse={results:[{id:c.id,match:'目录原文'}],ms:0};setMode('search');$('resultMeta').textContent=c.sourceName+' · '+c.text.length+' 字符';$('empty').hidden=true;$('resultGrid').hidden=false;candidates(lastResponse);showAnswer(c.id);$('readingPane').scrollTo({top:0,behavior:'smooth'});};details.append(b);}$('catalogList').append(details);}if(!count)$('catalogList').append(el('p','没有匹配的题目，请更换关键词。'));}
 $('searchForm').onsubmit=e=>{e.preventDefault();run($('query').value);};$('query').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();run($('query').value);}});document.querySelectorAll('[data-scope]').forEach(b=>b.onclick=()=>setScope(b.dataset.scope));document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>run(b.dataset.q));document.querySelectorAll('[data-source]').forEach(b=>b.onclick=()=>{setScope(b.dataset.source);$('catalogSource').value=b.dataset.source;setMode('catalog');});$('searchNav').onclick=()=>setMode('search');$('browseNav').onclick=()=>setMode('catalog');$('catalogFilter').oninput=renderCatalog;$('catalogSource').onchange=renderCatalog;$('clearHistory').onclick=()=>{history=[];try{localStorage.removeItem('interview-history-v1');}catch{}historyUI();toast('检索历史已清空');};async function copyAnswer(value){
  if(!value.trim())return;
  try{await navigator.clipboard.writeText(value);toast('答案已复制');}

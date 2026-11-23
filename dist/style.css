@@ -86,12 +86,19 @@ html,body{height:100%;overflow:hidden}
 @media(max-width:650px){.session-toggle{font-size:12px;padding:6px 7px}.header-right .model-settings{font-size:11px;padding-inline:5px}}
 @media(max-width:650px){.workspace>header{height:auto;min-height:58px;padding-block:8px}.header-right{flex-wrap:wrap;justify-content:flex-start}}
 
-.similar-questions{flex:none;padding:9px 14px 10px;border-bottom:1px solid var(--line);background:#f9fbfe}
-.similar-heading{font-size:12px;font-weight:650;color:#526785;margin-bottom:6px}
-.similar-heading span{font-weight:400;color:var(--muted);margin-left:4px}
-#candidateList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 7px}
-.similar-question{min-width:0;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px;line-height:18px;padding:4px 7px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink)}
+.pane-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.pane-actions button,.similar-questions summary{white-space:nowrap}
+.local-pane .pane-header{position:relative}
+.similar-questions{font-size:13px}
+.similar-questions summary{cursor:pointer;color:#526785;padding:4px 0}
+#candidateList{position:absolute;z-index:3;right:10px;top:calc(100% + 4px);width:min(300px,calc(100% - 20px));max-height:min(230px,35dvh);overflow:auto;display:grid;gap:4px;padding:6px;border:1px solid var(--line);border-radius:8px;background:#fff;box-shadow:0 6px 18px #263e7526}
+.similar-question{text-align:left;overflow-wrap:anywhere;font-size:13px;line-height:1.4;padding:6px 8px;border:1px solid transparent;border-radius:6px;color:var(--ink)}
 .similar-question[aria-pressed=true]{border-color:#9cb2f2;background:var(--soft);color:var(--blue)}
-.similar-question:hover{border-color:#9cb2f2}
+.similar-question:hover{background:var(--soft)}
 .local-pane #answerTitle{font-size:clamp(17px,1.55vw,22px);margin-block:12px 6px}
-@media(max-width:760px){.similar-questions{padding-inline:10px}}
+#readingPane:has(#results:not([hidden]) .paired){padding-block:10px}
+#readingPane>#results:has(.paired){max-width:none}
+.composer #resultMeta{margin-left:auto;white-space:nowrap;color:var(--muted);font-size:12px}
+.composer #resultMeta:not([hidden])+#submit{margin-left:0}
+@media(min-width:761px){.answer-columns.paired{grid-template-columns:minmax(0,1.16fr) minmax(0,1fr)}}
+@media(max-width:650px){.composer #resultMeta{font-size:10px}.pane-actions{gap:8px}.answer-pane .pane-header{padding-inline:10px}.pane-actions .text-button,.similar-questions{font-size:12px}}
