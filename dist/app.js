@@ -242,7 +242,7 @@ async function run(query){
  if(!query){$('query').focus();return;}
  cancelModel();
  const serial=requestSerial,queryScope=scope;
- $('query').value=query;
+ $('query').value='';
  lastResponse={results:[]};
  setMode('search');
  resetAI(true);
